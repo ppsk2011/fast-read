@@ -14,6 +14,7 @@ import { useReaderContext } from './context/useReaderContext';
 import { useRSVPEngine } from './hooks/useRSVPEngine';
 import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
+import PageNavigator from './components/PageNavigator';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { normalizeText, tokenize } from './utils/textUtils';
@@ -33,6 +34,7 @@ export default function App() {
     setIsLoading,
     setLoadingProgress,
     setIsPlaying,
+    setPageBreaks,
   } = useReaderContext();
 
   const { currentWord, play, pause, reset, faster, slower } = useRSVPEngine();
@@ -59,12 +61,14 @@ export default function App() {
       setFileMetadata({ name: file.name, size: file.size, type: ext });
 
       const allWords: string[] = [];
+      const breaks: number[] = [];
 
       try {
         if (ext === 'pdf') {
           for await (const pageText of parsePDF(file, (p) =>
             setLoadingProgress(p.percent),
           )) {
+            breaks.push(allWords.length);
             const normalized = normalizeText(pageText);
             allWords.push(...tokenize(normalized));
           }
@@ -72,6 +76,7 @@ export default function App() {
           for await (const chapterText of parseEPUB(file, (p) =>
             setLoadingProgress(p.percent),
           )) {
+            breaks.push(allWords.length);
             const normalized = normalizeText(chapterText);
             allWords.push(...tokenize(normalized));
           }
@@ -81,6 +86,7 @@ export default function App() {
           alert('No readable text found in this file.');
         } else {
           setWords(allWords);
+          setPageBreaks(breaks);
         }
       } catch (err) {
         console.error('Error parsing file:', err);
@@ -90,7 +96,7 @@ export default function App() {
         setLoadingProgress(100);
       }
     },
-    [setIsPlaying, setIsLoading, setLoadingProgress, setFileMetadata, setWords],
+    [setIsPlaying, setIsLoading, setLoadingProgress, setFileMetadata, setWords, setPageBreaks],
   );
 
   /** Global keyboard shortcuts */
@@ -149,6 +155,8 @@ export default function App() {
           onFaster={faster}
           onSlower={slower}
         />
+
+        <PageNavigator />
 
         <section className="shortcuts" aria-label="Keyboard shortcuts">
           <kbd>Space</kbd> Play/Pause &nbsp;
