@@ -8,6 +8,7 @@
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { ReaderContext, type FileMetadata, type ReadingRecord } from './readerContextDef';
@@ -31,7 +32,23 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [fileMetadata, setFileMetadata] = useState<FileMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [pageBreaks, setPageBreaksState] = useState<number[]>([]);
   const [records, setRecordsState] = useState<ReadingRecord[]>(() => loadRecords());
+
+  // Derive 1-indexed current page via binary search over pageBreaks
+  const currentPage = useMemo(() => {
+    if (pageBreaks.length === 0) return 1;
+    let lo = 0;
+    let hi = pageBreaks.length - 1;
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      if (pageBreaks[mid] <= currentWordIndex) lo = mid;
+      else hi = mid - 1;
+    }
+    return lo + 1;
+  }, [pageBreaks, currentWordIndex]);
+
+  const totalPages = pageBreaks.length;
 
   // Persist word index to localStorage whenever it changes
   useEffect(() => {
@@ -45,8 +62,9 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
 
   const setWords = useCallback((newWords: string[]) => {
     setWordsState(newWords);
-    // Reset index when a new file is loaded
+    // Reset index and page breaks when a new file is loaded
     setCurrentWordIndexState(0);
+    setPageBreaksState([]);
     localStorage.setItem(LS_KEY_INDEX, '0');
   }, []);
 
@@ -64,6 +82,32 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(LS_KEY_INDEX, '0');
   }, []);
 
+  const setPageBreaks = useCallback((breaks: number[]) => {
+    setPageBreaksState(breaks);
+  }, []);
+
+  const goToPage = useCallback(
+    (page: number) => {
+      if (pageBreaks.length === 0) return;
+      const clamped = Math.max(1, Math.min(page, pageBreaks.length));
+      const wordIndex = pageBreaks[clamped - 1];
+      setCurrentWordIndexState(wordIndex);
+      setIsPlaying(false);
+      localStorage.setItem(LS_KEY_INDEX, String(wordIndex));
+    },
+    [pageBreaks],
+  );
+
+  const goToWord = useCallback(
+    (index: number) => {
+      const clamped = Math.max(0, Math.min(index, words.length - 1));
+      setCurrentWordIndexState(clamped);
+      setIsPlaying(false);
+      localStorage.setItem(LS_KEY_INDEX, String(clamped));
+    },
+    [words.length],
+  );
+
   const setRecords = useCallback((newRecords: ReadingRecord[]) => {
     setRecordsState(newRecords);
   }, []);
@@ -78,6 +122,9 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         fileMetadata,
         isLoading,
         loadingProgress,
+        pageBreaks,
+        currentPage,
+        totalPages,
         records,
         setWords,
         setCurrentWordIndex,
@@ -86,12 +133,14 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         setFileMetadata,
         setIsLoading,
         setLoadingProgress,
-        setRecords,
         resetReader,
+        setPageBreaks,
+        goToPage,
+        goToWord,
+        setRecords,
       }}
     >
       {children}
     </ReaderContext.Provider>
   );
 }
-

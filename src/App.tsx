@@ -15,6 +15,9 @@ import { useRSVPEngine } from './hooks/useRSVPEngine';
 import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
 import ReadingHistory from './components/ReadingHistory';
+import PageNavigator from './components/PageNavigator';
+import WordNavigator from './components/WordNavigator';
+import ContextPreview from './components/ContextPreview';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { normalizeText, tokenize } from './utils/textUtils';
@@ -39,10 +42,11 @@ export default function App() {
     setIsLoading,
     setLoadingProgress,
     setIsPlaying,
+    setPageBreaks,
     setRecords,
   } = useReaderContext();
 
-  const { currentWord, play, pause, reset, faster, slower } = useRSVPEngine();
+  const { currentWord, play, pause, reset, faster, slower, prevWord, nextWord } = useRSVPEngine();
 
   /** Persist reading progress to the record whenever reading is paused */
   useEffect(() => {
@@ -84,12 +88,14 @@ export default function App() {
       setFileMetadata({ name: file.name, size: file.size, type: ext });
 
       const allWords: string[] = [];
+      const breaks: number[] = [];
 
       try {
         if (ext === 'pdf') {
           for await (const pageText of parsePDF(file, (p) =>
             setLoadingProgress(p.percent),
           )) {
+            breaks.push(allWords.length);
             const normalized = normalizeText(pageText);
             allWords.push(...tokenize(normalized));
           }
@@ -97,6 +103,7 @@ export default function App() {
           for await (const chapterText of parseEPUB(file, (p) =>
             setLoadingProgress(p.percent),
           )) {
+            breaks.push(allWords.length);
             const normalized = normalizeText(chapterText);
             allWords.push(...tokenize(normalized));
           }
@@ -106,6 +113,7 @@ export default function App() {
           alert('No readable text found in this file.');
         } else {
           setWords(allWords);
+          setPageBreaks(breaks);
           // Restore previous word index if a record exists for this file
           const existing = records.find((r) => r.name === file.name);
           const restoredIndex =
@@ -135,7 +143,7 @@ export default function App() {
         setLoadingProgress(100);
       }
     },
-    [setIsPlaying, setIsLoading, setLoadingProgress, setFileMetadata, setWords, setCurrentWordIndex, records, wpm, setRecords],
+    [setIsPlaying, setIsLoading, setLoadingProgress, setFileMetadata, setWords, setPageBreaks, setCurrentWordIndex, records, wpm, setRecords],
   );
 
   /** Global keyboard shortcuts */
@@ -158,12 +166,20 @@ export default function App() {
           e.preventDefault();
           slower();
           break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          prevWord();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          nextWord();
+          break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying, play, pause, faster, slower]);
+  }, [isPlaying, play, pause, faster, slower, prevWord, nextWord]);
 
   return (
     <div className="appWrapper">
@@ -173,18 +189,17 @@ export default function App() {
       </header>
 
       <main className="appMain">
-        <ReaderViewport
-          currentWord={currentWord}
-          isLoading={isLoading}
-          loadingProgress={loadingProgress}
-          hasWords={words.length > 0}
-        />
-
-        {words.length > 0 && !isLoading && (
-          <div className="wordCount" aria-label="Word position">
-            {currentWordIndex + 1} / {words.length}
+        <div className="readingArea">
+          <div className="viewportWrapper">
+            <ReaderViewport
+              currentWord={currentWord}
+              isLoading={isLoading}
+              loadingProgress={loadingProgress}
+              hasWords={words.length > 0}
+            />
           </div>
-        )}
+          <ContextPreview />
+        </div>
 
         <Controls
           onFileSelect={handleFileSelect}
@@ -195,10 +210,16 @@ export default function App() {
           onSlower={slower}
         />
 
+        <WordNavigator onPrevWord={prevWord} onNextWord={nextWord} />
+
+        <PageNavigator />
+
         <ReadingHistory />
 
         <section className="shortcuts" aria-label="Keyboard shortcuts">
           <kbd>Space</kbd> Play/Pause &nbsp;
+          <kbd>←</kbd> Prev word &nbsp;
+          <kbd>→</kbd> Next word &nbsp;
           <kbd>↑</kbd> Faster &nbsp;
           <kbd>↓</kbd> Slower
         </section>
@@ -206,4 +227,3 @@ export default function App() {
     </div>
   );
 }
-

@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Capacitor generated native projects (run `npm run cap:android` / `cap:ios` to open)
+android/
+ios/
