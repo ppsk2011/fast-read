@@ -22,6 +22,12 @@ interface ReaderState {
   fileMetadata: FileMetadata | null;
   isLoading: boolean;
   loadingProgress: number; // 0–100
+  /** Word index where each page/chapter starts (pageBreaks[0] is always 0) */
+  pageBreaks: number[];
+  /** 1-indexed current page derived from currentWordIndex + pageBreaks */
+  currentPage: number;
+  /** Total number of pages/chapters (equals pageBreaks.length, 0 when unknown) */
+  totalPages: number;
 }
 
 interface ReaderActions {
@@ -33,6 +39,10 @@ interface ReaderActions {
   setIsLoading: (loading: boolean) => void;
   setLoadingProgress: (progress: number) => void;
   resetReader: () => void;
+  setPageBreaks: (breaks: number[]) => void;
+  goToPage: (page: number) => void;
+  /** Jump to a specific 0-indexed word and pause playback */
+  goToWord: (index: number) => void;
 }
 
 export type ReaderContextValue = ReaderState & ReaderActions;

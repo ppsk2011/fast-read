@@ -64,6 +64,26 @@ body {
   flex: 1;
 }
 
+/* ─── Side-by-side reading area ─────────────────────────────────── */
+
+.readingArea {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.viewportWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+/* On narrow screens, stack the context preview below the viewport */
+@media (max-width: 640px) {
+  .readingArea {
+    flex-direction: column;
+  }
+}
+
 .wordCount {
   text-align: center;
   color: #666;
