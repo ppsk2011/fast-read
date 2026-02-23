@@ -14,6 +14,14 @@ export interface FileMetadata {
   type: string;
 }
 
+export interface ReadingRecord {
+  name: string;
+  wordCount: number;
+  lastWordIndex: number;
+  lastReadAt: string; // ISO date string
+  wpm: number;
+}
+
 interface ReaderState {
   words: string[];
   currentWordIndex: number;
@@ -22,6 +30,7 @@ interface ReaderState {
   fileMetadata: FileMetadata | null;
   isLoading: boolean;
   loadingProgress: number; // 0–100
+  records: ReadingRecord[];
 }
 
 interface ReaderActions {
@@ -32,6 +41,7 @@ interface ReaderActions {
   setFileMetadata: (meta: FileMetadata | null) => void;
   setIsLoading: (loading: boolean) => void;
   setLoadingProgress: (progress: number) => void;
+  setRecords: (records: ReadingRecord[]) => void;
   resetReader: () => void;
 }
 

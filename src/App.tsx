@@ -14,9 +14,11 @@ import { useReaderContext } from './context/useReaderContext';
 import { useRSVPEngine } from './hooks/useRSVPEngine';
 import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
+import ReadingHistory from './components/ReadingHistory';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { normalizeText, tokenize } from './utils/textUtils';
+import { saveRecord } from './utils/recordsUtils';
 import './styles/app.css';
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
@@ -28,14 +30,37 @@ export default function App() {
     isPlaying,
     isLoading,
     loadingProgress,
+    wpm,
+    fileMetadata,
+    records,
     setWords,
+    setCurrentWordIndex,
     setFileMetadata,
     setIsLoading,
     setLoadingProgress,
     setIsPlaying,
+    setRecords,
   } = useReaderContext();
 
   const { currentWord, play, pause, reset, faster, slower } = useRSVPEngine();
+
+  /** Persist reading progress to the record whenever reading is paused */
+  useEffect(() => {
+    if (!isPlaying && words.length > 0 && fileMetadata) {
+      const meta = records.find((r) => r.name === fileMetadata.name);
+      if (meta) {
+        const updated = saveRecord({
+          ...meta,
+          lastWordIndex: currentWordIndex,
+          lastReadAt: new Date().toISOString(),
+          wpm,
+        });
+        setRecords(updated);
+      }
+    }
+    // Only run when isPlaying flips to false; other deps are stable refs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
 
   /** Handle a file selected by the user */
   const handleFileSelect = useCallback(
@@ -81,6 +106,26 @@ export default function App() {
           alert('No readable text found in this file.');
         } else {
           setWords(allWords);
+          // Restore previous word index if a record exists for this file
+          const existing = records.find((r) => r.name === file.name);
+          const restoredIndex =
+            existing &&
+            existing.lastWordIndex >= 0 &&
+            existing.lastWordIndex < allWords.length
+              ? existing.lastWordIndex
+              : 0;
+          if (restoredIndex > 0) {
+            setCurrentWordIndex(restoredIndex);
+          }
+          // Save / update the reading record
+          const updated = saveRecord({
+            name: file.name,
+            wordCount: allWords.length,
+            lastWordIndex: restoredIndex,
+            lastReadAt: new Date().toISOString(),
+            wpm,
+          });
+          setRecords(updated);
         }
       } catch (err) {
         console.error('Error parsing file:', err);
@@ -90,7 +135,7 @@ export default function App() {
         setLoadingProgress(100);
       }
     },
-    [setIsPlaying, setIsLoading, setLoadingProgress, setFileMetadata, setWords],
+    [setIsPlaying, setIsLoading, setLoadingProgress, setFileMetadata, setWords, setCurrentWordIndex, records, wpm, setRecords],
   );
 
   /** Global keyboard shortcuts */
@@ -149,6 +194,8 @@ export default function App() {
           onFaster={faster}
           onSlower={slower}
         />
+
+        <ReadingHistory />
 
         <section className="shortcuts" aria-label="Keyboard shortcuts">
           <kbd>Space</kbd> Play/Pause &nbsp;

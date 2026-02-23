@@ -11,6 +11,7 @@ A production-quality React web application that implements **Rapid Serial Visual
 - **Adjustable speed** via logarithmic slider (60–1000 WPM)
 - **Controls:** Play, Pause, Faster, Slower, Restart
 - **Keyboard shortcuts:** `Space` = Play/Pause, `↑` = Faster, `↓` = Slower
+- **Reading history:** Automatically records each file you open, saves your progress, and restores your last position when you re-upload the same file
 - **Persists** current word index and WPM to localStorage (resume reading after refresh)
 - **Progress indicator** during file parsing and reading
 
@@ -55,6 +56,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 src/
 ├── components/
 │   ├── Controls.tsx         # Playback controls, speed slider, file upload
+│   ├── ReadingHistory.tsx   # Reading history panel with per-file progress
 │   └── ReaderViewport.tsx   # Fixed-position word display
 ├── context/
 │   ├── ReaderContext.tsx    # ReaderProvider component (state)
@@ -66,10 +68,12 @@ src/
 │   ├── pdfParser.ts         # pdfjs-dist page-by-page async generator
 │   └── epubParser.ts        # epubjs chapter-by-chapter async generator
 ├── utils/
+│   ├── recordsUtils.ts      # load / save / delete reading records in localStorage
 │   └── textUtils.ts         # normalizeText / tokenize helpers
 └── styles/
     ├── app.css              # Global layout styles
     ├── Controls.module.css  # Controls component styles
+    ├── ReadingHistory.module.css  # Reading history component styles
     └── ReaderViewport.module.css  # Viewport component styles
 ```
 
@@ -94,6 +98,16 @@ Each component has its own `.module.css` file preventing style leakage. Global s
 
 ### localStorage persistence
 `currentWordIndex` and `wpm` are synced to `localStorage` via `useEffect`, letting users resume reading after a page refresh.
+
+### Reading records
+Every time a file is successfully parsed, a `ReadingRecord` is saved to `localStorage` under the key `fastread_records`. Each record stores:
+- **File name** (used as the unique key)
+- **Total word count**
+- **Last word index** (reading position)
+- **Last read date**
+- **WPM** at time of reading
+
+When the same file name is uploaded again, its saved `lastWordIndex` is automatically restored so the user resumes exactly where they left off. Progress is also updated whenever reading is paused. Up to 20 records are kept (oldest are dropped). Records are displayed in a **Reading History** panel below the controls and can be individually deleted.
 
 ---
 

@@ -10,7 +10,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { ReaderContext, type FileMetadata } from './readerContextDef';
+import { ReaderContext, type FileMetadata, type ReadingRecord } from './readerContextDef';
+import { loadRecords } from '../utils/recordsUtils';
 
 const LS_KEY_INDEX = 'fastread_word_index';
 const LS_KEY_WPM = 'fastread_wpm';
@@ -30,6 +31,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [fileMetadata, setFileMetadata] = useState<FileMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [records, setRecordsState] = useState<ReadingRecord[]>(() => loadRecords());
 
   // Persist word index to localStorage whenever it changes
   useEffect(() => {
@@ -62,6 +64,10 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(LS_KEY_INDEX, '0');
   }, []);
 
+  const setRecords = useCallback((newRecords: ReadingRecord[]) => {
+    setRecordsState(newRecords);
+  }, []);
+
   return (
     <ReaderContext.Provider
       value={{
@@ -72,6 +78,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         fileMetadata,
         isLoading,
         loadingProgress,
+        records,
         setWords,
         setCurrentWordIndex,
         setIsPlaying,
@@ -79,6 +86,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         setFileMetadata,
         setIsLoading,
         setLoadingProgress,
+        setRecords,
         resetReader,
       }}
     >
