@@ -2,8 +2,8 @@
   "name": "fast-read",
   "description": "RSVP reader for PDF and EPUB — read faster, one word at a time",
   "version": "1.0.0",
-  "author": "TechScript Canada",
-  "homepage": "https://ppsk2011.github.io/fast-read",
+  "author": "TechScript Limited",
+  "homepage": "https://techscriptlimited.ca",
   "private": true,
   "type": "module",
   "scripts": {

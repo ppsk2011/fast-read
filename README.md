@@ -1,6 +1,6 @@
 # ⚡ Fast Read — RSVP Reader
 
-**by [TechScript Canada](https://techscriptcanada.com)**
+**by [TechScript Limited](https://techscriptlimited.ca)**
 
 A production-quality React web application that implements **Rapid Serial Visual Presentation (RSVP)** reading for PDF and EPUB files. All processing runs entirely in the browser — no backend required.
 
@@ -220,5 +220,5 @@ Each component has its own `.module.css` file preventing style leakage. Global s
 
 ---
 
-© 2025 TechScript Canada
+© 2025 TechScript Limited
 

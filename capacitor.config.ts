@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ca.techscriptcanada.fastread',
+  appId: 'ca.techscriptlimited.fastread',
   appName: 'Fast Read',
   webDir: 'dist',
   server: {
