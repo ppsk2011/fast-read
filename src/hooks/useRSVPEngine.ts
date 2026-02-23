@@ -97,7 +97,17 @@ export function useRSVPEngine() {
     setWpm(Math.max(60, Math.round(wpm / 1.2)));
   }, [setWpm, wpm]);
 
+  const prevWord = useCallback(() => {
+    setIsPlaying(false);
+    setCurrentWordIndex(Math.max(0, currentWordIndex - 1));
+  }, [setIsPlaying, setCurrentWordIndex, currentWordIndex]);
+
+  const nextWord = useCallback(() => {
+    setIsPlaying(false);
+    setCurrentWordIndex(Math.min(words.length - 1, currentWordIndex + 1));
+  }, [setIsPlaying, setCurrentWordIndex, currentWordIndex, words.length]);
+
   const currentWord = words[currentWordIndex] ?? '';
 
-  return { currentWord, play, pause, reset, faster, slower };
+  return { currentWord, play, pause, reset, faster, slower, prevWord, nextWord };
 }

@@ -96,6 +96,16 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     [pageBreaks],
   );
 
+  const goToWord = useCallback(
+    (index: number) => {
+      const clamped = Math.max(0, Math.min(index, words.length - 1));
+      setCurrentWordIndexState(clamped);
+      setIsPlaying(false);
+      localStorage.setItem(LS_KEY_INDEX, String(clamped));
+    },
+    [words.length],
+  );
+
   return (
     <ReaderContext.Provider
       value={{
@@ -119,6 +129,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         resetReader,
         setPageBreaks,
         goToPage,
+        goToWord,
       }}
     >
       {children}

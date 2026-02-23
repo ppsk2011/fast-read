@@ -41,6 +41,8 @@ interface ReaderActions {
   resetReader: () => void;
   setPageBreaks: (breaks: number[]) => void;
   goToPage: (page: number) => void;
+  /** Jump to a specific 0-indexed word and pause playback */
+  goToWord: (index: number) => void;
 }
 
 export type ReaderContextValue = ReaderState & ReaderActions;
