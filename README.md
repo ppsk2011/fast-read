@@ -15,6 +15,7 @@ A production-quality React web application that implements **Rapid Serial Visual
 - **Word navigation:** step or jump to any word by number
 - **Page/chapter navigation:** jump to any page (PDF) or chapter (EPUB)
 - **Context preview:** side-by-side scrollable text panel with the current word highlighted and clickable
+- **Reading history:** automatically records each file you open, saves your progress, and restores your last position when you re-upload the same file
 - **Keyboard shortcuts:** `Space` = Play/Pause, `←/→` = Prev/Next word, `↑/↓` = Faster/Slower
 - **Persists** current word index and WPM to localStorage (resume reading after refresh)
 - **Progressive Web App (PWA):** installable on any device, works offline
@@ -197,6 +198,7 @@ npm run cap:sync   # equivalent to: npx cap sync
     ├── components/
     │   ├── Controls.tsx         # Playback controls, speed slider, file upload
     │   ├── PageNavigator.tsx    # Page / chapter jump navigation
+    │   ├── ReadingHistory.tsx   # Reading history panel with per-file progress
     │   ├── WordNavigator.tsx    # Word-level step + jump navigation
     │   ├── ContextPreview.tsx   # Side-by-side page text preview
     │   └── ReaderViewport.tsx   # Fixed-position word display
@@ -210,6 +212,7 @@ npm run cap:sync   # equivalent to: npx cap sync
     │   ├── pdfParser.ts         # pdfjs-dist page-by-page async generator
     │   └── epubParser.ts        # epubjs chapter-by-chapter async generator
     ├── utils/
+    │   ├── recordsUtils.ts      # load / save / delete reading records in localStorage
     │   └── textUtils.ts         # normalizeText / tokenize helpers
     └── styles/
         ├── app.css              # Global layout styles
@@ -237,6 +240,9 @@ Each component has its own `.module.css` file preventing style leakage. Global s
 
 ### localStorage persistence
 `currentWordIndex` and `wpm` are synced to `localStorage` via `useEffect`, letting users resume reading after a page refresh.
+
+### Reading records
+Every time a file is successfully parsed, a `ReadingRecord` is saved to `localStorage` under the key `fastread_records`. Each record stores the file name, total word count, last word index, last read date, and WPM. When the same file is uploaded again, its saved `lastWordIndex` is automatically restored. Progress is also updated whenever reading is paused. Up to 20 records are kept (oldest are dropped). Records are displayed in a **Reading History** panel and can be individually deleted.
 
 ---
 

@@ -14,6 +14,14 @@ export interface FileMetadata {
   type: string;
 }
 
+export interface ReadingRecord {
+  name: string;
+  wordCount: number;
+  lastWordIndex: number;
+  lastReadAt: string; // ISO date string
+  wpm: number;
+}
+
 interface ReaderState {
   words: string[];
   currentWordIndex: number;
@@ -28,6 +36,7 @@ interface ReaderState {
   currentPage: number;
   /** Total number of pages/chapters (equals pageBreaks.length, 0 when unknown) */
   totalPages: number;
+  records: ReadingRecord[];
 }
 
 interface ReaderActions {
@@ -43,6 +52,7 @@ interface ReaderActions {
   goToPage: (page: number) => void;
   /** Jump to a specific 0-indexed word and pause playback */
   goToWord: (index: number) => void;
+  setRecords: (records: ReadingRecord[]) => void;
 }
 
 export type ReaderContextValue = ReaderState & ReaderActions;

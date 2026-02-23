@@ -1,0 +1,86 @@
+/* ReadingHistory.module.css */
+
+.history {
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ccc;
+  margin-bottom: 0.75rem;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: #242424;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.name {
+  font-size: 0.9rem;
+  color: #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: #777;
+}
+
+.bar {
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.15rem;
+}
+
+.fill {
+  height: 100%;
+  background: #2d6af6;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.deleteBtn {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.deleteBtn:hover {
+  color: #e74c3c;
+  background: #2a1a1a;
+}

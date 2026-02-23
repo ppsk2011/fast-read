@@ -11,7 +11,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { ReaderContext, type FileMetadata } from './readerContextDef';
+import { ReaderContext, type FileMetadata, type ReadingRecord } from './readerContextDef';
+import { loadRecords } from '../utils/recordsUtils';
 
 const LS_KEY_INDEX = 'fastread_word_index';
 const LS_KEY_WPM = 'fastread_wpm';
@@ -32,6 +33,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [pageBreaks, setPageBreaksState] = useState<number[]>([]);
+  const [records, setRecordsState] = useState<ReadingRecord[]>(() => loadRecords());
 
   // Derive 1-indexed current page via binary search over pageBreaks
   const currentPage = useMemo(() => {
@@ -106,6 +108,10 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     [words.length],
   );
 
+  const setRecords = useCallback((newRecords: ReadingRecord[]) => {
+    setRecordsState(newRecords);
+  }, []);
+
   return (
     <ReaderContext.Provider
       value={{
@@ -119,6 +125,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         pageBreaks,
         currentPage,
         totalPages,
+        records,
         setWords,
         setCurrentWordIndex,
         setIsPlaying,
@@ -130,10 +137,10 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         setPageBreaks,
         goToPage,
         goToWord,
+        setRecords,
       }}
     >
       {children}
     </ReaderContext.Provider>
   );
 }
-
