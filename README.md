@@ -59,16 +59,45 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Deployment
 
-### Web — GitHub Pages
+### Web — GitHub Pages + Custom Domain (techscript.ca)
 
-The repository ships a GitHub Actions workflow (`.github/workflows/deploy-web.yml`) that automatically builds and deploys to GitHub Pages on every push to `main`.
+The repository ships a GitHub Actions workflow (`.github/workflows/deploy-web.yml`) that automatically builds and deploys to GitHub Pages on every push to `main`. The `public/CNAME` file tells GitHub Pages to serve the site at **https://techscript.ca**.
 
-**One-time setup:**
-1. Go to **Settings → Pages** in your repository
-2. Set Source to **GitHub Actions**
-3. Push to `main` — the workflow does the rest
+#### Step 1 — Enable GitHub Pages
 
-Live URL: `https://<github-username>.github.io/fast-read/`
+1. In your GitHub repository go to **Settings → Pages**
+2. Under **Source** choose **GitHub Actions**
+3. Leave the **Custom domain** field blank for now (the CNAME file handles it)
+
+#### Step 2 — Configure DNS in GoDaddy
+
+Log in to your [GoDaddy DNS Manager](https://dcc.godaddy.com) for the `techscript.ca` domain and add the following records:
+
+| Type | Name | Value | TTL |
+|------|------|-------|-----|
+| `A` | `@` | `185.199.108.153` | 1 Hour |
+| `A` | `@` | `185.199.109.153` | 1 Hour |
+| `A` | `@` | `185.199.110.153` | 1 Hour |
+| `A` | `@` | `185.199.111.153` | 1 Hour |
+| `CNAME` | `www` | `ppsk2011.github.io` | 1 Hour |
+
+> These are the four GitHub Pages IP addresses. The `www` CNAME lets `www.techscript.ca` also resolve to the site.
+
+> **Important:** Delete or replace any existing `A` record for `@` that GoDaddy may have pre-populated (often pointing to a GoDaddy parking page).
+
+#### Step 3 — Enable HTTPS
+
+After DNS propagates (usually within 30 minutes, up to 24 hours):
+
+1. Go back to **Settings → Pages** in GitHub
+2. You should see **"Your site is live at https://techscript.ca"**
+3. Tick **"Enforce HTTPS"** — GitHub will provision a free Let's Encrypt certificate automatically
+
+#### Step 4 — Deploy
+
+Push to `main` (or click **Actions → Deploy to GitHub Pages → Run workflow**). The site will be live at:
+
+> **https://techscript.ca**
 
 ---
 

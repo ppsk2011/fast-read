@@ -3,7 +3,7 @@
   "description": "RSVP reader for PDF and EPUB — read faster, one word at a time",
   "version": "1.0.0",
   "author": "TechScript Limited",
-  "homepage": "https://techscriptlimited.ca",
+  "homepage": "https://techscript.ca",
   "private": true,
   "type": "module",
   "scripts": {

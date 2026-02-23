@@ -5,8 +5,8 @@ import { resolve } from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Base path used for GitHub Pages deployment (repo name)
-  base: '/fast-read/',
+  // Served at the root of a custom domain (techscript.ca)
+  base: '/',
   plugins: [
     react(),
     VitePWA({
@@ -20,8 +20,8 @@ export default defineConfig({
         background_color: '#060606',
         display: 'standalone',
         orientation: 'portrait-primary',
-        scope: '/fast-read/',
-        start_url: '/fast-read/',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: 'icons/icon-192.png',
