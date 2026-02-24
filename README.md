@@ -255,5 +255,11 @@ Every time a file is successfully parsed, a `ReadingRecord` is saved to `localSt
 
 ---
 
+## Publishing to the App Stores
+
+For a complete step-by-step guide to publishing ReadSwift on **Google Play** and the **Apple App Store** — including keystore creation, signing configuration, GitHub secrets, store listings, and review submission — see **[PUBLISHING.md](./PUBLISHING.md)**.
+
+---
+
 © 2025 TechScript Limited
 
