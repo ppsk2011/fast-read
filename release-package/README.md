@@ -1,7 +1,7 @@
 # ReadSwift — Android Play Store Deployment Runbook
 
 **Client:** Techscript Limited  
-**Product:** ReadSwift — RSVP Speed Reader (`ca.techscriptlimited.readswift`)  
+**Product:** ReadSwift — RSVP Speed Reader (`ca.techscript.readswift`)  
 **Document version:** 1.0  
 **Execution model:** Single developer  
 **Deployment method:** Trusted Web Activity (TWA) via Capacitor  

@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ca.techscriptlimited.readswift',
+  appId: 'ca.techscript.readswift',
   appName: 'ReadSwift',
   webDir: 'dist',
   server: {

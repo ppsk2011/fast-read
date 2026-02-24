@@ -13,7 +13,7 @@
       "abstract": "A browser-based Rapid Serial Visual Presentation (RSVP) speed-reading tool for PDF and EPUB documents. Zero backend. Zero data collection. Works offline.",
       "url": "https://techscript.ca",
       "sameAs": [
-        "https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift",
+        "https://play.google.com/store/apps/details?id=ca.techscript.readswift",
         "https://github.com/ppsk2011/fast-read"
       ],
       "applicationCategory": "ProductivityApplication",
@@ -36,7 +36,7 @@
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock"
       },
-      "downloadUrl": "https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift",
+      "downloadUrl": "https://play.google.com/store/apps/details?id=ca.techscript.readswift",
       "installUrl": "https://techscript.ca",
       "screenshot": [
         "https://techscript.ca/screenshots/phone-01-reader.jpg",

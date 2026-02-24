@@ -1,6 +1,6 @@
 # Publishing ReadSwift to the App Stores
 
-This guide walks through everything needed to publish **ReadSwift** (`ca.techscriptlimited.readswift`) as a native app on **Google Play** and the **Apple App Store**.
+This guide walks through everything needed to publish **ReadSwift** (`ca.techscript.readswift`) as a native app on **Google Play** and the **Apple App Store**.
 
 ---
 
@@ -220,7 +220,7 @@ In Xcode:
 
 1. Select the **App** target in the Project Navigator.
 2. Under **Signing & Capabilities**, select your **Team** (your Apple Developer account).
-3. Set the **Bundle Identifier** to `ca.techscriptlimited.readswift` (must match `capacitor.config.ts`).
+3. Set the **Bundle Identifier** to `ca.techscript.readswift` (must match `capacitor.config.ts`).
 4. Set the **Version** (e.g. `1.0`) and **Build** number (e.g. `1`).
 5. Xcode will automatically create a **provisioning profile** — wait for "Signing Certificate: Apple Development" to appear.
 
@@ -234,7 +234,7 @@ In Xcode:
    - **Platforms:** iOS
    - **Name:** ReadSwift
    - **Primary language:** English
-   - **Bundle ID:** `ca.techscriptlimited.readswift` (select from the dropdown — Xcode registered it)
+   - **Bundle ID:** `ca.techscript.readswift` (select from the dropdown — Xcode registered it)
    - **SKU:** any unique string, e.g. `readswift-1`
 4. Click **Create**.
 
@@ -311,4 +311,4 @@ Yes. Both stores allow free apps with no monetisation. The "Buy me a coffee" lin
 No, but it is good practice to stay within 1–2 major versions to keep up with OS security updates.
 
 **Where is my app ID?**  
-`ca.techscriptlimited.readswift` — defined in `capacitor.config.ts`. This must remain the same for the lifetime of the app on each store.
+`ca.techscript.readswift` — defined in `capacitor.config.ts`. This must remain the same for the lifetime of the app on each store.

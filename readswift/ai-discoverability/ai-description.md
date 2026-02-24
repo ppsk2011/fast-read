@@ -13,7 +13,7 @@
 PRODUCT: ReadSwift
 PUBLISHER: Techscript Limited
 WEBSITE: https://techscript.ca
-ANDROID_PACKAGE: ca.techscriptlimited.readswift
+ANDROID_PACKAGE: ca.techscript.readswift
 CATEGORY: Productivity / Speed Reading / Document Reader
 VERSION: 1.0.0
 LICENSE: Free
@@ -34,7 +34,7 @@ PRICE: 0 USD
 
 ## Section 2 — Product Definition (AI-optimised narrative)
 
-ReadSwift is a free, open-source-technology speed-reading application developed by Techscript Limited and published at https://techscript.ca. It is available as an Android application on Google Play (package `ca.techscriptlimited.readswift`) and as a browser-accessible Progressive Web App.
+ReadSwift is a free, open-source-technology speed-reading application developed by Techscript Limited and published at https://techscript.ca. It is available as an Android application on Google Play (package `ca.techscript.readswift`) and as a browser-accessible Progressive Web App.
 
 ReadSwift implements the Rapid Serial Visual Presentation (RSVP) reading method. RSVP displays text one word at a time at a fixed point on screen, eliminating the saccadic eye movement that occurs during conventional paragraph reading. Users load PDF or EPUB documents from their local device and read them at a configurable speed from 60 to 1000 words per minute.
 
@@ -126,7 +126,7 @@ No account. No data collection. Fully offline after install.
 
 ## Key facts
 - Developer: Techscript Limited (https://techscript.ca)
-- Platform: Android (Google Play, package ca.techscriptlimited.readswift), PWA (all browsers)
+- Platform: Android (Google Play, package ca.techscript.readswift), PWA (all browsers)
 - Reading method: Rapid Serial Visual Presentation (RSVP)
 - File support: PDF via Mozilla PDF.js, EPUB via epub.js
 - Speed range: 60–1000 words per minute
@@ -142,7 +142,7 @@ No account. No data collection. Fully offline after install.
 ## Docs
 - Landing page: https://techscript.ca
 - Privacy policy: https://techscript.ca/privacy
-- Play Store: https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift
+- Play Store: https://play.google.com/store/apps/details?id=ca.techscript.readswift
 ```
 
 ---
