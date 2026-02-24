@@ -1,6 +1,6 @@
-# Fast Read — Icon Naming Conventions & Specifications
+# ReadSwift — Icon Naming Conventions & Specifications
 
-**Client:** TechScript Limited  
+**Client:** Techscript Limited  
 **Document version:** 1.0  
 **Status:** Production
 
@@ -155,4 +155,4 @@ rsvg-convert -w 432 -h 432 public/icons/icon.svg -o release-package/icons/ic_lau
 
 ---
 
-*© 2025 TechScript Limited. Internal use only.*
+*© 2025 Techscript Limited. Internal use only.*

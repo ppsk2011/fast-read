@@ -1,7 +1,7 @@
-# Fast Read — Asset Validation Report
+# ReadSwift — Asset Validation Report
 
-**Client:** TechScript Limited  
-**Product:** Fast Read — RSVP Speed Reader  
+**Client:** Techscript Limited  
+**Product:** ReadSwift  
 **Document version:** 1.0  
 **Status:** Production
 
@@ -136,7 +136,7 @@ This report audits every visual asset against Google Play Store requirements, An
 - Background: `#060606`
 - Show the reading word display at large scale (e.g., "focus" in Georgia font, `#f0f0f0`)
 - Focal line element (`#e74c3c`) beneath the word
-- App name "Fast Read" in top-left or centre in Segoe UI, `#f0f0f0`
+- App name "ReadSwift" in top-left or centre in Segoe UI, `#f0f0f0`
 - Tagline: "One word at a time." in `#888888`
 
 ---
@@ -215,4 +215,4 @@ All icon variants must use only brand-approved colours:
 
 ---
 
-*© 2025 TechScript Limited. Internal use only.*
+*© 2025 Techscript Limited. Internal use only.*

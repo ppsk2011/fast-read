@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "product": "Fast Read",
+    "product": "ReadSwift",
     "version": "1.0.0",
     "theme": "dark",
-    "description": "Production design tokens for Fast Read RSVP Reader. Compatible with React MUI createTheme().",
+    "description": "Production design tokens for ReadSwift RSVP Speed Reader. Compatible with React MUI createTheme().",
     "source": "Extracted from production CSS — src/styles/app.css and src/styles/*.module.css"
   },
   "palette": {
@@ -130,7 +130,7 @@
   },
   "shadows": {
     "none": "none",
-    "note": "The Fast Read design system uses no shadows. Depth is communicated through background colour stepping. All shadow values resolve to none.",
+    "note": "The ReadSwift design system uses no shadows. Depth is communicated through background colour stepping. All shadow values resolve to none.",
     "sm": "none",
     "md": "none",
     "lg": "none"
@@ -233,7 +233,7 @@
     }
   },
   "muiTheme": {
-    "_comment": "Pass this object to MUI createTheme() to apply the Fast Read design system.",
+    "_comment": "Pass this object to MUI createTheme() to apply the ReadSwift design system.",
     "palette": {
       "mode": "dark",
       "primary": {

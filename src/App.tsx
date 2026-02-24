@@ -184,7 +184,7 @@ export default function App() {
   return (
     <div className="appWrapper">
       <header className="appHeader">
-        <h1>⚡ Fast Read</h1>
+        <h1>⚡ ReadSwift</h1>
         <p className="subtitle">RSVP Reader — one word at a time</p>
       </header>
 

@@ -1,7 +1,7 @@
-# Fast Read — Android Play Store Deployment Runbook
+# ReadSwift — Android Play Store Deployment Runbook
 
-**Client:** TechScript Limited  
-**Product:** Fast Read — RSVP Speed Reader (`ca.techscriptlimited.fastread`)  
+**Client:** Techscript Limited  
+**Product:** ReadSwift — RSVP Speed Reader (`ca.techscriptlimited.readswift`)  
 **Document version:** 1.0  
 **Execution model:** Single developer  
 **Deployment method:** Trusted Web Activity (TWA) via Capacitor  
@@ -11,7 +11,7 @@
 
 ## Overview
 
-Fast Read is a React Progressive Web App wrapped in a native Android shell using [Capacitor](https://capacitorjs.com/). On Android, it runs as a **Trusted Web Activity (TWA)**, which loads the PWA in a full-screen Chrome Custom Tab with no browser chrome. The result is a native-feeling app backed entirely by the web build.
+ReadSwift is a React Progressive Web App wrapped in a native Android shell using [Capacitor](https://capacitorjs.com/). On Android, it runs as a **Trusted Web Activity (TWA)**, which loads the PWA in a full-screen Chrome Custom Tab with no browser chrome. The result is a native-feeling app backed entirely by the web build.
 
 ---
 
@@ -34,7 +34,7 @@ Fast Read is a React Progressive Web App wrapped in a native Android shell using
 | Service | URL | Purpose |
 |---|---|---|
 | Google Play Console | https://play.google.com/console | Android app publishing |
-| TechScript Limited Google account | — | Play Console owner |
+| Techscript Limited Google account | — | Play Console owner |
 
 **Google Play Developer registration fee:** USD $25 (one-time, per Google account).
 
@@ -100,7 +100,7 @@ keytool -genkeypair \
   -validity 10000 \
   -storepass YOUR_STORE_PASSWORD \
   -keypass YOUR_KEY_PASSWORD \
-  -dname "CN=TechScript Limited, OU=Mobile, O=TechScript Limited, L=Canada, C=CA"
+  -dname "CN=Techscript Limited, OU=Mobile, O=Techscript Limited, L=Canada, C=CA"
 ```
 
 > **Critical:** Store `release.jks` securely. Losing it makes it impossible to publish updates to the same Play Store listing. Back it up in a secure location outside the repository.
@@ -187,7 +187,7 @@ The `build-android.yml` workflow will:
 2. Sync Capacitor
 3. Decode the keystore from the `ANDROID_KEYSTORE_BASE64` secret
 4. Build and sign the release APK
-5. Upload it as the `fast-read-release-apk` artifact (retained 90 days)
+5. Upload it as the `readswift-release-apk` artifact (retained 90 days)
 
 Download the APK from GitHub Actions → Artifacts.
 
@@ -200,7 +200,7 @@ Download the APK from GitHub Actions → Artifacts.
 1. Log in to [Google Play Console](https://play.google.com/console)
 2. Click **Create app**
 3. Fill in:
-   - App name: `Fast Read: RSVP Speed Reader`
+   - App name: `ReadSwift: RSVP Speed Reader`
    - Default language: `English (United States)`
    - App or game: `App`
    - Free or paid: `Free`
@@ -274,7 +274,7 @@ After uploading, Google runs automated pre-launch tests on Firebase Test Lab. Re
 
 ### AndroidManifest.xml permission audit
 
-After `npx cap sync android`, review `android/app/src/main/AndroidManifest.xml`. Remove any permission not required by the app. Fast Read requires:
+After `npx cap sync android`, review `android/app/src/main/AndroidManifest.xml`. Remove any permission not required by the app. ReadSwift requires:
 
 ```xml
 <!-- Required for TWA/service worker -->
@@ -357,4 +357,4 @@ release-package/
 
 ---
 
-*© 2025 TechScript Limited. Internal use only.*
+*© 2025 Techscript Limited. Internal use only.*

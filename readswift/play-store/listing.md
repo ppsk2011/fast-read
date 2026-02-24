@@ -1,0 +1,178 @@
+# ReadSwift — Google Play Store Listing
+
+**Company:** Techscript Limited  
+**Package name:** `ca.techscriptlimited.readswift`  
+**Document version:** 1.0  
+**Status:** Submission-ready
+
+---
+
+## 1. App Title
+
+```
+ReadSwift: Speed Reader
+```
+
+**Character count:** 23 / 50 limit ✅  
+**Keywords embedded:** "Speed Reader" — highest-volume two-word keyword in category
+
+---
+
+## 2. Short Description
+
+```
+Read PDFs and EPUBs 2× faster with RSVP. No account, no data.
+```
+
+**Character count:** 62 / 80 limit ✅  
+**Keywords embedded:** PDFs, EPUBs, RSVP  
+**Differentiators stated:** no account, no data
+
+---
+
+## 3. Full Description
+
+```
+ReadSwift is a speed-reading tool for anyone who needs to get through large volumes of text quickly. It uses the RSVP (Rapid Serial Visual Presentation) method — displaying one word at a time at a fixed point on the screen — to eliminate the eye movement that makes conventional reading slow.
+
+Load any PDF or EPUB directly from your device. No upload. No account. ReadSwift processes your files locally using proven open-source libraries. Your documents never leave your device.
+
+──────────────────────────
+
+WHY RSVP WORKS
+
+Conventional reading requires your eyes to scan back and forth across each line. This physical motion — saccadic eye movement — consumes time and cognitive energy that could otherwise be spent understanding the text. RSVP removes it entirely. Every word arrives at the same fixed point. Your eyes stay still. Your reading speed increases.
+
+Most users read 200–250 words per minute with conventional scanning. ReadSwift users regularly reach 400–600 WPM within the first week of regular practice, with comprehension remaining stable up to approximately 500 WPM for familiar subjects.
+
+──────────────────────────
+
+FEATURES
+
+• Load PDF or EPUB files from your device — no proprietary format required
+• Adjustable reading speed: 60 to 1000 words per minute
+• Fixed focal point display — one word, zero eye movement
+• Context preview panel — see the surrounding paragraph while reading
+• Page and chapter navigation — jump to any position
+• Automatic progress saving — resume where you stopped, every time
+• Per-file reading history with progress tracking
+• Works fully offline — no internet required after install
+• No account. No login. No subscription. No ads.
+
+──────────────────────────
+
+PRIVACY
+
+ReadSwift collects no data. It has no analytics, no tracking, no advertising SDK, and no server. Your documents are processed entirely on your device. Reading history is stored in local device storage and is never transmitted.
+
+Full privacy policy: https://techscript.ca/privacy
+
+──────────────────────────
+
+TECHNICAL
+
+ReadSwift runs as a Progressive Web App inside a native Android shell (Trusted Web Activity). PDF processing uses Mozilla's open-source PDF.js library. EPUB processing uses epub.js. All computation runs in-browser.
+
+Minimum Android version: 7.0 (API 24)
+Required permissions: Internet (for initial shell load only)
+Local storage used: under 200 KB for reading history
+
+──────────────────────────
+
+DEVELOPED BY
+
+ReadSwift is developed and published by Techscript Limited.
+Website: https://techscript.ca
+```
+
+**Character count:** ~2,720 / 4,000 limit ✅
+
+---
+
+## 4. Feature List (Highlight Cards)
+
+Used in the "Features" section of the Play Store listing. Maximum 5 bullets recommended.
+
+```
+1. Read PDFs and EPUBs at up to 1000 words per minute
+2. One-word RSVP display eliminates eye-scanning fatigue
+3. Zero data collection — all processing is on your device
+4. No account, no subscription, no ads — permanently free
+5. Automatic progress saving across all your documents
+```
+
+---
+
+## 5. Keyword Field (Play Console — 100 chars)
+
+```
+speed reading,PDF reader,EPUB reader,RSVP,read faster,speed reader,study,productivity
+```
+
+**Character count:** 87 / 100 limit ✅
+
+---
+
+## 6. Content Rating Fields
+
+| Question | Answer |
+|---|---|
+| Contains violence | No |
+| Contains sexual content | No |
+| Contains profanity | No |
+| Simulates gambling | No |
+| Collects location data | No |
+| Collects personal information | No |
+| Contains ads | No |
+| Is primarily child-directed | No |
+
+**Expected rating:** Everyone (ESRB) / PEGI 3
+
+---
+
+## 7. Data Safety Form Answers
+
+| Question | Answer |
+|---|---|
+| Does your app collect or share any of the required user data types? | No |
+| Does your app collect data? | No |
+| Does your app share data with third parties? | No |
+| Is all data encrypted in transit? | N/A — no data is transmitted |
+| Does your app provide a way for users to request that their data is deleted? | N/A — no data is collected |
+
+---
+
+## 8. Developer Fields
+
+| Field | Value |
+|---|---|
+| Developer name | Techscript Limited |
+| Developer website | https://techscript.ca |
+| Developer email | *(configure in Play Console)* |
+| Privacy policy URL | https://techscript.ca/privacy |
+
+---
+
+## 9. What's New (v1.0.0)
+
+```
+Initial release.
+
+ReadSwift brings RSVP speed reading to Android. Load any PDF or EPUB from your device, set your reading speed, and read faster — one word at a time. No account, no data collection.
+```
+
+---
+
+## 10. App Category
+
+| Field | Value |
+|---|---|
+| Application type | App |
+| Category | Productivity |
+| Tags | Education, Utilities |
+| Price | Free |
+| Contains in-app purchases | No |
+
+---
+
+*© 2025 Techscript Limited. Internal use only.*

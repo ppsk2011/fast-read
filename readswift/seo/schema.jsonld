@@ -1,0 +1,195 @@
+{
+  "_comment": "ReadSwift — Schema.org JSON-LD structured data. Techscript Limited. v1.0. Embed via <script type='application/ld+json'> in every page of the site.",
+
+  "@context": "https://schema.org",
+  "@graph": [
+
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://techscript.ca/#app",
+      "name": "ReadSwift",
+      "alternateName": ["ReadSwift: Speed Reader", "ReadSwift RSVP Reader"],
+      "description": "ReadSwift is a free RSVP speed-reading Progressive Web App that displays one word at a time at a fixed focal point. It processes PDF and EPUB files locally on the user's device, requires no account, collects no data, and functions fully offline. Users can read at speeds from 60 to 1000 words per minute. Developed by Techscript Limited.",
+      "abstract": "A browser-based Rapid Serial Visual Presentation (RSVP) speed-reading tool for PDF and EPUB documents. Zero backend. Zero data collection. Works offline.",
+      "url": "https://techscript.ca",
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift",
+        "https://github.com/ppsk2011/fast-read"
+      ],
+      "applicationCategory": "ProductivityApplication",
+      "applicationSubCategory": "ReadingApplication",
+      "operatingSystem": [
+        "Android 7.0",
+        "Chrome 90+",
+        "Firefox 88+",
+        "Safari 14+",
+        "Edge 90+"
+      ],
+      "browserRequirements": "Requires a modern browser with JavaScript and localStorage support",
+      "softwareVersion": "1.0.0",
+      "releaseNotes": "Initial public release",
+      "datePublished": "2025-01-01",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "downloadUrl": "https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift",
+      "installUrl": "https://techscript.ca",
+      "screenshot": [
+        "https://techscript.ca/screenshots/phone-01-reader.jpg",
+        "https://techscript.ca/screenshots/phone-02-controls.jpg"
+      ],
+      "featureList": [
+        "Rapid Serial Visual Presentation (RSVP) reading method",
+        "PDF (.pdf) file support via Mozilla PDF.js",
+        "EPUB (.epub) file support via epub.js",
+        "Adjustable reading speed: 60 to 1000 words per minute",
+        "Fixed focal point word display",
+        "Context preview panel showing surrounding text",
+        "Page and chapter navigation",
+        "Automatic reading position saving per document",
+        "Reading history with per-file progress tracking",
+        "Full offline capability — no internet required after install",
+        "No user account required",
+        "No data collection, analytics, or tracking",
+        "Local file processing — files are never uploaded",
+        "Progressive Web App — installable on any platform",
+        "Trusted Web Activity Android app on Google Play"
+      ],
+      "keywords": "speed reading, RSVP, rapid serial visual presentation, PDF reader, EPUB reader, read faster, speed reader, productivity, Android, PWA, no account, offline",
+      "privacyPolicyUrl": "https://techscript.ca/privacy",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://techscript.ca/#org",
+        "name": "Techscript Limited",
+        "url": "https://techscript.ca"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://techscript.ca/#org"
+      },
+      "maintainer": {
+        "@type": "Organization",
+        "@id": "https://techscript.ca/#org"
+      }
+    },
+
+    {
+      "@type": "Organization",
+      "@id": "https://techscript.ca/#org",
+      "name": "Techscript Limited",
+      "url": "https://techscript.ca",
+      "logo": "https://techscript.ca/icons/icon-512.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://techscript.ca"
+      }
+    },
+
+    {
+      "@type": "WebSite",
+      "@id": "https://techscript.ca/#website",
+      "url": "https://techscript.ca",
+      "name": "ReadSwift by Techscript Limited",
+      "description": "ReadSwift — RSVP speed reading for PDF and EPUB files. Free, no account, no data collection.",
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://techscript.ca/#org"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://techscript.ca/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+
+    {
+      "@type": "WebApplication",
+      "@id": "https://techscript.ca/#webapp",
+      "name": "ReadSwift",
+      "url": "https://techscript.ca",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Any (browser-based)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "@id": "https://techscript.ca/#org"
+      }
+    },
+
+    {
+      "@type": "FAQPage",
+      "@id": "https://techscript.ca/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is ReadSwift?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ReadSwift is a free speed-reading app that uses Rapid Serial Visual Presentation (RSVP) to display one word at a time at a fixed point on screen. Users load their own PDF or EPUB files and read at speeds from 60 to 1000 words per minute. The app requires no account, collects no data, and processes files locally."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is RSVP reading?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rapid Serial Visual Presentation (RSVP) is a reading technique that eliminates eye-scanning by displaying one word at a time at a fixed focal point. Conventional reading requires eyes to move back and forth across each line. RSVP removes this motion, allowing faster reading with less physical effort."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How fast can I read with ReadSwift?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ReadSwift supports speeds from 60 to 1000 words per minute. Most new users start at 250–350 WPM. With regular practice, 400–600 WPM is achievable with maintained comprehension. ReadSwift adjusts to your pace in real time."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does ReadSwift collect any personal data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. ReadSwift collects no personal data. It has no analytics, no tracking, no advertising, and no server. All processing runs locally on your device. Reading history is stored in device-local storage and is never transmitted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What file types does ReadSwift support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ReadSwift supports PDF (.pdf) and EPUB (.epub) files. Files are loaded directly from your device. No cloud storage integration is required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does ReadSwift work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. After the app is installed, ReadSwift operates fully offline. No internet connection is required during reading sessions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is ReadSwift available on Android?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. ReadSwift is available on Android 7.0 and above via Google Play. It is also accessible as a Progressive Web App in any modern browser on desktop or mobile."
+          }
+        }
+      ]
+    }
+
+  ]
+}

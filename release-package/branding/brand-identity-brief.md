@@ -1,7 +1,7 @@
-# Fast Read — Brand Identity Brief
+# ReadSwift — Brand Identity Brief
 
-**Client:** TechScript Limited  
-**Product:** Fast Read — RSVP Speed Reader  
+**Client:** Techscript Limited  
+**Product:** ReadSwift  
 **Document version:** 1.0  
 **Status:** Production
 
@@ -9,7 +9,7 @@
 
 ## 1. Brand Positioning
 
-Fast Read is a **precision cognitive-performance tool**. It is not a lifestyle app, entertainment product, or social experience. It exists to solve one problem: helping people read faster and with greater retention.
+ReadSwift is a **precision cognitive-performance tool**. It is not a lifestyle app, entertainment product, or social experience. It exists to solve one problem: helping people read faster and with greater retention.
 
 **Core promise:** Remove visual scanning fatigue. Display text at a fixed focal point. Let the reader's mind absorb language at the speed thought allows.
 
@@ -115,7 +115,7 @@ All colours are extracted from the production codebase. These are the canonical 
 
 The app uses **no custom icon set** at the component level. All interactive icons are Unicode / emoji glyphs (▶, ⏸, ↺, +, −) to ensure zero render latency. New icons should follow this convention — prefer standard Unicode over custom SVGs for in-UI controls.
 
-The **app icon** (launcher / Play Store) uses the SVG defined at `public/icons/icon.svg`.
+The app icon (launcher / Play Store) uses the SVG defined at `public/icons/icon.svg`.
 
 ---
 
@@ -194,4 +194,4 @@ Do not add `box-shadow` to any component. Use background colour contrast instead
 
 ---
 
-*© 2025 TechScript Limited. Internal use only.*
+*© 2025 Techscript Limited. Internal use only.*

@@ -13,9 +13,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
-        name: 'Fast Read — RSVP Reader',
-        short_name: 'Fast Read',
-        description: 'Read faster with RSVP — one word at a time. PDF & EPUB support.',
+        name: 'ReadSwift — RSVP Speed Reader',
+        short_name: 'ReadSwift',
+        description: 'Read PDFs and EPUBs 2× faster with RSVP — one word at a time. No account, no data collection.',
         theme_color: '#060606',
         background_color: '#060606',
         display: 'standalone',

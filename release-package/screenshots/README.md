@@ -1,6 +1,6 @@
-# Fast Read — Screenshot Naming Conventions & Specifications
+# ReadSwift — Screenshot Naming Conventions & Specifications
 
-**Client:** TechScript Limited  
+**Client:** Techscript Limited  
 **Document version:** 1.0  
 **Status:** Production
 
@@ -121,4 +121,4 @@ convert phone-01-reader-cropped.png -quality 95 phone-01-reader.jpg
 
 ---
 
-*© 2025 TechScript Limited. Internal use only.*
+*© 2025 Techscript Limited. Internal use only.*

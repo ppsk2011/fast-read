@@ -1,6 +1,6 @@
-# Fast Read — Feature Graphic Specification
+# ReadSwift — Feature Graphic Specification
 
-**Client:** TechScript Limited  
+**Client:** Techscript Limited  
 **Document version:** 1.0  
 **Status:** Production
 
@@ -46,7 +46,7 @@
 │   │         ║                                  ║                │  │
 │   │         ╚══════════════════════════════════╝                │  │
 │   │                                                             │  │
-│   │  Fast Read                                                  │  │  ← App name — top left
+│   │  ReadSwift                                                  │  │  ← App name — top left
 │   │  One word at a time.                                        │  │  ← Tagline — below name
 │   │                                                             │  │
 │   └─────────────────────────────────────────────────────────────┘  │
@@ -70,7 +70,7 @@
 - Focal line: `#e74c3c` line (60 px wide, 3 px tall) centred below the word, opacity 70%
 
 #### App Name
-- Text: **Fast Read**
+- Text: **ReadSwift**
 - Position: 60 px from left edge, 40 px from top edge
 - Font: Segoe UI, 28px, weight 800
 - Colour: `#f0f0f0`
@@ -121,9 +121,9 @@ However, the recommended minimal layout above is preferred — it communicates t
 - [ ] No embedded ICC profile other than sRGB (or no embedded profile)
 - [ ] Bottom 100 px contains no critical text or UI elements
 - [ ] No white borders or padding added by export tool
-- [ ] App name "Fast Read" is legible at 1/4 size (256×125 px preview)
+- [ ] App name "ReadSwift" is legible at 1/4 size (256×125 px preview)
 - [ ] Filename: `feature-graphic.png` or `feature-graphic.jpg`
 
 ---
 
-*© 2025 TechScript Limited. Internal use only.*
+*© 2025 Techscript Limited. Internal use only.*
