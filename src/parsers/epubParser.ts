@@ -54,10 +54,12 @@ export async function* parseEPUB(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const spineItem = spineItems[i] as any;
       try {
-        const doc = await book.load(spineItem.href);
-        // doc is a Document node; serialize to HTML then strip tags
-        const bodyHtml =
-          (doc as Document).body?.innerHTML ?? String(doc);
+        // Use the Section API so epubjs parses the resource into a Document
+        await spineItem.load(book.load.bind(book));
+        const doc = spineItem.document as Document | null | undefined;
+        const bodyHtml = doc?.body?.innerHTML ?? '';
+        spineItem.unload();
+
         const text = stripHtml(bodyHtml);
 
         if (onProgress) {
