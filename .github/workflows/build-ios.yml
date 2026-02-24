@@ -39,7 +39,7 @@ jobs:
       - name: Build (unsigned, for CI validation)
         run: |
           xcodebuild \
-            -workspace ios/App/App.xcworkspace \
+            -project ios/App/App.xcodeproj \
             -scheme App \
             -configuration Debug \
             -destination "generic/platform=iOS Simulator" \

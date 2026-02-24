@@ -1,6 +1,6 @@
 # ⚡ Fast Read — RSVP Reader
 
-**by [TechScript Limited](https://techscriptlimited.ca)**
+**by [TechScript Limited](https://techscript.ca)**
 
 A production-quality React web application that implements **Rapid Serial Visual Presentation (RSVP)** reading for PDF and EPUB files. All processing runs entirely in the browser — no backend required.
 
@@ -60,45 +60,65 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Deployment
 
-### Web — GitHub Pages + Custom Domain (techscript.ca)
+### Web — GitHub Pages + Subdomain (`readswift.techscript.ca`)
 
-The repository ships a GitHub Actions workflow (`.github/workflows/deploy-web.yml`) that automatically builds and deploys to GitHub Pages on every push to `main`. The `public/CNAME` file tells GitHub Pages to serve the site at **https://techscript.ca**.
+ReadSwift deploys automatically to **`https://readswift.techscript.ca`** on every push to `main`. Your main `techscript.ca` domain is completely untouched.
 
-#### Step 1 — Enable GitHub Pages
+---
 
-1. In your GitHub repository go to **Settings → Pages**
-2. Under **Source** choose **GitHub Actions**
-3. Leave the **Custom domain** field blank for now (the CNAME file handles it)
+#### ⚠️ One-time setup — do these three things in order
 
-#### Step 2 — Configure DNS in GoDaddy
+##### 1 · Add one DNS record in GoDaddy
 
-Log in to your [GoDaddy DNS Manager](https://dcc.godaddy.com) for the `techscript.ca` domain and add the following records:
+Log in to [GoDaddy DNS Manager](https://dcc.godaddy.com) for `techscript.ca` and add:
 
 | Type | Name | Value | TTL |
 |------|------|-------|-----|
-| `A` | `@` | `185.199.108.153` | 1 Hour |
-| `A` | `@` | `185.199.109.153` | 1 Hour |
-| `A` | `@` | `185.199.110.153` | 1 Hour |
-| `A` | `@` | `185.199.111.153` | 1 Hour |
-| `CNAME` | `www` | `ppsk2011.github.io` | 1 Hour |
+| `CNAME` | `readswift` | `ppsk2011.github.io` | 1 Hour |
 
-> These are the four GitHub Pages IP addresses. The `www` CNAME lets `www.techscript.ca` also resolve to the site.
+This is the only record you need. Everything else in your `techscript.ca` DNS is untouched.
 
-> **Important:** Delete or replace any existing `A` record for `@` that GoDaddy may have pre-populated (often pointing to a GoDaddy parking page).
+##### 2 · Enable GitHub Pages (Source = GitHub Actions)
 
-#### Step 3 — Enable HTTPS
+In this repository:
 
-After DNS propagates (usually within 30 minutes, up to 24 hours):
+1. Go to **Settings → Pages**
+2. Under **Build and deployment → Source**, select **"GitHub Actions"**
+3. Leave the **Custom domain** field blank — the `public/CNAME` file in the repo handles it
 
-1. Go back to **Settings → Pages** in GitHub
-2. You should see **"Your site is live at https://techscript.ca"**
-3. Tick **"Enforce HTTPS"** — GitHub will provision a free Let's Encrypt certificate automatically
+Click **Save**.
 
-#### Step 4 — Deploy
+##### 3 · Trigger a deploy and enable HTTPS
 
-Push to `main` (or click **Actions → Deploy to GitHub Pages → Run workflow**). The site will be live at:
+Option A — push any commit to `main` (the workflow runs automatically).  
+Option B — go to **Actions → Deploy to GitHub Pages → Run workflow → Run workflow**.
 
-> **https://techscript.ca**
+After the workflow finishes (~2 minutes):
+1. Go back to **Settings → Pages**
+2. You should see **"Your site is published at https://readswift.techscript.ca"**
+3. Tick **"Enforce HTTPS"** and click **Save**
+
+> If the "Enforce HTTPS" checkbox is greyed out, wait 10–15 minutes for the Let's Encrypt certificate to be issued, then refresh the page.
+
+---
+
+#### Why the site was returning 404 (and how it's now fixed)
+
+Two things were wrong:
+
+| Problem | Fix applied in this repo |
+|---------|--------------------------|
+| A `jekyll-gh-pages.yml` workflow was also deploying to GitHub Pages on every `main` push, using the same concurrency group. It raced against the Vite build and sometimes won — deploying raw repo files (no CNAME, no built app). | Deleted `jekyll-gh-pages.yml`. Only `deploy-web.yml` runs now. |
+| The PR with the `readswift.techscript.ca` CNAME hadn't been merged to `main` yet, so the deployed site still had the old domain. | Merge this PR → a new deploy runs → `dist/CNAME` becomes `readswift.techscript.ca`. |
+
+---
+
+#### Why a subdomain (not a sub-folder)?
+
+| Approach | Notes |
+|----------|-------|
+| **Subdomain** `readswift.techscript.ca` ✅ | Each site is a separate repo. One DNS record. PWA installs correctly. `techscript.ca` is free for your company website. |
+| Sub-folder `techscript.ca/readswift` | Both sites must be in the same repo (or you need a reverse proxy). PWA `scope`/offline breaks in sub-paths. Not recommended with GitHub Pages. |
 
 ---
 
@@ -252,6 +272,12 @@ Every time a file is successfully parsed, a `ReadingRecord` is saved to `localSt
 - **`React.memo` on ReaderViewport:** The word display only re-renders when the word changes, not on any other state update.
 - **Refs in engine:** The RSVP engine interval callback reads the current word index via a ref (not closure) to avoid stale values without triggering re-renders.
 - **`will-change: transform`** on the word element enables GPU compositing for the word-appear animation.
+
+---
+
+## Publishing to the App Stores
+
+For a complete step-by-step guide to publishing ReadSwift on **Google Play** and the **Apple App Store** — including keystore creation, signing configuration, GitHub secrets, store listings, and review submission — see **[PUBLISHING.md](./PUBLISHING.md)**.
 
 ---
 

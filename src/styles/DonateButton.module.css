@@ -1,0 +1,26 @@
+/* DonateButton.module.css */
+
+.supportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.85rem;
+  background: transparent;
+  color: #c06060;
+  border: 1px solid #4a2020;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.supportBtn:hover {
+  background: #1e0f0f;
+  border-color: #c06060;
+  color: #e08080;
+}

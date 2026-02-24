@@ -6,24 +6,29 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* Fixed height so layout never shifts */
-  height: 280px;
-  background: #0f0f0f;
-  border-radius: 12px;
+  height: 300px;
+  background: #0a0a0a;
+  border-radius: 14px;
   overflow: hidden;
   user-select: none;
+  border: 1px solid #151515;
+}
+
+@media (max-width: 640px) {
+  .viewport {
+    height: 220px;
+  }
 }
 
 /* The word is rendered in a fixed-size box; text scales via font-size */
 .word {
-  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-size: clamp(2.8rem, 10vw, 5rem);
   font-weight: 700;
-  color: #f0f0f0;
+  color: #f4f4f4;
   font-family: 'Georgia', serif;
   letter-spacing: 0.04em;
   text-align: center;
   white-space: nowrap;
-  /* GPU-composited animation for zero-jank transitions */
   will-change: transform;
   animation: wordAppear 0.06s ease-out;
 }

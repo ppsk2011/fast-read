@@ -16,8 +16,8 @@ import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
 import ReadingHistory from './components/ReadingHistory';
 import PageNavigator from './components/PageNavigator';
-import WordNavigator from './components/WordNavigator';
 import ContextPreview from './components/ContextPreview';
+import DonateButton from './components/DonateButton';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { normalizeText, tokenize } from './utils/textUtils';
@@ -184,8 +184,11 @@ export default function App() {
   return (
     <div className="appWrapper">
       <header className="appHeader">
-        <h1>⚡ ReadSwift</h1>
-        <p className="subtitle">RSVP Reader — one word at a time</p>
+        <div className="appBrand">
+          <h1>⚡ ReadSwift</h1>
+          <p className="subtitle">RSVP Reader</p>
+        </div>
+        <DonateButton />
       </header>
 
       <main className="appMain">
@@ -208,9 +211,9 @@ export default function App() {
           onReset={reset}
           onFaster={faster}
           onSlower={slower}
+          onPrevWord={prevWord}
+          onNextWord={nextWord}
         />
-
-        <WordNavigator onPrevWord={prevWord} onNextWord={nextWord} />
 
         <PageNavigator />
 
@@ -218,8 +221,8 @@ export default function App() {
 
         <section className="shortcuts" aria-label="Keyboard shortcuts">
           <kbd>Space</kbd> Play/Pause &nbsp;
-          <kbd>←</kbd> Prev word &nbsp;
-          <kbd>→</kbd> Next word &nbsp;
+          <kbd>←</kbd> Prev &nbsp;
+          <kbd>→</kbd> Next &nbsp;
           <kbd>↑</kbd> Faster &nbsp;
           <kbd>↓</kbd> Slower
         </section>

@@ -1,7 +1,7 @@
 # ReadSwift — Website Landing Page Content
 
 **Company:** Techscript Limited  
-**URL target:** `https://techscript.ca` (primary; also applicable to `readswift.app` if that domain is acquired)  
+**URL target:** `https://readswift.techscript.ca` (primary; also applicable to `readswift.app` if that domain is acquired)  
 **Document version:** 1.0  
 **Status:** Production-ready copy
 
@@ -241,7 +241,7 @@ A: Yes. ReadSwift is a Progressive Web App. It runs in any modern browser
 
 ```
 A: ReadSwift is developed by Techscript Limited. 
-   Website: https://techscript.ca
+   Website: https://readswift.techscript.ca
 ```
 
 ---

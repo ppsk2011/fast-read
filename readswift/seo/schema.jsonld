@@ -6,14 +6,14 @@
 
     {
       "@type": "SoftwareApplication",
-      "@id": "https://techscript.ca/#app",
+      "@id": "https://readswift.techscript.ca/#app",
       "name": "ReadSwift",
       "alternateName": ["ReadSwift: Speed Reader", "ReadSwift RSVP Reader"],
       "description": "ReadSwift is a free RSVP speed-reading Progressive Web App that displays one word at a time at a fixed focal point. It processes PDF and EPUB files locally on the user's device, requires no account, collects no data, and functions fully offline. Users can read at speeds from 60 to 1000 words per minute. Developed by Techscript Limited.",
       "abstract": "A browser-based Rapid Serial Visual Presentation (RSVP) speed-reading tool for PDF and EPUB documents. Zero backend. Zero data collection. Works offline.",
-      "url": "https://techscript.ca",
+      "url": "https://readswift.techscript.ca",
       "sameAs": [
-        "https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift",
+        "https://play.google.com/store/apps/details?id=ca.techscript.readswift",
         "https://github.com/ppsk2011/fast-read"
       ],
       "applicationCategory": "ProductivityApplication",
@@ -36,11 +36,11 @@
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock"
       },
-      "downloadUrl": "https://play.google.com/store/apps/details?id=ca.techscriptlimited.readswift",
-      "installUrl": "https://techscript.ca",
+      "downloadUrl": "https://play.google.com/store/apps/details?id=ca.techscript.readswift",
+      "installUrl": "https://readswift.techscript.ca",
       "screenshot": [
-        "https://techscript.ca/screenshots/phone-01-reader.jpg",
-        "https://techscript.ca/screenshots/phone-02-controls.jpg"
+        "https://readswift.techscript.ca/screenshots/phone-01-reader.jpg",
+        "https://readswift.techscript.ca/screenshots/phone-02-controls.jpg"
       ],
       "featureList": [
         "Rapid Serial Visual Presentation (RSVP) reading method",
@@ -92,8 +92,8 @@
 
     {
       "@type": "WebSite",
-      "@id": "https://techscript.ca/#website",
-      "url": "https://techscript.ca",
+      "@id": "https://readswift.techscript.ca/#website",
+      "url": "https://readswift.techscript.ca",
       "name": "ReadSwift by Techscript Limited",
       "description": "ReadSwift — RSVP speed reading for PDF and EPUB files. Free, no account, no data collection.",
       "publisher": {
@@ -104,7 +104,7 @@
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://techscript.ca/?q={search_term_string}"
+          "urlTemplate": "https://readswift.techscript.ca/?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }
@@ -112,9 +112,9 @@
 
     {
       "@type": "WebApplication",
-      "@id": "https://techscript.ca/#webapp",
+      "@id": "https://readswift.techscript.ca/#webapp",
       "name": "ReadSwift",
-      "url": "https://techscript.ca",
+      "url": "https://readswift.techscript.ca",
       "applicationCategory": "ProductivityApplication",
       "operatingSystem": "Any (browser-based)",
       "offers": {
@@ -130,7 +130,7 @@
 
     {
       "@type": "FAQPage",
-      "@id": "https://techscript.ca/#faq",
+      "@id": "https://readswift.techscript.ca/#faq",
       "mainEntity": [
         {
           "@type": "Question",

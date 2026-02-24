@@ -36,8 +36,8 @@ export default function ReadingHistory() {
   if (records.length === 0) return null;
 
   return (
-    <section className={styles.history} aria-label="Reading history">
-      <h2 className={styles.heading}>📚 Reading History</h2>
+    <details className={styles.historyDetails} open>
+      <summary className={styles.heading}>📚 Reading History</summary>
       <ul className={styles.list}>
         {records.map((record) => {
           const progress =
@@ -78,6 +78,6 @@ export default function ReadingHistory() {
           );
         })}
       </ul>
-    </section>
+    </details>
   );
 }

@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: https://techscript.ca
+      url: https://readswift.techscript.ca
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

@@ -1,24 +1,55 @@
 /* ReadingHistory.module.css */
 
-.history {
-  padding: 1rem;
-  background: #1a1a1a;
-  border-radius: 10px;
+.historyDetails {
+  padding: 0.875rem 1rem;
+  background: #111;
+  border-radius: 14px;
   width: 100%;
+  border: 1px solid #1e1e1e;
 }
 
 .heading {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #ccc;
-  margin-bottom: 0.75rem;
+  color: #777;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  user-select: none;
+  padding: 0.1rem 0;
+  letter-spacing: 0.02em;
+}
+
+/* Hide default triangle in all browsers */
+.heading::-webkit-details-marker { display: none; }
+.heading::marker { display: none; }
+
+/* Chevron via CSS */
+.heading::after {
+  content: '›';
+  font-size: 1rem;
+  color: #444;
+  margin-left: auto;
+  transition: transform 0.2s;
+  transform: rotate(90deg);
+}
+
+details:not([open]) .heading::after {
+  transform: rotate(0deg);
+}
+
+.heading:hover {
+  color: #aaa;
 }
 
 .list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .item {
@@ -26,9 +57,9 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.6rem 0.75rem;
-  background: #242424;
-  border-radius: 8px;
-  border: 1px solid #333;
+  background: #161616;
+  border-radius: 10px;
+  border: 1px solid #1e1e1e;
 }
 
 .info {
@@ -40,24 +71,24 @@
 }
 
 .name {
-  font-size: 0.9rem;
-  color: #f0f0f0;
+  font-size: 0.875rem;
+  color: #ddd;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .meta {
-  font-size: 0.75rem;
-  color: #777;
+  font-size: 0.72rem;
+  color: #555;
 }
 
 .bar {
-  height: 4px;
-  background: #333;
+  height: 3px;
+  background: #222;
   border-radius: 2px;
   overflow: hidden;
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
 }
 
 .fill {
@@ -71,16 +102,20 @@
   flex-shrink: 0;
   background: transparent;
   border: none;
-  color: #666;
-  font-size: 0.85rem;
+  color: #444;
+  font-size: 0.8rem;
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
   transition: color 0.15s, background 0.15s;
-  line-height: 1;
 }
 
 .deleteBtn:hover {
   color: #e74c3c;
-  background: #2a1a1a;
+  background: #1a0f0f;
 }

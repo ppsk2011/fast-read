@@ -1,7 +1,7 @@
 # ReadSwift — Google Play Store Listing
 
 **Company:** Techscript Limited  
-**Package name:** `ca.techscriptlimited.readswift`  
+**Package name:** `ca.techscript.readswift`  
 **Document version:** 1.0  
 **Status:** Submission-ready
 

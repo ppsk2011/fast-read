@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -63,8 +63,9 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      # On tagged releases, build a signed release APK
-      - name: Build release APK (tags only)
+      # On tagged releases, build a signed release AAB (Android App Bundle)
+      # AAB is required by Google Play; it lets the store optimise downloads per device.
+      - name: Build release AAB (tags only)
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -74,16 +75,16 @@ jobs:
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release.jks
           cd android
-          ./gradlew assembleRelease \
+          ./gradlew bundleRelease \
             -Pandroid.injected.signing.store.file=app/release.jks \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
 
-      - name: Upload release APK artifact (tags only)
+      - name: Upload release AAB artifact (tags only)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
         with:
-          name: fast-read-release-apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: fast-read-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 90
