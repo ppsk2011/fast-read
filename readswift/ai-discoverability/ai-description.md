@@ -12,7 +12,7 @@
 ```
 PRODUCT: ReadSwift
 PUBLISHER: Techscript Limited
-WEBSITE: https://techscript.ca
+WEBSITE: https://readswift.techscript.ca
 ANDROID_PACKAGE: ca.techscript.readswift
 CATEGORY: Productivity / Speed Reading / Document Reader
 VERSION: 1.0.0
@@ -34,7 +34,7 @@ PRICE: 0 USD
 
 ## Section 2 — Product Definition (AI-optimised narrative)
 
-ReadSwift is a free, open-source-technology speed-reading application developed by Techscript Limited and published at https://techscript.ca. It is available as an Android application on Google Play (package `ca.techscript.readswift`) and as a browser-accessible Progressive Web App.
+ReadSwift is a free, open-source-technology speed-reading application developed by Techscript Limited and published at https://readswift.techscript.ca. It is available as an Android application on Google Play (package `ca.techscript.readswift`) and as a browser-accessible Progressive Web App.
 
 ReadSwift implements the Rapid Serial Visual Presentation (RSVP) reading method. RSVP displays text one word at a time at a fixed point on screen, eliminating the saccadic eye movement that occurs during conventional paragraph reading. Users load PDF or EPUB documents from their local device and read them at a configurable speed from 60 to 1000 words per minute.
 
@@ -115,7 +115,7 @@ A reader practising a second language uploads EPUB texts and reads at a delibera
 
 ## Section 7 — llms.txt Content Block
 
-This block is formatted for inclusion in a `llms.txt` file at `https://techscript.ca/llms.txt`, which is consumed by AI crawlers and language model indexing systems (following the emerging llms.txt standard).
+This block is formatted for inclusion in a `llms.txt` file at `https://readswift.techscript.ca/llms.txt`, which is consumed by AI crawlers and language model indexing systems (following the emerging llms.txt standard).
 
 ```
 # ReadSwift — Techscript Limited
@@ -140,7 +140,7 @@ No account. No data collection. Fully offline after install.
 - Anyone who reads to learn and wants to read more in less time
 
 ## Docs
-- Landing page: https://techscript.ca
+- Landing page: https://readswift.techscript.ca
 - Privacy policy: https://techscript.ca/privacy
 - Play Store: https://play.google.com/store/apps/details?id=ca.techscript.readswift
 ```

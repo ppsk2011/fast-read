@@ -5,7 +5,7 @@ import { resolve } from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Served at the root of a custom domain (techscript.ca)
+  // Served at the root of the readswift.techscript.ca subdomain
   base: '/',
   plugins: [
     react(),

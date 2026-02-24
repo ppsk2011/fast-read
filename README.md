@@ -60,45 +60,48 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Deployment
 
-### Web — GitHub Pages + Custom Domain (techscript.ca)
+### Web — GitHub Pages + Subdomain (`readswift.techscript.ca`)
 
-The repository ships a GitHub Actions workflow (`.github/workflows/deploy-web.yml`) that automatically builds and deploys to GitHub Pages on every push to `main`. The `public/CNAME` file tells GitHub Pages to serve the site at **https://techscript.ca**.
+ReadSwift is deployed to its own **subdomain** of your company domain. This keeps `techscript.ca` free for your main company website while ReadSwift lives at `https://readswift.techscript.ca`.
+
+The GitHub Actions workflow (`.github/workflows/deploy-web.yml`) automatically builds and deploys on every push to `main`. The `public/CNAME` file is set to `readswift.techscript.ca`.
 
 #### Step 1 — Enable GitHub Pages
 
 1. In your GitHub repository go to **Settings → Pages**
 2. Under **Source** choose **GitHub Actions**
-3. Leave the **Custom domain** field blank for now (the CNAME file handles it)
+3. Leave the **Custom domain** field blank (the CNAME file handles it automatically)
 
-#### Step 2 — Configure DNS in GoDaddy
+#### Step 2 — Add one DNS record in GoDaddy
 
-Log in to your [GoDaddy DNS Manager](https://dcc.godaddy.com) for the `techscript.ca` domain and add the following records:
+Log in to your [GoDaddy DNS Manager](https://dcc.godaddy.com) for `techscript.ca` and add **one CNAME record**:
 
 | Type | Name | Value | TTL |
 |------|------|-------|-----|
-| `A` | `@` | `185.199.108.153` | 1 Hour |
-| `A` | `@` | `185.199.109.153` | 1 Hour |
-| `A` | `@` | `185.199.110.153` | 1 Hour |
-| `A` | `@` | `185.199.111.153` | 1 Hour |
-| `CNAME` | `www` | `ppsk2011.github.io` | 1 Hour |
+| `CNAME` | `readswift` | `ppsk2011.github.io` | 1 Hour |
 
-> These are the four GitHub Pages IP addresses. The `www` CNAME lets `www.techscript.ca` also resolve to the site.
-
-> **Important:** Delete or replace any existing `A` record for `@` that GoDaddy may have pre-populated (often pointing to a GoDaddy parking page).
+> This single record is all that's needed. Your main `techscript.ca` domain and its existing DNS records are **not touched** — your company website can live there independently.
 
 #### Step 3 — Enable HTTPS
 
 After DNS propagates (usually within 30 minutes, up to 24 hours):
 
 1. Go back to **Settings → Pages** in GitHub
-2. You should see **"Your site is live at https://techscript.ca"**
+2. You should see **"Your site is live at https://readswift.techscript.ca"**
 3. Tick **"Enforce HTTPS"** — GitHub will provision a free Let's Encrypt certificate automatically
 
 #### Step 4 — Deploy
 
-Push to `main` (or click **Actions → Deploy to GitHub Pages → Run workflow**). The site will be live at:
+Push to `main` (or click **Actions → Deploy to GitHub Pages → Run workflow**). The app will be live at:
 
-> **https://techscript.ca**
+> **https://readswift.techscript.ca**
+
+#### Why a subdomain instead of a sub-folder?
+
+| Approach | Result |
+|----------|--------|
+| **Subdomain** `readswift.techscript.ca` ✅ | Each site is a separate GitHub repo. Main website at `techscript.ca` is fully independent. One DNS record. PWA installs correctly. |
+| Sub-folder `techscript.ca/readswift` | Requires both sites to live in the same repo (or complex reverse-proxy setup). PWA scope/offline support is fragile in sub-paths. |
 
 ---
 
