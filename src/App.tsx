@@ -18,6 +18,7 @@ import ReadingHistory from './components/ReadingHistory';
 import PageNavigator from './components/PageNavigator';
 import WordNavigator from './components/WordNavigator';
 import ContextPreview from './components/ContextPreview';
+import DonateButton from './components/DonateButton';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { normalizeText, tokenize } from './utils/textUtils';
@@ -186,6 +187,7 @@ export default function App() {
       <header className="appHeader">
         <h1>⚡ ReadSwift</h1>
         <p className="subtitle">RSVP Reader — one word at a time</p>
+        <DonateButton />
       </header>
 
       <main className="appMain">
