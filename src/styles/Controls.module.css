@@ -1,109 +1,334 @@
-/* Controls.module.css */
+/* Controls.module.css – 3-row layout: progress | playback | speed */
 
 .controls {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: #1a1a1a;
-  border-radius: 10px;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  background: #111;
+  border-radius: 14px;
   width: 100%;
+  border: 1px solid #1e1e1e;
+}
+
+/* ─── Row 1: Progress ───────────────────────────────────────────── */
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.wordCounter {
+  background: transparent;
+  border: none;
+  color: #777;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0.2rem 0.4rem;
+  border-radius: 5px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.wordCounter:hover {
+  color: #ccc;
+  background: #1e1e1e;
+}
+
+.sep {
+  color: #444;
+  margin: 0 0.15rem;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.progressTrack:hover {
+  background: #2a2a2a;
+}
+
+.progressFill {
+  height: 100%;
+  background: #e74c3c;
+  border-radius: 3px;
+  transition: width 0.15s ease;
+  pointer-events: none;
+}
+
+.progressPct {
+  color: #555;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 2.4rem;
+  text-align: right;
+}
+
+.emptyHint {
+  color: #444;
+  font-size: 0.85rem;
+  width: 100%;
+  text-align: center;
+}
+
+.wordInput {
+  width: 6.5rem;
+  height: 1.75rem;
+  padding: 0.15rem 0.5rem;
+  background: #1a1a1a;
+  color: #f0f0f0;
+  border: 1px solid #e74c3c;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
+  flex-shrink: 0;
+  -moz-appearance: textfield;
+}
+
+.wordInput::-webkit-inner-spin-button,
+.wordInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ─── Row 2: Playback ───────────────────────────────────────────── */
+
+.playbackRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
 }
 
 .hiddenInput {
   display: none;
 }
 
+/* Upload — icon-only, touch-friendly */
 .uploadBtn {
-  padding: 0.5rem 1.1rem;
-  background: #2d6af6;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: #172340;
+  color: #6fa3ef;
+  border: 1px solid #1f3a6b;
+  border-radius: 12px;
+  font-size: 1.15rem;
   cursor: pointer;
-  transition: background 0.15s;
-  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
 }
 
 .uploadBtn:hover:not(:disabled) {
-  background: #1e56d0;
+  background: #1e2f52;
+  border-color: #3366bb;
+}
+
+.uploadBtn:active:not(:disabled) {
+  background: #243a66;
 }
 
 .uploadBtn:disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
-.controlBtn {
-  padding: 0.5rem 0.85rem;
-  font-size: 1.3rem;
-  background: #2a2a2a;
-  color: #f0f0f0;
-  border: 1px solid #444;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s;
+/* Prev / Next word arrows */
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.65rem;
   line-height: 1;
+  background: #1a1a1a;
+  color: #bbb;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
 }
 
-.controlBtn:hover:not(:disabled) {
-  background: #3a3a3a;
+.navBtn:hover:not(:disabled) {
+  background: #242424;
+  color: #f0f0f0;
 }
 
-.controlBtn:disabled {
-  opacity: 0.4;
+.navBtn:active:not(:disabled) {
+  background: #2e2e2e;
+}
+
+.navBtn:disabled {
+  opacity: 0.2;
   cursor: not-allowed;
+}
+
+/* Play/Pause — primary action, circular, prominent */
+.playBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  font-size: 1.55rem;
+  line-height: 1;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  flex-shrink: 0;
+  box-shadow: 0 0 22px rgba(231, 76, 60, 0.35);
+}
+
+.playBtn:hover:not(:disabled) {
+  background: #cf3626;
+  box-shadow: 0 0 28px rgba(231, 76, 60, 0.5);
+}
+
+.playBtn:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.playBtn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Reset */
+.resetBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.15rem;
+  line-height: 1;
+  background: #1a1a1a;
+  color: #999;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.resetBtn:hover:not(:disabled) {
+  background: #242424;
+  color: #f0f0f0;
+}
+
+.resetBtn:active:not(:disabled) {
+  background: #2e2e2e;
+}
+
+.resetBtn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* ─── Row 3: Speed ──────────────────────────────────────────────── */
+
+.speedRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .speedBtn {
-  padding: 0.5rem 0.85rem;
-  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 38px;
+  font-size: 1.3rem;
   font-weight: 700;
-  background: #2a2a2a;
-  color: #f0f0f0;
-  border: 1px solid #444;
-  border-radius: 8px;
+  background: #1a1a1a;
+  color: #bbb;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.15s;
-  min-width: 2.4rem;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
 
 .speedBtn:hover:not(:disabled) {
-  background: #3a3a3a;
+  background: #242424;
+  color: #f0f0f0;
+}
+
+.speedBtn:active:not(:disabled) {
+  background: #2e2e2e;
 }
 
 .speedBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .sliderWrapper {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  flex: 1;
-  min-width: 140px;
 }
 
 .slider {
-  flex: 1;
+  width: 100%;
   accent-color: #e74c3c;
   cursor: pointer;
 }
 
 .wpmLabel {
-  color: #ccc;
-  font-size: 0.9rem;
+  color: #999;
+  font-size: 0.83rem;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
   min-width: 4.5rem;
   text-align: right;
+  flex-shrink: 0;
 }
 
-.progress {
-  color: #888;
-  font-size: 0.85rem;
-  margin-left: auto;
-  white-space: nowrap;
+/* ─── Touch / mobile tweaks ─────────────────────────────────────── */
+
+/* On very small screens, slightly reduce the play button and gaps */
+@media (max-width: 360px) {
+  .playbackRow {
+    gap: 0.4rem;
+  }
+
+  .playBtn {
+    width: 52px;
+    height: 52px;
+    font-size: 1.35rem;
+  }
+
+  .navBtn,
+  .uploadBtn,
+  .resetBtn {
+    width: 40px;
+    height: 40px;
+  }
 }

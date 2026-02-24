@@ -4,22 +4,23 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.35rem 0.9rem;
+  padding: 0.35rem 0.85rem;
   background: transparent;
-  color: #e07070;
-  border: 1px solid #6b3030;
+  color: #c06060;
+  border: 1px solid #4a2020;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
-  margin-top: 0.6rem;
   letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .supportBtn:hover {
-  background: #2a1515;
-  border-color: #e07070;
-  color: #f09090;
+  background: #1e0f0f;
+  border-color: #c06060;
+  color: #e08080;
 }
