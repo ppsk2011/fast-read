@@ -1,8 +1,8 @@
 {
-  "name": "fast-read",
-  "description": "RSVP reader for PDF and EPUB — read faster, one word at a time",
+  "name": "readswift",
+  "description": "ReadSwift — RSVP speed reader for PDF and EPUB. One word at a time, up to 1000 WPM. No account, no data collection.",
   "version": "1.0.0",
-  "author": "TechScript Limited",
+  "author": "Techscript Limited",
   "homepage": "https://techscript.ca",
   "private": true,
   "type": "module",

@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ca.techscriptlimited.fastread',
-  appName: 'Fast Read',
+  appId: 'ca.techscriptlimited.readswift',
+  appName: 'ReadSwift',
   webDir: 'dist',
   server: {
     // Allow file-protocol access for locally bundled assets on mobile
