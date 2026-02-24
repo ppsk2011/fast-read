@@ -62,46 +62,63 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ### Web — GitHub Pages + Subdomain (`readswift.techscript.ca`)
 
-ReadSwift is deployed to its own **subdomain** of your company domain. This keeps `techscript.ca` free for your main company website while ReadSwift lives at `https://readswift.techscript.ca`.
+ReadSwift deploys automatically to **`https://readswift.techscript.ca`** on every push to `main`. Your main `techscript.ca` domain is completely untouched.
 
-The GitHub Actions workflow (`.github/workflows/deploy-web.yml`) automatically builds and deploys on every push to `main`. The `public/CNAME` file is set to `readswift.techscript.ca`.
+---
 
-#### Step 1 — Enable GitHub Pages
+#### ⚠️ One-time setup — do these three things in order
 
-1. In your GitHub repository go to **Settings → Pages**
-2. Under **Source** choose **GitHub Actions**
-3. Leave the **Custom domain** field blank (the CNAME file handles it automatically)
+##### 1 · Add one DNS record in GoDaddy
 
-#### Step 2 — Add one DNS record in GoDaddy
-
-Log in to your [GoDaddy DNS Manager](https://dcc.godaddy.com) for `techscript.ca` and add **one CNAME record**:
+Log in to [GoDaddy DNS Manager](https://dcc.godaddy.com) for `techscript.ca` and add:
 
 | Type | Name | Value | TTL |
 |------|------|-------|-----|
 | `CNAME` | `readswift` | `ppsk2011.github.io` | 1 Hour |
 
-> This single record is all that's needed. Your main `techscript.ca` domain and its existing DNS records are **not touched** — your company website can live there independently.
+This is the only record you need. Everything else in your `techscript.ca` DNS is untouched.
 
-#### Step 3 — Enable HTTPS
+##### 2 · Enable GitHub Pages (Source = GitHub Actions)
 
-After DNS propagates (usually within 30 minutes, up to 24 hours):
+In this repository:
 
-1. Go back to **Settings → Pages** in GitHub
-2. You should see **"Your site is live at https://readswift.techscript.ca"**
-3. Tick **"Enforce HTTPS"** — GitHub will provision a free Let's Encrypt certificate automatically
+1. Go to **Settings → Pages**
+2. Under **Build and deployment → Source**, select **"GitHub Actions"**
+3. Leave the **Custom domain** field blank — the `public/CNAME` file in the repo handles it
 
-#### Step 4 — Deploy
+Click **Save**.
 
-Push to `main` (or click **Actions → Deploy to GitHub Pages → Run workflow**). The app will be live at:
+##### 3 · Trigger a deploy and enable HTTPS
 
-> **https://readswift.techscript.ca**
+Option A — push any commit to `main` (the workflow runs automatically).  
+Option B — go to **Actions → Deploy to GitHub Pages → Run workflow → Run workflow**.
 
-#### Why a subdomain instead of a sub-folder?
+After the workflow finishes (~2 minutes):
+1. Go back to **Settings → Pages**
+2. You should see **"Your site is published at https://readswift.techscript.ca"**
+3. Tick **"Enforce HTTPS"** and click **Save**
 
-| Approach | Result |
-|----------|--------|
-| **Subdomain** `readswift.techscript.ca` ✅ | Each site is a separate GitHub repo. Main website at `techscript.ca` is fully independent. One DNS record. PWA installs correctly. |
-| Sub-folder `techscript.ca/readswift` | Requires both sites to live in the same repo (or complex reverse-proxy setup). PWA scope/offline support is fragile in sub-paths. |
+> If the "Enforce HTTPS" checkbox is greyed out, wait 10–15 minutes for the Let's Encrypt certificate to be issued, then refresh the page.
+
+---
+
+#### Why the site was returning 404 (and how it's now fixed)
+
+Two things were wrong:
+
+| Problem | Fix applied in this repo |
+|---------|--------------------------|
+| A `jekyll-gh-pages.yml` workflow was also deploying to GitHub Pages on every `main` push, using the same concurrency group. It raced against the Vite build and sometimes won — deploying raw repo files (no CNAME, no built app). | Deleted `jekyll-gh-pages.yml`. Only `deploy-web.yml` runs now. |
+| The PR with the `readswift.techscript.ca` CNAME hadn't been merged to `main` yet, so the deployed site still had the old domain. | Merge this PR → a new deploy runs → `dist/CNAME` becomes `readswift.techscript.ca`. |
+
+---
+
+#### Why a subdomain (not a sub-folder)?
+
+| Approach | Notes |
+|----------|-------|
+| **Subdomain** `readswift.techscript.ca` ✅ | Each site is a separate repo. One DNS record. PWA installs correctly. `techscript.ca` is free for your company website. |
+| Sub-folder `techscript.ca/readswift` | Both sites must be in the same repo (or you need a reverse proxy). PWA `scope`/offline breaks in sub-paths. Not recommended with GitHub Pages. |
 
 ---
 
