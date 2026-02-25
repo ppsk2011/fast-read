@@ -47,7 +47,7 @@
 /* Subtle focal guide line underneath the word */
 .focalLine {
   position: absolute;
-  bottom: calc(50% - 2px);
+  top: calc(50% + 3rem);
   left: 50%;
   transform: translateX(-50%);
   width: 60px;
