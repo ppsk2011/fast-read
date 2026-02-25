@@ -16,6 +16,7 @@ import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
 import ReadingHistory from './components/ReadingHistory';
 import PageNavigator from './components/PageNavigator';
+import WordNavigator from './components/WordNavigator';
 import ContextPreview from './components/ContextPreview';
 import DonateButton from './components/DonateButton';
 import { parsePDF } from './parsers/pdfParser';
@@ -185,7 +186,10 @@ export default function App() {
     <div className="appWrapper">
       <header className="appHeader">
         <div className="appBrand">
-          <h1>⚡ ReadSwift</h1>
+          <h1>
+            <img src="/icons/icon.svg" className="brandIcon" alt="" aria-hidden="true" />
+            ReadSwift
+          </h1>
           <p className="subtitle">RSVP Reader</p>
         </div>
         <DonateButton />
@@ -217,7 +221,9 @@ export default function App() {
 
         <PageNavigator />
 
-        <ReadingHistory />
+        <WordNavigator onPrevWord={prevWord} onNextWord={nextWord} />
+
+        <ReadingHistory onFileSelect={handleFileSelect} />
 
         <section className="shortcuts" aria-label="Keyboard shortcuts">
           <kbd>Space</kbd> Play/Pause &nbsp;
@@ -227,6 +233,19 @@ export default function App() {
           <kbd>↓</kbd> Slower
         </section>
       </main>
+
+      <footer className="appFooter">
+        <span>A product by&nbsp;</span>
+        <a
+          href="https://www.techscript.ca"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="techscriptLink"
+        >
+          <img src="/icons/icon.svg" className="footerIcon" alt="" aria-hidden="true" />
+          Techscript
+        </a>
+      </footer>
     </div>
   );
 }

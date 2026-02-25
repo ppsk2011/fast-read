@@ -3,10 +3,10 @@
  *
  * Displays a collapsible list of reading records saved in localStorage.
  * Each record shows the file name, reading progress, and the last-read date.
- * Records can be individually deleted.
+ * Records can be individually deleted or resumed by re-uploading the file.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useReaderContext } from '../context/useReaderContext';
 import { deleteRecord } from '../utils/recordsUtils';
 import styles from '../styles/ReadingHistory.module.css';
@@ -23,8 +23,13 @@ function formatDate(iso: string): string {
   }
 }
 
-export default function ReadingHistory() {
+interface ReadingHistoryProps {
+  onFileSelect: (file: File) => void;
+}
+
+export default function ReadingHistory({ onFileSelect }: ReadingHistoryProps) {
   const { records, setRecords } = useReaderContext();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDelete = useCallback(
     (name: string) => {
@@ -33,11 +38,34 @@ export default function ReadingHistory() {
     [setRecords],
   );
 
+  const handleResumeClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleResumeFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        onFileSelect(file);
+        e.target.value = '';
+      }
+    },
+    [onFileSelect],
+  );
+
   if (records.length === 0) return null;
 
   return (
     <details className={styles.historyDetails} open>
       <summary className={styles.heading}>📚 Reading History</summary>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.epub"
+        style={{ display: 'none' }}
+        onChange={handleResumeFileChange}
+        aria-label="Re-upload file to resume reading"
+      />
       <ul className={styles.list}>
         {records.map((record) => {
           const progress =
@@ -66,14 +94,24 @@ export default function ReadingHistory() {
                   />
                 </div>
               </div>
-              <button
-                className={styles.deleteBtn}
-                onClick={() => handleDelete(record.name)}
-                title={`Remove record for ${record.name}`}
-                aria-label={`Remove record for ${record.name}`}
-              >
-                ✕
-              </button>
+              <div className={styles.actions}>
+                <button
+                  className={styles.resumeBtn}
+                  onClick={handleResumeClick}
+                  title={`Resume reading ${record.name}`}
+                  aria-label={`Resume reading ${record.name}`}
+                >
+                  ↩ Resume
+                </button>
+                <button
+                  className={styles.deleteBtn}
+                  onClick={() => handleDelete(record.name)}
+                  title={`Remove record for ${record.name}`}
+                  aria-label={`Remove record for ${record.name}`}
+                >
+                  ✕
+                </button>
+              </div>
             </li>
           );
         })}

@@ -51,10 +51,20 @@ body {
 }
 
 .appBrand h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: clamp(1.25rem, 3.5vw, 1.9rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
+}
+
+.brandIcon {
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .subtitle {
@@ -115,4 +125,37 @@ kbd {
   font-size: 0.75rem;
   font-family: monospace;
   color: #888;
+}
+
+/* ─── Footer: Techscript branding ───────────────────────────────── */
+
+.appFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  color: #444;
+  font-size: 0.78rem;
+  gap: 0.25rem;
+}
+
+.techscriptLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #888;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.techscriptLink:hover {
+  color: #e74c3c;
+}
+
+.footerIcon {
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 3px;
+  flex-shrink: 0;
 }
