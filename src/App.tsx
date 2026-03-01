@@ -194,7 +194,6 @@ export default function App() {
           <p className="subtitle">RSVP Reader</p>
         </div>
         <div className="headerActions">
-          <FeedbackButton />
           <DonateButton />
         </div>
       </header>
@@ -237,6 +236,10 @@ export default function App() {
           <kbd>↓</kbd> Slower
         </section>
       </main>
+
+      <div className="preFooter">
+        <FeedbackButton />
+      </div>
 
       <footer className="appFooter">
         <span>A product by&nbsp;</span>
