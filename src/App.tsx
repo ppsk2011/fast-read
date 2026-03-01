@@ -19,6 +19,7 @@ import PageNavigator from './components/PageNavigator';
 import WordNavigator from './components/WordNavigator';
 import ContextPreview from './components/ContextPreview';
 import DonateButton from './components/DonateButton';
+import FeedbackButton from './components/FeedbackButton';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { normalizeText, tokenize } from './utils/textUtils';
@@ -192,7 +193,10 @@ export default function App() {
           </h1>
           <p className="subtitle">RSVP Reader</p>
         </div>
-        <DonateButton />
+        <div className="headerActions">
+          <FeedbackButton />
+          <DonateButton />
+        </div>
       </header>
 
       <main className="appMain">
