@@ -47,6 +47,26 @@ export async function* parseEPUB(
     for (let i = 0; i < spineItems.length; i++) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const spineItem = spineItems[i] as any;
+
+      // Skip non-linear spine items (navigation documents, TOC pages, cover pages,
+      // etc.).  EPUB spec §3.4.1: non-linear items are not part of the primary
+      // reading order and should not be presented inline.  Including them causes
+      // chapter headings from the table-of-contents to repeat before the actual
+      // chapter text begins.
+      // epubjs normalises the attribute to a boolean, but guard against 'no'
+      // string values from non-standard epub implementations as well.
+      const isLinear = spineItem.linear !== false && spineItem.linear !== 'no';
+      if (!isLinear) {
+        if (onProgress) {
+          onProgress({
+            chaptersProcessed: i + 1,
+            totalChapters,
+            percent: Math.round(((i + 1) / totalChapters) * 100),
+          });
+        }
+        continue;
+      }
+
       try {
         // Load the section: passes book.load as the request function so that
         // epubjs fetches the chapter from the in-memory archive and parses it

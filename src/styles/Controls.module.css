@@ -342,3 +342,49 @@
     height: 40px;
   }
 }
+
+/* ─── Landscape mode on mobile ───────────────────────────────────── */
+/* Compress the control bar so the reading area gets more vertical space */
+@media (max-height: 480px) and (orientation: landscape) {
+  .controls {
+    padding: 0.3rem 0.75rem;
+    gap: 0.25rem;
+  }
+
+  .progressRow {
+    min-height: 1rem;
+  }
+
+  .playbackRow {
+    gap: 0.4rem;
+  }
+
+  .playBtn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+  }
+
+  .navBtn,
+  .uploadBtn,
+  .resetBtn {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .speedRow {
+    gap: 0.3rem;
+  }
+
+  .speedBtn {
+    width: 38px;
+    height: 30px;
+    font-size: 1.1rem;
+  }
+
+  .wpmLabel {
+    font-size: 0.75rem;
+    min-width: 3.8rem;
+  }
+}

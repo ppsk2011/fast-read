@@ -287,6 +287,25 @@ body {
   background: var(--bg-panel, #eeeeea);
 }
 
+/* ─── Landscape mode on mobile ──────────────────────────────────── */
+/* Prioritize the reading area when the device is in landscape orientation */
+@media (max-height: 480px) and (orientation: landscape) {
+  .readingMain {
+    flex: 1;
+    min-height: 0;
+    padding: 0.25rem 0.75rem 0;
+  }
+
+  .viewportWrapper {
+    flex: 1;
+  }
+
+  /* Hide navigation and footer controls to free vertical space */
+  .navLayer {
+    display: none;
+  }
+}
+
 /* ─── Suppress browser red invalid/out-of-range styling ─────── */
 
 input:invalid,
