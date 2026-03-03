@@ -43,13 +43,22 @@
  *   at a predictable horizontal position regardless of word length.
  *   Font size scales down with slot count via clamp() so long words are
  *   always contained — no overflow, no overlap, no reflow.
+ *
+ * Container width scales with slot count so that peripheral words in small
+ * windows (1–2 words) sit closer together, improving peripheral focus:
+ *   clamp(600px, 250px × slot-count, 900px)
+ *   • 1 word  → 600 px  (centred single word, plenty of room)
+ *   • 2 words → 600 px  → 300 px / slot  (was 450 px – words ~33 % closer)
+ *   • 3 words → 750 px  → 250 px / slot
+ *   • 4–5 words → 900 px (capped)
+ *   On mobile, min(92vw, …) wins so the layout stays viewport-safe.
  */
 .windowHorizontal {
   display: grid;
   grid-template-columns: repeat(var(--slot-count, 1), 1fr);
   place-items: center;
   gap: clamp(0.15em, 0.6vw, 0.4em);
-  width: min(92vw, 900px);
+  width: min(92vw, clamp(600px, calc(250px * var(--slot-count, 1)), 900px));
   max-width: 100%;
 }
 
@@ -97,6 +106,15 @@
   /* Ensure the ORP word renders above adjacent slots if it ever touches */
   position: relative;
   z-index: 1;
+}
+
+/*
+ * Horizontal center word: JS supplies a scaled font-size so the word always
+ * fits its slot. Override ellipsis with a clean clip so nothing is appended
+ * when the minimum readable size is reached on extreme-length words.
+ */
+.windowHorizontal .wordSlotCenter {
+  text-overflow: clip;
 }
 
 /* ORP focal letter — slightly enlarged for eye anchoring */

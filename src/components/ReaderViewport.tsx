@@ -5,11 +5,13 @@
  *
  * Layout stability guarantee:
  *   Each word slot is rendered as a 1fr grid column inside a controlled-width
- *   container (min(92vw, 900px)). Because every column has equal fractional
- *   width, the ORP slot is ALWAYS at a predictable horizontal position
- *   regardless of word length. Font size scales inversely with slot count
- *   via clamp() so long words never overflow their column — no reflow,
- *   no horizontal drift, no overlap.
+ *   container (min(92vw, clamp(600px, 250px×slots, 900px))). Because every
+ *   column has equal fractional width, the ORP slot is ALWAYS at a predictable
+ *   horizontal position regardless of word length. Font size scales inversely
+ *   with slot count via clamp() so long words never overflow their column — no
+ *   reflow, no horizontal drift, no overlap.  For the ORP (center) word, JS
+ *   additionally computes a proportionally scaled font-size so that even very
+ *   long words are displayed at the largest readable size with no ellipsis.
  *
  * ORP (Optimal Recognition Point):
  *   When orpEnabled is true the center/ORP word is split into three spans:
@@ -61,7 +63,73 @@ function calcOrpIndex(word: string): number {
   return Math.max(0, Math.ceil(word.length / 5) - 1);
 }
 
-/** Render a center word with the ORP letter highlighted */
+/**
+ * Compute a scaled font-size CSS value that prevents the ORP (center) word
+ * from overflowing its grid slot in horizontal mode.
+ *
+ * The CSS class already sets  font-size: clamp(MIN rem, VW_COEFF vw / slots, MAX rem).
+ * This function returns the same clamp() expression multiplied by a scale
+ * factor derived from the word's character count versus the available slot
+ * width, so the rendered text always fits — no ellipsis, no reflow.
+ *
+ * A SAFETY margin (8 %) is subtracted from the slot width so that normal
+ * font-metric variation never causes the word to bleed into the gap.
+ *
+ * Returns undefined when the word fits comfortably at the default size,
+ * letting the CSS rule take effect unchanged.
+ */
+function computeHorizontalCenterFontSize(
+  word: string,
+  slotCount: number,
+  isFullHeight: boolean,
+): string | undefined {
+  if (!word) return undefined;
+
+  const REM_PX = 16;
+  // Match the CSS clamp parameters for normal and full-height modes.
+  const minFontRem = isFullHeight ? 2 : 1.1;
+  const maxFontRem = isFullHeight ? 6 : 3.2;
+  const vwCoeff    = isFullHeight ? 10 : 8;
+
+  const MIN_FONT_PX      = minFontRem * REM_PX;
+  const MAX_FONT_PX      = maxFontRem * REM_PX;
+  /**
+   * Approximate ratio of character width to font-size for Georgia serif.
+   * Latin characters in Georgia average ~0.58–0.62 em; 0.60 is the midpoint.
+   * If the app font ever changes, update this constant to match.
+   */
+  const CHAR_WIDTH       = 0.60;
+  const SAFETY           = 0.92; // 8 % margin so metric variance never causes overflow
+  const MIN_READABLE_PX  = 12;   // never render below this size regardless of word length
+
+  // Container width mirrors the CSS formula:
+  //   min(92vw, clamp(600px, 250px × slotCount, 900px))
+  /** Fallback viewport width (px) used in non-browser (SSR) environments. */
+  const DEFAULT_VIEWPORT_PX = 1280;
+  const vwPx        = typeof window !== 'undefined' ? window.innerWidth / 100 : DEFAULT_VIEWPORT_PX / 100;
+  const clampedPx   = Math.min(900, Math.max(600, 250 * slotCount));
+  const containerPx = Math.min(0.92 * vwPx * 100, clampedPx);
+  const slotPx      = containerPx / slotCount;
+
+  // Base font size: replicate the CSS clamp using the live viewport width.
+  const preferredPx = (vwCoeff * vwPx) / slotCount;
+  const baseFontPx  = Math.min(MAX_FONT_PX, Math.max(MIN_FONT_PX, preferredPx));
+
+  const maxChars = (slotPx * SAFETY) / (baseFontPx * CHAR_WIDTH);
+  if (word.length <= maxChars) return undefined; // default CSS size is fine
+
+  // Minimum scale: ensure the rendered preferred size stays above MIN_READABLE_PX.
+  // At the preferred vw value the rendered size = (vwCoeff * vwPx / slotCount) * scale.
+  const minScaleForReadability = MIN_READABLE_PX / Math.max(preferredPx, 1);
+  const scale = Math.max(minScaleForReadability, maxChars / word.length);
+  return [
+    `clamp(${(minFontRem * scale).toFixed(3)}rem,`,
+    ` calc(${(vwCoeff * scale).toFixed(3)}vw / ${slotCount}),`,
+    ` ${(maxFontRem * scale).toFixed(3)}rem)`,
+  ].join('');
+}
+
+
 function WordWithOrp({
   word,
   baseColor,
@@ -150,6 +218,10 @@ const ReaderViewport = memo(function ReaderViewport({
           {wordWindow.map((word, i) => {
             const isCenter = i === highlightIndex;
             const opacity = slotOpacity(i);
+            const scaledFont =
+              isCenter && orientation === 'horizontal'
+                ? computeHorizontalCenterFontSize(word, wordWindow.length, fullHeight ?? false)
+                : undefined;
             return (
               <span
                 key={i}
@@ -157,6 +229,7 @@ const ReaderViewport = memo(function ReaderViewport({
                 style={{
                   ...(isCenter ? { color: highlightColor } : undefined),
                   ...(opacity < 1 ? { opacity } : undefined),
+                  ...(scaledFont ? { fontSize: scaledFont } : undefined),
                 }}
                 aria-hidden={word === '' ? true : undefined}
               >
