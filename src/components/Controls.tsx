@@ -186,9 +186,7 @@ export default function Controls({
             </div>
             <span className={styles.progressPct}>{progress}%</span>
           </>
-        ) : (
-          <p className={styles.emptyHint}>Upload a file or paste text to begin</p>
-        )}
+        ) : null}
       </div>
 
       {/* ── Row 2: Playback ─────────────────────────────────────── */}
@@ -209,7 +207,11 @@ export default function Controls({
             title="Upload file (PDF, EPUB, TXT, MD, HTML, RTF, SRT, DOCX)"
             aria-label="Upload file"
           >
-            📂
+            <svg className={styles.btnIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 15V3m0 0l-4 4m4-4l4 4"/>
+              <path d="M2 17v2a2 2 0 002 2h16a2 2 0 002-2v-2"/>
+            </svg>
+            <span className={styles.btnLabel}>Open File</span>
           </button>
         )}
 
@@ -222,7 +224,11 @@ export default function Controls({
             aria-label="Toggle paste panel"
             aria-pressed={pasteOpen}
           >
-            📋
+            <svg className={styles.btnIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="9" y="2" width="6" height="4" rx="1"/>
+              <path d="M9 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2h-2"/>
+            </svg>
+            <span className={styles.btnLabel}>Paste Text</span>
           </button>
         )}
 
@@ -243,7 +249,13 @@ export default function Controls({
           title="Play / Pause (Space)"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
-          {isPlaying ? '⏸' : '▶'}
+          {isPlaying ? (
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="1em" height="1em">
+              <circle cx="12" cy="12" r="10" fill="var(--accent, #2e7db8)"/>
+              <rect x="8" y="7" width="3" height="10" rx="1" fill="white"/>
+              <rect x="13" y="7" width="3" height="10" rx="1" fill="white"/>
+            </svg>
+          ) : '▶'}
         </button>
 
         <button
@@ -263,7 +275,7 @@ export default function Controls({
           title="Restart from beginning"
           aria-label="Restart"
         >
-          ↩
+          ↻
         </button>
       </div>
 

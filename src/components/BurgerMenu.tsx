@@ -20,6 +20,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReaderContext } from '../context/useReaderContext';
 import ReadingHistory from './ReadingHistory';
+import SessionStats from './SessionStats';
 import type { WindowSize, Orientation, ChunkMode } from '../context/readerContextDef';
 import { APP_VERSION } from '../version';
 import styles from '../styles/BurgerMenu.module.css';
@@ -256,6 +257,12 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                     <option value="intelligent">Intelligent phrases</option>
                   </select>
                 </label>
+              </section>
+
+              {/* ── Session Analytics ───────────────────────────── */}
+              <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>Session Analytics</h3>
+                <SessionStats />
               </section>
 
               {/* ── Reading History ─────────────────────────────── */}

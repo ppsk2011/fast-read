@@ -14,6 +14,18 @@
   width: 100%;
 }
 
+/* In landscape sidebar mode, controls fill the sidebar and lose sticky */
+@media (max-height: 480px) and (orientation: landscape) {
+  .controls {
+    position: static;
+    border-top: none;
+    padding: 0.5rem 0.6rem;
+    gap: 0.4rem;
+    flex: 1;
+    justify-content: center;
+  }
+}
+
 /* ─── Row 1: Progress ───────────────────────────────────────────── */
 
 .progressRow {
@@ -123,13 +135,16 @@
   display: none;
 }
 
-/* Upload — icon-only, touch-friendly */
+/* Upload — icon + label, touch-friendly */
 .uploadBtn {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 44px;
+  gap: 0.1rem;
+  min-width: 56px;
   height: 44px;
+  padding: 0 0.5rem;
   background: #172340;
   color: #6fa3ef;
   border: 1px solid #1f3a6b;
@@ -138,6 +153,19 @@
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   flex-shrink: 0;
+}
+
+.btnIcon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.btnLabel {
+  font-size: 0.6rem;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
 .uploadBtn:hover:not(:disabled) {

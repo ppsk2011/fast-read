@@ -255,9 +255,11 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const updateSessionStats = useCallback((delta: Partial<SessionStats>) => {
     setSessionStatsState((prev) => {
       const next: SessionStats = { ...prev, ...delta };
-      // Recalculate effectiveWpm whenever wordsRead or activeTimeMs changes
-      if (next.activeTimeMs > 0) {
+      // Recalculate effectiveWpm only when enough active time has elapsed (≥ 2 s)
+      if (next.activeTimeMs >= 2_000 && next.wordsRead > 0) {
         next.effectiveWpm = Math.round(next.wordsRead / (next.activeTimeMs / 60_000));
+      } else {
+        next.effectiveWpm = 0;
       }
       try { localStorage.setItem(LS_KEY_SESSION_STATS, JSON.stringify(next)); } catch { /* ignore */ }
       return next;

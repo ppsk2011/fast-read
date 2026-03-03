@@ -66,7 +66,7 @@
   display: grid;
   grid-template-columns: repeat(var(--slot-count, 1), 1fr);
   place-items: center;
-  gap: clamp(0.15em, 0.6vw, 0.4em);
+  gap: 0.2em;
   width: min(92vw, clamp(600px, calc(250px * var(--slot-count, 1)), 900px));
   max-width: 100%;
 }

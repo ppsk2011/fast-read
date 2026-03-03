@@ -138,15 +138,28 @@ export function useChunkEngine(
     if (chunkIdx < 0 || chunkIdx >= chunks.length) return fixedWindow;
 
     const chunk = chunks[chunkIdx];
-    // Build the window from the chunk words, padded with empty slots if shorter
-    const result: string[] = chunk.map((wi) => words[wi] ?? '');
-    // Pad to at most windowSize (do not truncate — phrases may exceed windowSize)
-    while (result.length < windowSize) result.push('');
+    // Position of currentWordIndex within the chunk (O(1) since chunks are contiguous)
+    const posInChunk = currentWordIndex - chunk[0];
+    // ORP slot is always the center of the window (same formula as fixedHighlight)
+    const orpSlot = Math.ceil(windowSize / 2) - 1;
+
+    // Build the window centered on the current word within the chunk.
+    // Words from the same chunk before the current word appear to the left of ORP;
+    // words after appear to the right. Empty strings pad slots outside the chunk.
+    const result: string[] = Array(windowSize).fill('');
+    for (let i = 0; i < chunk.length; i++) {
+      const slot = orpSlot + (i - posInChunk);
+      if (slot >= 0 && slot < windowSize) {
+        result[slot] = words[chunk[i]] ?? '';
+      }
+    }
     return result;
   }, [chunkMode, phraseData, currentWordIndex, words, fixedWindow, windowSize]);
 
-  // In intelligent mode, the ORP is always at index 0 (first word of phrase)
-  const chunkHighlightIndex = chunkMode === 'intelligent' ? 0 : fixedHighlight;
+  // In intelligent mode, the ORP is at the center slot (same as fixed mode)
+  const chunkHighlightIndex = chunkMode === 'intelligent'
+    ? Math.ceil(windowSize / 2) - 1
+    : fixedHighlight;
 
   return { chunkWindow, chunkHighlightIndex };
 }

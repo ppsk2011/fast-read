@@ -6,8 +6,9 @@
  *  - Effective WPM (words / active reading time)
  *  - Total active reading time
  *
- * Non-intrusive: small, muted text in a compact bar. Hidden when session
- * hasn't started (0 words read). No tracking beyond localStorage.
+ * Rendered inside the burger menu settings drawer.
+ * Shows a placeholder when no reading has started yet.
+ * No tracking beyond localStorage.
  */
 
 import { memo } from 'react';
@@ -29,24 +30,27 @@ const SessionStats = memo(function SessionStats() {
   const { sessionStats } = useReaderContext();
   const { wordsRead, activeTimeMs, effectiveWpm } = sessionStats;
 
-  if (wordsRead === 0) return null;
+  if (wordsRead === 0) {
+    return (
+      <p className={styles.empty}>Start reading to see your session stats.</p>
+    );
+  }
 
   return (
-    <div className={styles.bar} aria-label="Session statistics">
-      <span className={styles.stat} title="Words read this session">
-        {wordsRead.toLocaleString()} words
-      </span>
-      <span className={styles.divider}>·</span>
-      <span className={styles.stat} title="Active reading time">
-        {formatTime(activeTimeMs)}
-      </span>
+    <div className={styles.grid} aria-label="Session statistics">
+      <div className={styles.statRow}>
+        <span className={styles.statLabel}>Words read</span>
+        <span className={styles.statValue}>{wordsRead.toLocaleString()}</span>
+      </div>
+      <div className={styles.statRow}>
+        <span className={styles.statLabel}>Active time</span>
+        <span className={styles.statValue}>{formatTime(activeTimeMs)}</span>
+      </div>
       {effectiveWpm > 0 && (
-        <>
-          <span className={styles.divider}>·</span>
-          <span className={styles.stat} title="Effective WPM this session">
-            {effectiveWpm} WPM avg
-          </span>
-        </>
+        <div className={styles.statRow}>
+          <span className={styles.statLabel}>Avg speed</span>
+          <span className={styles.statValue}>{effectiveWpm} WPM</span>
+        </div>
       )}
     </div>
   );

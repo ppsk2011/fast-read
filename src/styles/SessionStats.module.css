@@ -1,9 +1,38 @@
 /* SessionStats.module.css
  *
- * Compact, non-intrusive stats bar displayed below the navigation layer.
- * Uses muted text so it doesn't compete with the reading UI.
+ * Stats grid displayed inside the BurgerMenu settings drawer.
  */
 
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.statLabel {
+  color: var(--text-muted);
+}
+
+.statValue {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.empty {
+  color: var(--text-faint);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Legacy bar class (no longer used for main display) */
 .bar {
   display: flex;
   align-items: center;

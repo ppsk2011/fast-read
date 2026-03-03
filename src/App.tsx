@@ -27,7 +27,6 @@ import BurgerMenu from './components/BurgerMenu';
 import ThemeToggle from './components/ThemeToggle';
 import AppFooter from './components/AppFooter';
 import HelpModal from './components/HelpModal';
-import SessionStats from './components/SessionStats';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
 import { parseFile } from './parsers/textParser';
@@ -364,24 +363,23 @@ export default function App() {
       )}
 
       {/* ── 4. Bottom control bar (always visible) ──────────────── */}
-      <Controls
-        onFileSelect={handleFileSelect}
-        onPlay={play}
-        onPause={pause}
-        onReset={reset}
-        onFaster={faster}
-        onSlower={slower}
-        onPrevWord={prevWord}
-        onNextWord={nextWord}
-        onPasteToggle={togglePaste}
-        pasteOpen={showPaste}
-        focused={isFocused}
-      />
+      <div className="controlsBar">
+        <Controls
+          onFileSelect={handleFileSelect}
+          onPlay={play}
+          onPause={pause}
+          onReset={reset}
+          onFaster={faster}
+          onSlower={slower}
+          onPrevWord={prevWord}
+          onNextWord={nextWord}
+          onPasteToggle={togglePaste}
+          pasteOpen={showPaste}
+          focused={isFocused}
+        />
+      </div>
 
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
-
-      {/* ── Session analytics panel ──────────────────────────────── */}
-      {!isFocused && words.length > 0 && <SessionStats />}
 
       {/* ── Footer ──────────────────────────────────────────────── */}
       {!isFocused && <AppFooter />}
