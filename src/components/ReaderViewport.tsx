@@ -4,18 +4,23 @@
  * Displays the rolling word window with a guaranteed-stable focal position.
  *
  * Layout stability guarantee:
- *   Each word slot is rendered as a fixed-width grid column (--slot-width).
- *   Because every column is the same width, the center column is ALWAYS at
- *   the exact horizontal midpoint of the grid, regardless of word length.
- *   No reflow, no horizontal drift.
+ *   Each word slot is rendered as a 1fr grid column inside a controlled-width
+ *   container (min(92vw, 900px)). Because every column has equal fractional
+ *   width, the ORP slot is ALWAYS at a predictable horizontal position
+ *   regardless of word length. Font size scales inversely with slot count
+ *   via clamp() so long words never overflow their column — no reflow,
+ *   no horizontal drift, no overlap.
  *
  * ORP (Optimal Recognition Point):
- *   When orpEnabled is true the center word is split into three spans:
+ *   When orpEnabled is true the center/ORP word is split into three spans:
  *   [prefix][orp-letter][suffix]. The ORP letter sits at approximately 20%
  *   from the left of the word (classic Spritz placement), rendered in a
  *   slightly different hue to guide the fixation point.
- *   The ORP letter is always aligned to the visual center of its slot so it
- *   effectively remains at the same screen position as words change.
+ *
+ * Highlight index (ORP slot):
+ *   - Odd window sizes (1, 3, 5): center slot = floor(n/2)
+ *   - Even window sizes (2, 4): left-middle slot = n/2 - 1
+ *   - Both: Math.ceil(n/2) - 1
  */
 
 import { memo } from 'react';

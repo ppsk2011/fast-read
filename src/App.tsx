@@ -69,8 +69,8 @@ export default function App() {
   const [isFocused, setIsFocused] = useState(false);
   const [showPaste, setShowPaste] = useState(false);
 
-  /** Highlight index is always the center slot of the window */
-  const highlightIndex = Math.floor(windowSize / 2);
+  /** Highlight index: center for odd sizes, left-middle for even sizes */
+  const highlightIndex = Math.ceil(windowSize / 2) - 1;
 
   /** Apply theme as a data attribute on <html> so CSS variables cascade */
   useEffect(() => {

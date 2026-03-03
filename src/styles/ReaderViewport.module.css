@@ -29,27 +29,28 @@
 
 /* Scale words up in fullscreen so they use available space */
 .viewportFull .wordSlot {
-  font-size: clamp(2.5rem, min(7vw, 10vh), 6rem);
+  font-size: clamp(2rem, calc(10vw / var(--slot-count, 1)), 6rem);
 }
 
 /* ─── Rolling word window ─────────────────────────────────────── */
 
 /*
- * Fixed-column grid layout (horizontal).
+ * Fixed-proportion grid layout (horizontal).
  *
  * Layout stability guarantee:
- *   All slots are exactly --slot-width wide. Because every column has the
- *   same fixed width, the center slot is ALWAYS at the pixel-exact horizontal
- *   midpoint of the grid, independent of word length. No reflow occurs when
- *   words change — only text content updates.
+ *   All slots are exactly 1fr of a controlled-width container.
+ *   Because every column has equal fractional width, the ORP slot is ALWAYS
+ *   at a predictable horizontal position regardless of word length.
+ *   Font size scales down with slot count via clamp() so long words are
+ *   always contained — no overflow, no overlap, no reflow.
  */
 .windowHorizontal {
   display: grid;
-  grid-template-columns: repeat(var(--slot-count, 3), var(--slot-width, 10ch));
+  grid-template-columns: repeat(var(--slot-count, 1), 1fr);
   place-items: center;
-  gap: 0.4em;
-  /* Prevent wrapping so layout stays stable */
-  white-space: nowrap;
+  gap: clamp(0.15em, 0.6vw, 0.4em);
+  width: min(92vw, 900px);
+  max-width: 100%;
 }
 
 /* Vertical layout: words stacked, each centered on the focal axis */
@@ -62,15 +63,18 @@
 }
 
 /*
- * Each word slot has a fixed width equal to the grid column width.
- * text-align: center keeps the word centred within its slot so the
- * visual centre of each word tracks the slot's midpoint — making the
- * centre slot's midpoint a reliable fixation anchor.
+ * Each word slot fills its grid column (width: 100%).
+ * Font size scales inversely with slot count so all words stay readable
+ * within their allocated space — no overflow, no truncation for center word.
+ *
+ * clamp(min, preferred, max):
+ *   preferred = 8vw / slot-count gives proportional size per slot width.
  */
 .wordSlot {
   display: inline-block;
-  width: var(--slot-width, 10ch);       /* matches grid column */
-  font-size: clamp(1.8rem, 6vw, 3.2rem);
+  width: 100%;
+  box-sizing: border-box;
+  font-size: clamp(1.1rem, calc(8vw / var(--slot-count, 1)), 3.2rem);
   font-family: 'Georgia', serif;
   letter-spacing: 0.04em;
   text-align: center;
@@ -87,13 +91,10 @@
   min-width: 4ch;
 }
 
-/* Center (highlighted) word — bold, full word always visible (no ellipsis) */
+/* Center (highlighted) word — bold; font scaling prevents any overflow */
 .wordSlotCenter {
   font-weight: 700;
-  /* Override slot clipping so the full focused word is never truncated */
-  overflow: visible;
-  text-overflow: unset;
-  /* Ensure the overflowing text renders above adjacent context slots */
+  /* Ensure the ORP word renders above adjacent slots if it ever touches */
   position: relative;
   z-index: 1;
 }
