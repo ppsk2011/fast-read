@@ -27,6 +27,11 @@
   border-radius: 0;
 }
 
+/* Scale words up in fullscreen so they use available space */
+.viewportFull .wordSlot {
+  font-size: clamp(2.5rem, min(7vw, 10vh), 6rem);
+}
+
 /* ─── Rolling word window ─────────────────────────────────────── */
 
 /*
