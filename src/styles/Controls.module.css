@@ -65,7 +65,7 @@
 
 .progressFill {
   height: 100%;
-  background: #e74c3c;
+  background: #4a7fa0;
   border-radius: 3px;
   transition: width 0.15s ease;
   pointer-events: none;
@@ -203,19 +203,19 @@
   height: 60px;
   font-size: 1.55rem;
   line-height: 1;
-  background: #e74c3c;
+  background: #4a7fa0;
   color: #fff;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
   flex-shrink: 0;
-  box-shadow: 0 0 22px rgba(231, 76, 60, 0.35);
+  box-shadow: 0 0 18px rgba(74, 127, 160, 0.3);
 }
 
 .playBtn:hover:not(:disabled) {
-  background: #cf3626;
-  box-shadow: 0 0 28px rgba(231, 76, 60, 0.5);
+  background: #3a6e8e;
+  box-shadow: 0 0 24px rgba(74, 127, 160, 0.45);
 }
 
 .playBtn:active:not(:disabled) {
@@ -307,7 +307,7 @@
 
 .slider {
   width: 100%;
-  accent-color: #e74c3c;
+  accent-color: #4a7fa0;
   cursor: pointer;
 }
 

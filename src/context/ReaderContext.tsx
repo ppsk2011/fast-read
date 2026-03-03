@@ -24,6 +24,7 @@ const LS_KEY_ORP = 'fastread_orp';
 const LS_KEY_PUNCT_PAUSE = 'fastread_punct_pause';
 const LS_KEY_PERIPHERAL_FADE = 'fastread_peripheral_fade';
 const LS_KEY_LONG_WORD_COMP = 'fastread_long_word_comp';
+const LS_KEY_MAIN_FONT_SIZE = 'fastread_main_font_size';
 const DEFAULT_WPM = 250;
 const DEFAULT_WINDOW_SIZE: WindowSize = 2;
 const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
@@ -33,6 +34,7 @@ const DEFAULT_ORP = false;
 const DEFAULT_PUNCT_PAUSE = true;
 const DEFAULT_PERIPHERAL_FADE = false;
 const DEFAULT_LONG_WORD_COMP = true;
+const DEFAULT_MAIN_FONT_SIZE = 100;
 
 export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [words, setWordsState] = useState<string[]>([]);
@@ -87,6 +89,11 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [longWordCompensation, setLongWordCompensationState] = useState<boolean>(() => {
     const saved = localStorage.getItem(LS_KEY_LONG_WORD_COMP);
     return saved === null ? DEFAULT_LONG_WORD_COMP : saved === 'true';
+  });
+  const [mainWordFontSize, setMainWordFontSizeState] = useState<number>(() => {
+    const saved = localStorage.getItem(LS_KEY_MAIN_FONT_SIZE);
+    const parsed = saved ? parseInt(saved, 10) : DEFAULT_MAIN_FONT_SIZE;
+    return isNaN(parsed) ? DEFAULT_MAIN_FONT_SIZE : Math.min(200, Math.max(60, parsed));
   });
 
   // Derive 1-indexed current page via binary search over pageBreaks
@@ -206,6 +213,12 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(LS_KEY_LONG_WORD_COMP, String(enabled));
   }, []);
 
+  const setMainWordFontSize = useCallback((size: number) => {
+    const clamped = Math.min(200, Math.max(60, size));
+    setMainWordFontSizeState(clamped);
+    localStorage.setItem(LS_KEY_MAIN_FONT_SIZE, String(clamped));
+  }, []);
+
   return (
     <ReaderContext.Provider
       value={{
@@ -228,6 +241,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         punctuationPause,
         peripheralFade,
         longWordCompensation,
+        mainWordFontSize,
         setWords,
         setCurrentWordIndex,
         setIsPlaying,
@@ -248,6 +262,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         setPunctuationPause,
         setPeripheralFade,
         setLongWordCompensation,
+        setMainWordFontSize,
       }}
     >
       {children}

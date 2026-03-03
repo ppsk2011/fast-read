@@ -62,6 +62,8 @@ interface ReaderState {
   peripheralFade: boolean;
   /** Whether to apply extra delay for long words (>8 chars) */
   longWordCompensation: boolean;
+  /** Font size scale for the ORP (center) word, as a percentage (60–200, default 100) */
+  mainWordFontSize: number;
 }
 
 interface ReaderActions {
@@ -86,6 +88,7 @@ interface ReaderActions {
   setPunctuationPause: (enabled: boolean) => void;
   setPeripheralFade: (enabled: boolean) => void;
   setLongWordCompensation: (enabled: boolean) => void;
+  setMainWordFontSize: (size: number) => void;
 }
 
 export type ReaderContextValue = ReaderState & ReaderActions;

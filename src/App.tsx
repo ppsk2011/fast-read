@@ -53,6 +53,7 @@ export default function App() {
     orpEnabled,
     peripheralFade,
     theme,
+    mainWordFontSize,
     setWords,
     setCurrentWordIndex,
     setFileMetadata,
@@ -269,6 +270,7 @@ export default function App() {
             loadingProgress={loadingProgress}
             hasWords={words.length > 0}
             fullHeight={isFocused}
+            mainWordFontSize={mainWordFontSize}
           />
           {/* Maximize / minimize button */}
           <button
@@ -310,6 +312,7 @@ export default function App() {
         onNextWord={nextWord}
         onPasteToggle={togglePaste}
         pasteOpen={showPaste}
+        focused={isFocused}
       />
 
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
