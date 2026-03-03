@@ -109,11 +109,11 @@
 }
 
 /*
- * Horizontal center word: JS supplies a scaled font-size so the word always
- * fits its slot. Override ellipsis with a clean clip so nothing is appended
- * when the minimum readable size is reached on extreme-length words.
+ * Horizontal mode: JS supplies scaled font-sizes for all word slots so
+ * overflow is handled by scaling down. Use clip instead of ellipsis so
+ * no partial-word artefacts appear at minimum readable size.
  */
-.windowHorizontal .wordSlotCenter {
+.windowHorizontal .wordSlot {
   text-overflow: clip;
 }
 
@@ -150,7 +150,7 @@
 
 .progressFill {
   height: 100%;
-  background: #e74c3c;
+  background: #4a7fa0;
   border-radius: 4px;
   transition: width 0.3s ease;
 }

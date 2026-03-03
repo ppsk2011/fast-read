@@ -41,6 +41,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     orpEnabled, setOrpEnabled,
     punctuationPause, setPunctuationPause,
     longWordCompensation, setLongWordCompensation,
+    mainWordFontSize, setMainWordFontSize,
   } = useReaderContext();
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -157,6 +158,26 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                     <span className={styles.colorHex}>{highlightColor}</span>
                   </div>
                 </label>
+
+                <label className={styles.row}>
+                  <span className={styles.label}>
+                    Main word size
+                    <span className={styles.hint}> (ORP word)</span>
+                  </span>
+                  <select
+                    className={styles.select}
+                    value={mainWordFontSize}
+                    onChange={(e) => setMainWordFontSize(parseInt(e.target.value, 10))}
+                    aria-label="Main word font size"
+                  >
+                    <option value={70}>Small (70%)</option>
+                    <option value={85}>Medium (85%)</option>
+                    <option value={100}>Normal (100%)</option>
+                    <option value={120}>Large (120%)</option>
+                    <option value={150}>Extra Large (150%)</option>
+                    <option value={180}>Huge (180%)</option>
+                  </select>
+                </label>
               </section>
 
               {/* ── Reading features ───────────────────────────── */}
@@ -246,14 +267,14 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   ReadSwift {APP_VERSION}
                 </p>
                 <p className={styles.aboutText}>
-                  A product by{' '}
+                  Powered by{' '}
                   <a
                     href="https://www.techscript.ca"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.aboutLink}
                   >
-                    Techscript Limited
+                    Techscript
                   </a>
                 </p>
               </section>

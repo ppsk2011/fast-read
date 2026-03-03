@@ -48,6 +48,8 @@ interface ReaderViewportProps {
   hasWords: boolean;
   /** When true, the viewport expands to fill the available vertical space */
   fullHeight?: boolean;
+  /** User-controlled font size scale for the ORP (center) word (percentage, 60–200, default 100) */
+  mainWordFontSize?: number;
 }
 
 /** Non-breaking space used to keep empty window slots visible without text */
@@ -64,8 +66,11 @@ function calcOrpIndex(word: string): number {
 }
 
 /**
- * Compute a scaled font-size CSS value that prevents the ORP (center) word
- * from overflowing its grid slot in horizontal mode.
+ * Compute a scaled font-size CSS value that prevents a word from overflowing
+ * its grid slot in horizontal mode.
+ *
+ * For the ORP (center) word, pass `userScale` to honour the user's preferred
+ * main-word font size (percentage / 100). Side words always use scale 1.
  *
  * The CSS class already sets  font-size: clamp(MIN rem, VW_COEFF vw / slots, MAX rem).
  * This function returns the same clamp() expression multiplied by a scale
@@ -78,18 +83,23 @@ function calcOrpIndex(word: string): number {
  * Returns undefined when the word fits comfortably at the default size,
  * letting the CSS rule take effect unchanged.
  */
-function computeHorizontalCenterFontSize(
+function computeWordFontSize(
   word: string,
   slotCount: number,
   isFullHeight: boolean,
+  userScale: number = 1,
 ): string | undefined {
   if (!word) return undefined;
 
   const REM_PX = 16;
   // Match the CSS clamp parameters for normal and full-height modes.
   const minFontRem = isFullHeight ? 2 : 1.1;
-  const maxFontRem = isFullHeight ? 6 : 3.2;
-  const vwCoeff    = isFullHeight ? 10 : 8;
+  const baseMaxFontRem = isFullHeight ? 6 : 3.2;
+  const baseVwCoeff   = isFullHeight ? 10 : 8;
+
+  // Apply user scale to the max/preferred size ceiling.
+  const maxFontRem = baseMaxFontRem * userScale;
+  const vwCoeff    = baseVwCoeff    * userScale;
 
   const MIN_FONT_PX      = minFontRem * REM_PX;
   const MAX_FONT_PX      = maxFontRem * REM_PX;
@@ -116,12 +126,15 @@ function computeHorizontalCenterFontSize(
   const baseFontPx  = Math.min(MAX_FONT_PX, Math.max(MIN_FONT_PX, preferredPx));
 
   const maxChars = (slotPx * SAFETY) / (baseFontPx * CHAR_WIDTH);
-  if (word.length <= maxChars) return undefined; // default CSS size is fine
+
+  // If user scale is non-default, always return a CSS value so the preference
+  // is applied even for short words that fit at the default size.
+  if (word.length <= maxChars && userScale === 1) return undefined;
 
   // Minimum scale: ensure the rendered preferred size stays above MIN_READABLE_PX.
-  // At the preferred vw value the rendered size = (vwCoeff * vwPx / slotCount) * scale.
   const minScaleForReadability = MIN_READABLE_PX / Math.max(preferredPx, 1);
-  const scale = Math.max(minScaleForReadability, maxChars / word.length);
+  const fitScale = word.length <= maxChars ? 1 : maxChars / word.length;
+  const scale = Math.max(minScaleForReadability, fitScale);
   return [
     `clamp(${(minFontRem * scale).toFixed(3)}rem,`,
     ` calc(${(vwCoeff * scale).toFixed(3)}vw / ${slotCount}),`,
@@ -164,6 +177,7 @@ const ReaderViewport = memo(function ReaderViewport({
   loadingProgress,
   hasWords,
   fullHeight,
+  mainWordFontSize = 100,
 }: ReaderViewportProps) {
   /**
    * Peripheral fade: opacity decreases with distance from the center slot.
@@ -201,7 +215,7 @@ const ReaderViewport = memo(function ReaderViewport({
         </div>
       ) : !hasWords ? (
         <p className={styles.placeholder}>
-          Upload a file, paste text, or enter a URL to start reading
+          Upload a file or paste text to start reading
         </p>
       ) : (
         /*
@@ -219,8 +233,13 @@ const ReaderViewport = memo(function ReaderViewport({
             const isCenter = i === highlightIndex;
             const opacity = slotOpacity(i);
             const scaledFont =
-              isCenter && orientation === 'horizontal'
-                ? computeHorizontalCenterFontSize(word, wordWindow.length, fullHeight ?? false)
+              orientation === 'horizontal'
+                ? computeWordFontSize(
+                    word,
+                    wordWindow.length,
+                    fullHeight ?? false,
+                    isCenter ? mainWordFontSize / 100 : 1,
+                  )
                 : undefined;
             return (
               <span

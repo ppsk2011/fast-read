@@ -44,10 +44,12 @@ interface ControlsProps {
   onSlower: () => void;
   onPrevWord: () => void;
   onNextWord: () => void;
-  /** Toggle the paste/URL input panel above the bottom bar */
+  /** Toggle the paste input panel above the bottom bar */
   onPasteToggle: () => void;
   /** Whether the paste panel is currently open */
   pasteOpen: boolean;
+  /** When true (maximize/focus mode) upload and paste buttons are hidden */
+  focused?: boolean;
 }
 
 export default function Controls({
@@ -61,6 +63,7 @@ export default function Controls({
   onNextWord,
   onPasteToggle,
   pasteOpen,
+  focused,
 }: ControlsProps) {
   const { isPlaying, wpm, setWpm, words, isLoading, currentWordIndex, goToWord } =
     useReaderContext();
@@ -184,7 +187,7 @@ export default function Controls({
             <span className={styles.progressPct}>{progress}%</span>
           </>
         ) : (
-          <p className={styles.emptyHint}>Upload a file, paste text, or enter a URL to begin</p>
+          <p className={styles.emptyHint}>Upload a file or paste text to begin</p>
         )}
       </div>
 
@@ -198,26 +201,30 @@ export default function Controls({
           onChange={handleFileChange}
           aria-label="Upload file"
         />
-        <button
-          className={styles.uploadBtn}
-          onClick={handleFileClick}
-          disabled={isLoading}
-          title="Upload file (PDF, EPUB, TXT, MD, HTML, RTF, SRT, DOCX)"
-          aria-label="Upload file"
-        >
-          📂
-        </button>
+        {!focused && (
+          <button
+            className={styles.uploadBtn}
+            onClick={handleFileClick}
+            disabled={isLoading}
+            title="Upload file (PDF, EPUB, TXT, MD, HTML, RTF, SRT, DOCX)"
+            aria-label="Upload file"
+          >
+            📂
+          </button>
+        )}
 
-        {/* Paste / URL toggle button */}
-        <button
-          className={`${styles.uploadBtn}${pasteOpen ? ` ${styles.uploadBtnActive}` : ''}`}
-          onClick={onPasteToggle}
-          title="Paste text or enter a URL"
-          aria-label="Toggle paste / URL panel"
-          aria-pressed={pasteOpen}
-        >
-          📋
-        </button>
+        {/* Paste toggle button */}
+        {!focused && (
+          <button
+            className={`${styles.uploadBtn}${pasteOpen ? ` ${styles.uploadBtnActive}` : ''}`}
+            onClick={onPasteToggle}
+            title="Paste text"
+            aria-label="Toggle paste panel"
+            aria-pressed={pasteOpen}
+          >
+            📋
+          </button>
+        )}
 
         <button
           className={styles.navBtn}
