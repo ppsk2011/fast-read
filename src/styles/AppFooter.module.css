@@ -26,3 +26,10 @@
   color: var(--text-faint, #444);
   user-select: none;
 }
+
+/* Hide donation footer in landscape to preserve vertical reading space */
+@media (max-height: 480px) and (orientation: landscape) {
+  .footer {
+    display: none;
+  }
+}

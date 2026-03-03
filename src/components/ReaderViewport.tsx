@@ -143,6 +143,31 @@ function computeWordFontSize(
 }
 
 
+/**
+ * Compute a scaled font-size CSS value for the ORP (center) word in
+ * **vertical** orientation when the user has changed the main word size.
+ *
+ * In vertical mode, words are stacked and there is no slot-width constraint,
+ * so we simply scale the CSS clamp() parameters by the user's scale factor.
+ * Returns undefined when userScale is 1 (no change needed).
+ */
+function computeVerticalOrpFontSize(
+  slotCount: number,
+  isFullHeight: boolean,
+  userScale: number,
+): string | undefined {
+  if (userScale === 1) return undefined;
+  const minFontRem = isFullHeight ? 2 : 1.1;
+  const maxFontRem = isFullHeight ? 6 : 3.2;
+  const vwCoeff    = isFullHeight ? 10 : 8;
+  return [
+    `clamp(${(minFontRem * userScale).toFixed(3)}rem,`,
+    ` calc(${(vwCoeff * userScale).toFixed(3)}vw / ${slotCount}),`,
+    ` ${(maxFontRem * userScale).toFixed(3)}rem)`,
+  ].join('');
+}
+
+
 function WordWithOrp({
   word,
   baseColor,
@@ -240,7 +265,13 @@ const ReaderViewport = memo(function ReaderViewport({
                     fullHeight ?? false,
                     isCenter ? mainWordFontSize / 100 : 1,
                   )
-                : undefined;
+                : isCenter
+                  ? computeVerticalOrpFontSize(
+                      wordWindow.length,
+                      fullHeight ?? false,
+                      mainWordFontSize / 100,
+                    )
+                  : undefined;
             return (
               <span
                 key={i}

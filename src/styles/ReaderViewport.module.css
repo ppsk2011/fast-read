@@ -20,6 +20,15 @@
   }
 }
 
+/* Landscape mode on mobile: fill the flex container so the reading area
+   expands to use the space freed by the compressed Controls bar */
+@media (max-height: 480px) and (orientation: landscape) {
+  .viewport {
+    height: 100%;
+    min-height: 100px;
+  }
+}
+
 /* Focus / full-height mode (when reading area is maximized) */
 .viewportFull {
   height: 100%;
