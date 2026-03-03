@@ -27,6 +27,8 @@ const LONG_WORD_THRESHOLD = 8;   // characters — pause bonus kicks in above th
 const LONG_WORD_BONUS = 0.04;    // +4% per extra character
 const PUNCT_MAJOR_MULT = 1.4;    // pause multiplier after . ? !
 const PUNCT_MINOR_MULT = 1.2;    // pause multiplier after , ; :
+/** How many words to advance between session-stats batch writes during playback */
+const STATS_UPDATE_BATCH_SIZE = 30;
 
 /** Calculate the delay multiplier for a given word */
 function wordDelayMultiplier(word: string, punctuationPause: boolean, longWordComp: boolean): number {
@@ -142,7 +144,7 @@ export function useRSVPEngine() {
         const newWordsRead = wordsAtSegmentStartRef.current + wordsConsumed;
         // Batch the state update — update at most once per second to avoid
         // excessive re-renders; the exact count is always correct on pause.
-        if (wordsConsumed % 30 === 0) {
+        if (wordsConsumed % STATS_UPDATE_BATCH_SIZE === 0) {
           updateSessionStats({ wordsRead: newWordsRead });
         }
 
