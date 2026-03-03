@@ -27,8 +27,8 @@ const LONG_WORD_THRESHOLD = 8;   // characters — pause bonus kicks in above th
 const LONG_WORD_BONUS = 0.04;    // +4% per extra character
 const PUNCT_MAJOR_MULT = 1.4;    // pause multiplier after . ? !
 const PUNCT_MINOR_MULT = 1.2;    // pause multiplier after , ; :
-/** How many words to advance between session-stats batch writes during playback */
-const STATS_UPDATE_BATCH_SIZE = 30;
+/** Minimum active reading time (ms) before WPM is considered valid */
+const MIN_VALID_ACTIVE_MS = 2_000;
 
 /** Calculate the delay multiplier for a given word */
 function wordDelayMultiplier(word: string, punctuationPause: boolean, longWordComp: boolean): number {
@@ -59,7 +59,6 @@ export function useRSVPEngine() {
     windowSize,
     punctuationPause,
     longWordCompensation,
-    sessionStats,
     setCurrentWordIndex,
     setIsPlaying,
     resetReader,
@@ -79,10 +78,13 @@ export function useRSVPEngine() {
   const longWordCompRef = useRef<boolean>(longWordCompensation);
   const wordsRef = useRef<string[]>(words);
   const isPlayingRef = useRef<boolean>(isPlaying);
-  // Session analytics refs
-  const sessionPlayStartRef = useRef<number>(0); // performance.now() when play last started
-  const sessionWordsAtPlayStartRef = useRef<number>(sessionStats.wordsRead);
-  const sessionActiveTimeAtStartRef = useRef<number>(sessionStats.activeTimeMs);
+  // --- Session analytics (pure refs — no stale-closure issues) ---
+  /** performance.now() when the current play segment started; 0 when not playing */
+  const segmentStartRef = useRef<number>(0);
+  /** Accumulated active reading time across all completed segments (ms) */
+  const totalActiveTimeMsRef = useRef<number>(0);
+  /** Total words actually displayed (incremented once per rAF tick that advances a word) */
+  const totalWordsDisplayedRef = useRef<number>(0);
 
   // Keep refs in sync with state
   useEffect(() => { indexRef.current = currentWordIndex; }, [currentWordIndex]);
@@ -91,9 +93,13 @@ export function useRSVPEngine() {
   useEffect(() => { punctuationPauseRef.current = punctuationPause; }, [punctuationPause]);
   useEffect(() => { longWordCompRef.current = longWordCompensation; }, [longWordCompensation]);
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
-  // Keep session analytics refs in sync
-  useEffect(() => { sessionWordsAtPlayStartRef.current = sessionStats.wordsRead; }, [sessionStats.wordsRead]);
-  useEffect(() => { sessionActiveTimeAtStartRef.current = sessionStats.activeTimeMs; }, [sessionStats.activeTimeMs]);
+
+  // Reset analytics refs when a new file is loaded (words array replaced)
+  useEffect(() => {
+    totalWordsDisplayedRef.current = 0;
+    totalActiveTimeMsRef.current = 0;
+    segmentStartRef.current = 0;
+  }, [words]);
 
   const clearEngine = useCallback(() => {
     if (rafRef.current !== null) {
@@ -102,17 +108,26 @@ export function useRSVPEngine() {
     }
   }, []);
 
-  // Flush accumulated session time when playback stops
-  const flushSessionTime = useCallback(() => {
-    if (sessionPlayStartRef.current > 0) {
-      const elapsed = performance.now() - sessionPlayStartRef.current;
-      sessionPlayStartRef.current = 0;
-      updateSessionStats({ activeTimeMs: sessionActiveTimeAtStartRef.current + elapsed });
+  // Flush accumulated segment time and word count to state when playback stops
+  const flushSessionStats = useCallback(() => {
+    if (segmentStartRef.current > 0) {
+      const elapsed = performance.now() - segmentStartRef.current;
+      segmentStartRef.current = 0;
+      totalActiveTimeMsRef.current += elapsed;
+    }
+    const activeMs = totalActiveTimeMsRef.current;
+    const displayedWords = totalWordsDisplayedRef.current;
+    if (displayedWords > 0 && activeMs >= MIN_VALID_ACTIVE_MS) {
+      updateSessionStats({
+        wordsRead: displayedWords,
+        activeTimeMs: activeMs,
+      });
+    } else if (displayedWords > 0) {
+      // Not enough time elapsed yet — store words but skip WPM update
+      updateSessionStats({ wordsRead: displayedWords, activeTimeMs: activeMs });
     }
   }, [updateSessionStats]);
 
-  /** Ref tracking how many words were at the session start of current play segment */
-  const wordsAtSegmentStartRef = useRef<number>(0);
   /** Ref tracking index at play segment start (to count words consumed) */
   const indexAtSegmentStartRef = useRef<number>(0);
 
@@ -121,10 +136,9 @@ export function useRSVPEngine() {
     const baseMs = 60_000 / wpmRef.current;
     nextTickRef.current = performance.now() + baseMs;
 
-    // Record when playback started for analytics
-    sessionPlayStartRef.current = performance.now();
+    // Record segment start for active-time tracking
+    segmentStartRef.current = performance.now();
     indexAtSegmentStartRef.current = indexRef.current;
-    wordsAtSegmentStartRef.current = sessionWordsAtPlayStartRef.current;
 
     const tick = () => {
       if (!isPlayingRef.current) return; // safety guard
@@ -139,14 +153,8 @@ export function useRSVPEngine() {
         indexRef.current = nextIndex;
         setCurrentWordIndex(nextIndex);
 
-        // Update session words-read counter (incremental, no setState rate concern)
-        const wordsConsumed = nextIndex - indexAtSegmentStartRef.current;
-        const newWordsRead = wordsAtSegmentStartRef.current + wordsConsumed;
-        // Batch the state update — update at most once per second to avoid
-        // excessive re-renders; the exact count is always correct on pause.
-        if (wordsConsumed % STATS_UPDATE_BATCH_SIZE === 0) {
-          updateSessionStats({ wordsRead: newWordsRead });
-        }
+        // Count this word as displayed (only increments during actual playback)
+        totalWordsDisplayedRef.current += 1;
 
         // Calculate delay for the NEXT word (the one just shown)
         const currentWord = wordsRef.current[nextIndex] ?? '';
@@ -159,7 +167,7 @@ export function useRSVPEngine() {
     };
 
     rafRef.current = requestAnimationFrame(tick);
-  }, [clearEngine, setCurrentWordIndex, setIsPlaying, updateSessionStats]);
+  }, [clearEngine, setCurrentWordIndex, setIsPlaying]);
 
   // (Re)start engine whenever play state, speed, or word list changes
   useEffect(() => {
@@ -169,19 +177,20 @@ export function useRSVPEngine() {
       clearEngine();
       // Flush remaining active time and final word count on pause/stop
       if (!isPlaying) {
-        flushSessionTime();
-        const finalWords = indexRef.current - indexAtSegmentStartRef.current;
-        if (finalWords > 0) {
-          updateSessionStats({ wordsRead: wordsAtSegmentStartRef.current + finalWords });
-        }
+        flushSessionStats();
       }
     }
     return clearEngine;
-  }, [isPlaying, wpm, words.length, startEngine, clearEngine, flushSessionTime, updateSessionStats]);
+  }, [isPlaying, wpm, words.length, startEngine, clearEngine, flushSessionStats]);
 
   const play = useCallback(() => setIsPlaying(true), [setIsPlaying]);
   const pause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
-  const reset = useCallback(() => resetReader(), [resetReader]);
+  const reset = useCallback(() => {
+    totalWordsDisplayedRef.current = 0;
+    totalActiveTimeMsRef.current = 0;
+    segmentStartRef.current = 0;
+    resetReader();
+  }, [resetReader]);
 
   const faster = useCallback(() => {
     setWpm(Math.min(1500, Math.round(wpm * 1.2)));

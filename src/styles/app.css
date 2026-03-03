@@ -207,6 +207,20 @@ body {
   }
 }
 
+/* ─── Controls bar wrapper ──────────────────────────────────── */
+/* In portrait, acts as a transparent pass-through so Controls' sticky
+   behaviour is unchanged. In landscape, becomes the right sidebar cell. */
+.controlsBar {
+  display: contents; /* no visual box; children render as if appShell children */
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+  /* Re-enable as a real block so CSS Grid can place it */
+  .controlsBar {
+    display: flex;
+  }
+}
+
 /* ─── Maximize / focus-mode button ─────────────────────────── */
 
 .maximizeBtn {
@@ -289,39 +303,62 @@ body {
 
 /* ─── Landscape mode on mobile ──────────────────────────────────── */
 /* Prioritize the reading area when the device is in landscape orientation.
- * Landscape must feel intentional: reading viewport dominates, controls
- * compressed, navigation hidden to prevent layout reflow loops. */
+ * Reading viewport dominates the left; controls collapse into right sidebar.
+ * CSS Grid gives a stable two-column layout with the top bar spanning both. */
 @media (max-height: 480px) and (orientation: landscape) {
   .appShell {
-    /* Ensure no unnecessary gaps accumulate */
-    gap: 0;
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    grid-template-rows: auto 1fr;
+    height: 100dvh;
+    max-width: 100%;
+    overflow: hidden;
   }
 
+  /* Top bar spans both columns */
   .topBar {
-    /* Compress top bar height in landscape */
+    grid-column: 1 / -1;
+    grid-row: 1;
     min-height: 2.5rem;
     padding: 0.2rem 0.75rem;
   }
 
+  /* Reading viewport fills left column */
   .readingMain {
-    flex: 1;
+    grid-column: 1;
+    grid-row: 2;
     min-height: 0;
-    padding: 0.25rem 0.75rem 0;
-    /* Prevent layout reflow caused by context preview expanding */
+    padding: 0.25rem 0.5rem 0;
     overflow: hidden;
+    align-items: stretch;
+  }
+
+  /* Context preview wastes space in landscape — hide it */
+  .readingMain > *:not(.viewportWrapper) {
+    display: none;
   }
 
   .viewportWrapper {
     flex: 1;
-    /* ORP center maintained via the existing grid layout */
+    height: 100%;
   }
 
-  /* Hide navigation and session stats to free vertical space */
-  .navLayer {
-    display: none;
+  /* Controls sidebar — right column */
+  .controlsBar {
+    grid-column: 2;
+    grid-row: 2;
+    border-left: 1px solid var(--border);
+    background: var(--bg-panel);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Reset display:contents from portrait */
+    min-height: 0;
   }
 
-  /* Compact bottom control bar */
+  /* Hide navigation, paste panel, and footer in landscape */
+  .navLayer,
   .pasteArea {
     display: none;
   }
