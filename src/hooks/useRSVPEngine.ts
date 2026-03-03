@@ -164,7 +164,10 @@ export function useRSVPEngine() {
    * a rendering concern.
    */
   const wordWindow = useMemo<string[]>(() => {
-    const half = Math.floor(windowSize / 2);
+    // For odd sizes (1,3,5): ORP is center slot → half = floor(n/2)
+    // For even sizes (2,4): ORP is left-middle slot → half = n/2 - 1
+    // Both cases: half = ceil(n/2) - 1
+    const half = Math.ceil(windowSize / 2) - 1;
     return Array.from({ length: windowSize }, (_, slot) => {
       const wordIdx = currentWordIndex - half + slot;
       if (wordIdx < 0 || wordIdx >= words.length) return '';

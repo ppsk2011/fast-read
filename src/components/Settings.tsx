@@ -2,7 +2,7 @@
  * Settings
  *
  * Collapsible settings panel that exposes:
- *   - Word window size (1 / 3 / 5)
+ *   - Word window size (1 / 2 / 3 / 4 / 5)
  *   - Highlight color picker (persisted in localStorage via ReaderContext)
  *   - Reading orientation (Horizontal / Vertical)
  *   - ORP (Optimal Recognition Point) toggle
@@ -72,7 +72,9 @@ export default function Settings() {
               aria-label="Number of words shown at once"
             >
               <option value={1}>1 word</option>
+              <option value={2}>2 words</option>
               <option value={3}>3 words</option>
+              <option value={4}>4 words</option>
               <option value={5}>5 words</option>
             </select>
           </label>

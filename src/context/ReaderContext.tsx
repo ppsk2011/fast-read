@@ -25,7 +25,7 @@ const LS_KEY_PUNCT_PAUSE = 'fastread_punct_pause';
 const LS_KEY_PERIPHERAL_FADE = 'fastread_peripheral_fade';
 const LS_KEY_LONG_WORD_COMP = 'fastread_long_word_comp';
 const DEFAULT_WPM = 250;
-const DEFAULT_WINDOW_SIZE: WindowSize = 3;
+const DEFAULT_WINDOW_SIZE: WindowSize = 2;
 const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
 const DEFAULT_ORIENTATION: Orientation = 'horizontal';
 const DEFAULT_THEME: Theme = 'night';
@@ -53,7 +53,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   const [windowSize, setWindowSizeState] = useState<WindowSize>(() => {
     const saved = localStorage.getItem(LS_KEY_WINDOW_SIZE);
     const parsed = saved ? parseInt(saved, 10) : DEFAULT_WINDOW_SIZE;
-    return ([1, 3, 5].includes(parsed) ? parsed : DEFAULT_WINDOW_SIZE) as WindowSize;
+    return ([1, 2, 3, 4, 5].includes(parsed) ? parsed : DEFAULT_WINDOW_SIZE) as WindowSize;
   });
   const [highlightColor, setHighlightColorState] = useState<string>(() => {
     return localStorage.getItem(LS_KEY_HIGHLIGHT_COLOR) ?? DEFAULT_HIGHLIGHT_COLOR;
