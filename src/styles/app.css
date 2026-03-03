@@ -77,7 +77,7 @@
 
   /* Surfaces */
   --bg:           #060606;
-  --bg-panel:     #0f1117;
+  --bg-panel:     #0f1117; /* deep blue-tinted panel aligns with --color-primary brand */
   --bg-input:     #1a1a1a;
   --border:       #1e1e1e;
   --border-input: #2a2a2a;

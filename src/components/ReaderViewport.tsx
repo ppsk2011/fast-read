@@ -79,10 +79,9 @@ function computeOrpFontSize(
   const minFontRem = isFullHeight ? 2 : 1.1;
   const maxFontRem = isFullHeight ? 6 : 3.2;
   const vwCoeff    = isFullHeight ? 10 : 8;
-  const slotCount  = 1; // ORP word scales as if it were a single-word slot
   return [
     `clamp(${(minFontRem * userScale).toFixed(3)}rem,`,
-    ` calc(${(vwCoeff * userScale).toFixed(3)}vw / ${slotCount}),`,
+    ` calc(${(vwCoeff * userScale).toFixed(3)}vw),`,
     ` ${(maxFontRem * userScale).toFixed(3)}rem)`,
   ].join('');
 }
