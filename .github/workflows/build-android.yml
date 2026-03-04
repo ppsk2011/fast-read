@@ -48,6 +48,48 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Copy custom Android icons
+        run: |
+          set -e
+          RES=android/app/src/main/res
+          ICONS=release-package/icons
+
+          # Create mipmap directories
+          mkdir -p \
+            "$RES/mipmap-mdpi" \
+            "$RES/mipmap-hdpi" \
+            "$RES/mipmap-xhdpi" \
+            "$RES/mipmap-xxhdpi" \
+            "$RES/mipmap-xxxhdpi" \
+            "$RES/mipmap-anydpi-v26"
+
+          copy_if_exists() {
+            if [ -f "$1" ]; then
+              cp "$1" "$2"
+              echo "Copied $1 -> $2"
+            else
+              echo "Skipped (not found): $1"
+            fi
+          }
+
+          # Copy foreground icons
+          copy_if_exists "$ICONS/ic_launcher_foreground.mdpi.png"    "$RES/mipmap-mdpi/ic_launcher_foreground.png"
+          copy_if_exists "$ICONS/ic_launcher_foreground.hdpi.png"    "$RES/mipmap-hdpi/ic_launcher_foreground.png"
+          copy_if_exists "$ICONS/ic_launcher_foreground.xhdpi.png"   "$RES/mipmap-xhdpi/ic_launcher_foreground.png"
+          copy_if_exists "$ICONS/ic_launcher_foreground.xxhdpi.png"  "$RES/mipmap-xxhdpi/ic_launcher_foreground.png"
+          copy_if_exists "$ICONS/ic_launcher_foreground.xxxhdpi.png" "$RES/mipmap-xxxhdpi/ic_launcher_foreground.png"
+
+          # Copy background icons
+          copy_if_exists "$ICONS/ic_launcher_background.mdpi.png"    "$RES/mipmap-mdpi/ic_launcher_background.png"
+          copy_if_exists "$ICONS/ic_launcher_background.hdpi.png"    "$RES/mipmap-hdpi/ic_launcher_background.png"
+          copy_if_exists "$ICONS/ic_launcher_background.xhdpi.png"   "$RES/mipmap-xhdpi/ic_launcher_background.png"
+          copy_if_exists "$ICONS/ic_launcher_background.xxhdpi.png"  "$RES/mipmap-xxhdpi/ic_launcher_background.png"
+          copy_if_exists "$ICONS/ic_launcher_background.xxxhdpi.png" "$RES/mipmap-xxxhdpi/ic_launcher_background.png"
+
+          # Copy adaptive icon XML files
+          copy_if_exists "$ICONS/ic_launcher.xml"       "$RES/mipmap-anydpi-v26/ic_launcher.xml"
+          copy_if_exists "$ICONS/ic_launcher_round.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
