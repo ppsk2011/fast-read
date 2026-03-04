@@ -15,12 +15,12 @@ export function getDeviceName(): string {
   else if (/Android/.test(ua)) os = 'Android';
   else if (/Linux/.test(ua)) os = 'Linux';
 
-  // Detect browser
+  // Detect browser — order matters: Edge/Opera/Chrome all include 'Safari/' too
   let browser = 'Browser';
   if (/Edg\//.test(ua)) browser = 'Edge';
   else if (/OPR\/|Opera/.test(ua)) browser = 'Opera';
-  else if (/Chrome\//.test(ua)) browser = 'Chrome';
   else if (/Firefox\//.test(ua)) browser = 'Firefox';
+  else if (/Chrome\//.test(ua)) browser = 'Chrome';
   else if (/Safari\//.test(ua)) browser = 'Safari';
 
   return `${browser} on ${os}`;

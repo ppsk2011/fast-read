@@ -14,6 +14,7 @@ type SyncTrigger = 'pause' | 'stop' | 'close' | 'manual';
 type SyncStatusListener = (status: SyncStatus) => void;
 
 let syncDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingSyncUserId: string | null = null;
 const DEBOUNCE_MS = 2000;
 
 const listeners = new Set<SyncStatusListener>();
@@ -48,13 +49,22 @@ export const SyncService = {
       return;
     }
 
-    // Debounce rapid calls
+    // Debounce rapid calls — only the last caller within the window runs
+    pendingSyncUserId = userId;
     if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
-    await new Promise<void>((resolve) => {
-      syncDebounceTimer = setTimeout(() => { resolve(); }, reason === 'close' ? 0 : DEBOUNCE_MS);
-    });
 
-    await this._performSync(userId);
+    if (reason === 'close') {
+      // Synchronous-ish path for beforeunload
+      await this._performSync(userId);
+      return;
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      syncDebounceTimer = setTimeout(() => {
+        const uid = pendingSyncUserId ?? userId;
+        this._performSync(uid).then(resolve).catch(reject);
+      }, DEBOUNCE_MS);
+    });
   },
 
   async _performSync(userId: string): Promise<void> {

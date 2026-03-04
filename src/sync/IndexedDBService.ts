@@ -25,17 +25,17 @@ async function getDB(): Promise<IDBPDatabase<ReadSwiftDB>> {
     upgrade(db) {
       // Files store
       if (!db.objectStoreNames.contains('files')) {
-        const filesStore = db.createObjectStore('files', { keyPath: 'id', autoIncrement: false });
+        const filesStore = db.createObjectStore('files', { keyPath: 'id' });
         filesStore.createIndex('by-hash', 'fileHash');
         filesStore.createIndex('by-user', 'userId');
       }
       // Preferences store
       if (!db.objectStoreNames.contains('preferences')) {
-        db.createObjectStore('preferences', { keyPath: 'id', autoIncrement: false });
+        db.createObjectStore('preferences', { keyPath: 'id' });
       }
       // Sessions store
       if (!db.objectStoreNames.contains('sessions')) {
-        const sessionsStore = db.createObjectStore('sessions', { keyPath: 'id', autoIncrement: false });
+        const sessionsStore = db.createObjectStore('sessions', { keyPath: 'id' });
         sessionsStore.createIndex('by-file', 'fileId');
         sessionsStore.createIndex('by-user', 'userId');
       }
