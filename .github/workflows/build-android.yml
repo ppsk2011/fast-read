@@ -48,6 +48,38 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Deploy custom Android icons
+        run: |
+          ICON_SRC="release-package/icons"
+          RES_DIR="android/app/src/main/res"
+
+          # Create mipmap directories
+          mkdir -p \
+            "$RES_DIR/mipmap-mdpi" \
+            "$RES_DIR/mipmap-hdpi" \
+            "$RES_DIR/mipmap-xhdpi" \
+            "$RES_DIR/mipmap-xxhdpi" \
+            "$RES_DIR/mipmap-xxxhdpi" \
+            "$RES_DIR/mipmap-anydpi-v26"
+
+          # Copy foreground icons
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            src="$ICON_SRC/ic_launcher_foreground.${density}.png"
+            [ -f "$src" ] && cp "$src" "$RES_DIR/mipmap-${density}/ic_launcher_foreground.png"
+          done
+
+          # Copy background icons
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            src="$ICON_SRC/ic_launcher_background.${density}.png"
+            [ -f "$src" ] && cp "$src" "$RES_DIR/mipmap-${density}/ic_launcher_background.png"
+          done
+
+          # Copy adaptive icon XML files
+          for xml in ic_launcher.xml ic_launcher_round.xml; do
+            src="$ICON_SRC/$xml"
+            [ -f "$src" ] && cp "$src" "$RES_DIR/mipmap-anydpi-v26/$xml"
+          done
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
