@@ -21,12 +21,50 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReaderContext } from '../context/useReaderContext';
 import ReadingHistory from './ReadingHistory';
 import SessionStats from './SessionStats';
-import AccountSection from './AccountSection';
 import type { WindowSize, Orientation, ChunkMode } from '../context/readerContextDef';
 import { APP_VERSION } from '../version';
+import { IndexedDBService } from '../sync/IndexedDBService';
+import { supabase, isSupabaseConfigured } from '../config/supabase';
+import { useAuth } from '../auth/useAuth';
+import { clearAllRecords } from '../utils/recordsUtils';
+import toast from 'react-hot-toast';
 import styles from '../styles/BurgerMenu.module.css';
 
 const FEEDBACK_FORM_URL = 'https://forms.gle/dCBSTs4SjvhmA3Zh6';
+
+// Named preset highlight colours — 10 options
+const PRESET_COLORS = [
+  { hex: '#e74c3c', name: 'Red' },
+  { hex: '#e67e22', name: 'Orange' },
+  { hex: '#f1c40f', name: 'Yellow' },
+  { hex: '#2ecc71', name: 'Green' },
+  { hex: '#1abc9c', name: 'Teal' },
+  { hex: '#3498db', name: 'Blue' },
+  { hex: '#5856d6', name: 'Indigo' },
+  { hex: '#9b59b6', name: 'Purple' },
+  { hex: '#e91e8c', name: 'Pink' },
+  { hex: '#ffffff', name: 'White' },
+] as const;
+
+function getColorName(hex: string): string {
+  const found = PRESET_COLORS.find(
+    (c) => c.hex.toLowerCase() === hex.toLowerCase(),
+  );
+  return found ? found.name : 'Custom';
+}
+
+// Default preference values (mirrored from ReaderContext)
+const DEFAULT_WPM = 250;
+const DEFAULT_THEME = 'night' as const;
+const DEFAULT_WINDOW_SIZE = 1 as WindowSize;
+const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
+const DEFAULT_ORIENTATION = 'horizontal' as Orientation;
+const DEFAULT_ORP = false;
+const DEFAULT_PUNCT_PAUSE = true;
+const DEFAULT_PERIPHERAL_FADE = false;
+const DEFAULT_LONG_WORD_COMP = true;
+const DEFAULT_MAIN_FONT_SIZE = 100;
+const DEFAULT_CHUNK_MODE = 'fixed' as ChunkMode;
 
 interface BurgerMenuProps {
   onFileSelect: (file: File) => void;
@@ -45,19 +83,34 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     longWordCompensation, setLongWordCompensation,
     mainWordFontSize, setMainWordFontSize,
     chunkMode, setChunkMode,
+    setTheme,
+    setWpm,
+    records,
+    setRecords,
   } = useReaderContext();
+
+  const { user } = useAuth();
+  const [showClearHistoryConfirm, setShowClearHistoryConfirm] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => setOpen(false), []);
 
-  // Close on Escape
+  // Close on Escape — dismiss confirm dialog first, then close menu
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showClearHistoryConfirm) {
+          setShowClearHistoryConfirm(false);
+        } else {
+          close();
+        }
+      }
+    };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [open, close]);
+  }, [open, close, showClearHistoryConfirm]);
 
   // Trap focus inside panel when open (accessibility)
   useEffect(() => {
@@ -72,6 +125,53 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     },
     [close, onFileSelect],
   );
+
+  // Reset all user preferences to their defaults
+  const handleResetDefaults = useCallback(() => {
+    setTheme(DEFAULT_THEME);
+    setWindowSize(DEFAULT_WINDOW_SIZE);
+    setHighlightColor(DEFAULT_HIGHLIGHT_COLOR);
+    setOrientation(DEFAULT_ORIENTATION);
+    setOrpEnabled(DEFAULT_ORP);
+    setPunctuationPause(DEFAULT_PUNCT_PAUSE);
+    setPeripheralFade(DEFAULT_PERIPHERAL_FADE);
+    setLongWordCompensation(DEFAULT_LONG_WORD_COMP);
+    setMainWordFontSize(DEFAULT_MAIN_FONT_SIZE);
+    setChunkMode(DEFAULT_CHUNK_MODE);
+    setWpm(DEFAULT_WPM);
+    // Clear IndexedDB preferences
+    IndexedDBService.savePreferences({
+      theme: DEFAULT_THEME,
+      fontSize: DEFAULT_MAIN_FONT_SIZE,
+      wordWindow: DEFAULT_WINDOW_SIZE,
+      highlightColor: DEFAULT_HIGHLIGHT_COLOR,
+      updatedAt: new Date(),
+    }).catch(() => { /* ignore */ });
+    toast.success('Settings reset to defaults');
+  }, [setTheme, setWindowSize, setHighlightColor, setOrientation, setOrpEnabled,
+      setPunctuationPause, setPeripheralFade, setLongWordCompensation,
+      setMainWordFontSize, setChunkMode, setWpm]);
+
+  // Clear all reading history
+  const handleClearHistory = useCallback(async () => {
+    // Clear localStorage records
+    setRecords(clearAllRecords());
+
+    // Clear IndexedDB sessions
+    try {
+      await IndexedDBService.clearAllSessions();
+    } catch { /* ignore IndexedDB errors */ }
+
+    // If signed in, delete from Supabase
+    if (isSupabaseConfigured && supabase && user?.id) {
+      try {
+        await supabase.from('reading_sessions').delete().eq('user_id', user.id);
+      } catch { /* ignore Supabase errors */ }
+    }
+
+    setShowClearHistoryConfirm(false);
+    toast.success('Reading history cleared');
+  }, [setRecords, user]);
 
   return (
     <>
@@ -115,11 +215,23 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
 
             <div className={styles.drawerBody}>
 
-              <AccountSection />
-
               {/* ── Display ────────────────────────────────────────── */}
               <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Display</h3>
+                <div className={styles.sectionHeader}>
+                  <h3 className={styles.sectionTitle}>Display</h3>
+                  <button
+                    className={styles.sectionActionBtn}
+                    onClick={handleResetDefaults}
+                    title="Reset to Default Settings"
+                    aria-label="Reset to Default Settings"
+                  >
+                    {/* Refresh / reset icon */}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                      <path d="M3 3v5h5"/>
+                    </svg>
+                  </button>
+                </div>
 
                 <label className={styles.row}>
                   <span className={styles.label}>Window size</span>
@@ -150,20 +262,39 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   </select>
                 </label>
 
-                <label className={styles.row}>
+                <div className={styles.row}>
                   <span className={styles.label}>Highlight colour</span>
-                  <div className={styles.colorWrapper}>
+                </div>
+                <div className={styles.colorPalette}>
+                  <div className={styles.colorSwatches}>
+                    {PRESET_COLORS.map((c) => (
+                      <button
+                        key={c.hex}
+                        className={`${styles.colorSwatch}${highlightColor.toLowerCase() === c.hex.toLowerCase() ? ` ${styles.colorSwatchActive}` : ''}`}
+                        style={{ background: c.hex }}
+                        onClick={() => setHighlightColor(c.hex)}
+                        title={c.name}
+                        aria-label={`Highlight colour: ${c.name}`}
+                        aria-pressed={highlightColor.toLowerCase() === c.hex.toLowerCase()}
+                      />
+                    ))}
+                  </div>
+                  <div className={styles.colorLabel}>{getColorName(highlightColor)}</div>
+                  <div className={styles.customColorRow}>
                     <input
                       type="color"
-                      className={styles.colorInput}
+                      className={styles.customColorInput}
                       value={highlightColor}
                       onChange={(e) => setHighlightColor(e.target.value)}
-                      aria-label="Center word highlight colour"
+                      aria-label="Custom highlight colour"
+                      title="Custom colour"
                     />
-                    <span className={styles.colorHex}>{highlightColor}</span>
+                    <span className={styles.customColorLabel}>Custom colour</span>
+                    <span className={styles.customColorHex}>{highlightColor}</span>
                   </div>
-                </label>
+                </div>
 
+                {windowSize === 1 && (
                 <label className={styles.row}>
                   <span className={styles.label}>
                     Main word size
@@ -183,6 +314,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                     <option value={180}>Huge (180%)</option>
                   </select>
                 </label>
+                )}
               </section>
 
               {/* ── Reading features ───────────────────────────── */}
@@ -262,29 +394,64 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 </label>
               </section>
 
+              {/* ── Reading History ─────────────────────────────── */}
+              <section className={styles.section}>
+                <div className={styles.sectionHeader}>
+                  <h3 className={styles.sectionTitle}>
+                    Reading History{records.length > 0 && <span className={styles.sectionCount}> ({records.length})</span>}
+                  </h3>
+                  {records.length > 0 && (
+                  <button
+                    className={`${styles.sectionActionBtn} ${styles.sectionActionBtnDanger}`}
+                    onClick={() => setShowClearHistoryConfirm(true)}
+                    title="Clear Reading History"
+                    aria-label="Clear Reading History"
+                  >
+                    {/* Trash icon */}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/>
+                      <path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </button>
+                  )}
+                </div>
+                {records.length === 0 ? (
+                  <p className={styles.emptyHint}>No reading history yet.</p>
+                ) : (
+                  <ReadingHistory onFileSelect={handleHistoryFileSelect} />
+                )}
+
+                {/* Inline confirmation for clearing history */}
+                {showClearHistoryConfirm && (
+                  <div className={styles.confirmBox} role="dialog" aria-modal="true" aria-label="Confirm clear reading history">
+                    <p className={styles.confirmText}>
+                      Are you sure you want to permanently delete all reading history?
+                    </p>
+                    <div className={styles.confirmActions}>
+                      <button
+                        className={`${styles.linkBtn} ${styles.dangerBtn}`}
+                        onClick={handleClearHistory}
+                      >
+                        Yes, delete all
+                      </button>
+                      <button
+                        className={styles.linkBtn}
+                        onClick={() => setShowClearHistoryConfirm(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </section>
+
               {/* ── Session Analytics ───────────────────────────── */}
               <section className={styles.section}>
                 <h3 className={styles.sectionTitle}>Session Analytics</h3>
                 <SessionStats />
-              </section>
-
-              {/* ── Reading History ─────────────────────────────── */}
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Reading History</h3>
-                <ReadingHistory onFileSelect={handleHistoryFileSelect} />
-              </section>
-
-              {/* ── Links ───────────────────────────────────────── */}
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>More</h3>
-                <a
-                  href={FEEDBACK_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.linkBtn}
-                >
-                  💬 Send Feedback
-                </a>
               </section>
 
               {/* ── About ───────────────────────────────────────── */}
@@ -304,6 +471,14 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                     Techscript
                   </a>
                 </p>
+                <a
+                  href={FEEDBACK_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.linkBtn}
+                >
+                  💬 Send Feedback
+                </a>
               </section>
 
             </div>
