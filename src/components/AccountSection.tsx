@@ -14,7 +14,46 @@ export default function AccountSection() {
   const { user, isAuthenticated, isSupabaseConfigured, signInWithGoogle, signOut } = useAuth();
   const [isSyncing, setIsSyncing] = useState(false);
 
-  if (!isSupabaseConfigured) return null;
+  if (!isSupabaseConfigured) {
+    return (
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Account</h3>
+        <p className={styles.aboutText} style={{ fontSize: '0.8rem', lineHeight: 1.5 }}>
+          Cross-device sync is not configured.
+        </p>
+        <p className={styles.aboutText} style={{ fontSize: '0.8rem', lineHeight: 1.5 }}>
+          You need a free{' '}
+          <a
+            href="https://supabase.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.aboutLink}
+          >
+            Supabase
+          </a>{' '}
+          account and{' '}
+          <a
+            href="https://console.cloud.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.aboutLink}
+          >
+            Google Cloud
+          </a>{' '}
+          credentials. See{' '}
+          <a
+            href="docs/SUPABASE_SETUP.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.aboutLink}
+          >
+            setup guide
+          </a>
+          .
+        </p>
+      </section>
+    );
+  }
 
   const handleSignIn = async () => {
     try {
