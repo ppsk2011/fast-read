@@ -20,7 +20,7 @@ import { useChunkEngine } from './hooks/useChunkEngine';
 import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
 import InputPanel from './components/InputPanel';
-import WordNavigator from './components/WordNavigator';
+import PageNavigator from './components/PageNavigator';
 import ContextPreview from './components/ContextPreview';
 import BurgerMenu from './components/BurgerMenu';
 import ThemeToggle from './components/ThemeToggle';
@@ -363,7 +363,7 @@ export default function App() {
       {/* ── 3. Navigation layer ─────────────────────────────────── */}
       {!isFocused && (
         <section className="navLayer" aria-label="Navigation">
-          <WordNavigator onPrevWord={prevWord} onNextWord={nextWord} />
+          <PageNavigator />
         </section>
       )}
 

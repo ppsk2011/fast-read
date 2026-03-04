@@ -21,7 +21,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReaderContext } from '../context/useReaderContext';
 import ReadingHistory from './ReadingHistory';
 import SessionStats from './SessionStats';
-import AccountSection from './AccountSection';
 import type { WindowSize, Orientation, ChunkMode } from '../context/readerContextDef';
 import { APP_VERSION } from '../version';
 import { IndexedDBService } from '../sync/IndexedDBService';
@@ -194,11 +193,19 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
 
             <div className={styles.drawerBody}>
 
-              <AccountSection />
-
               {/* ── Display ────────────────────────────────────────── */}
               <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Display</h3>
+                <div className={styles.sectionHeader}>
+                  <h3 className={styles.sectionTitle}>Display</h3>
+                  <button
+                    className={styles.sectionActionBtn}
+                    onClick={handleResetDefaults}
+                    title="Reset to Default Settings"
+                    aria-label="Reset to Default Settings"
+                  >
+                    ↺
+                  </button>
+                </div>
 
                 <label className={styles.row}>
                   <span className={styles.label}>Window size</span>
@@ -349,39 +356,22 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
 
               {/* ── Reading History ─────────────────────────────── */}
               <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Reading History</h3>
+                <div className={styles.sectionHeader}>
+                  <h3 className={styles.sectionTitle}>Reading History</h3>
+                  <button
+                    className={`${styles.sectionActionBtn} ${styles.sectionActionBtnDanger}`}
+                    onClick={() => setShowClearHistoryConfirm(true)}
+                    title="Clear Reading History"
+                    aria-label="Clear Reading History"
+                  >
+                    🗑
+                  </button>
+                </div>
                 <ReadingHistory onFileSelect={handleHistoryFileSelect} />
-              </section>
 
-              {/* ── Links ───────────────────────────────────────── */}
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>More</h3>
-                <a
-                  href={FEEDBACK_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.linkBtn}
-                >
-                  💬 Send Feedback
-                </a>
-                <button
-                  className={styles.linkBtn}
-                  onClick={handleResetDefaults}
-                >
-                  ↺ Reset to Default Settings
-                </button>
-                <button
-                  className={`${styles.linkBtn} ${styles.dangerBtn}`}
-                  onClick={() => setShowClearHistoryConfirm(true)}
-                >
-                  🗑 Clear Reading History
-                </button>
-              </section>
-
-              {/* ── Confirmation dialog for clearing history ─────── */}
-              {showClearHistoryConfirm && (
-                <div className={styles.confirmOverlay} role="dialog" aria-modal="true" aria-label="Confirm clear reading history">
-                  <div className={styles.confirmBox}>
+                {/* Inline confirmation for clearing history */}
+                {showClearHistoryConfirm && (
+                  <div className={styles.confirmBox} role="dialog" aria-modal="true" aria-label="Confirm clear reading history">
                     <p className={styles.confirmText}>
                       Are you sure you want to permanently delete all reading history?
                     </p>
@@ -400,8 +390,21 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                       </button>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </section>
+
+              {/* ── Links ───────────────────────────────────────── */}
+              <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>More</h3>
+                <a
+                  href={FEEDBACK_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.linkBtn}
+                >
+                  💬 Send Feedback
+                </a>
+              </section>
 
               {/* ── About ───────────────────────────────────────── */}
               <section className={styles.section}>
