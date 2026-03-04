@@ -85,6 +85,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     chunkMode, setChunkMode,
     setTheme,
     setWpm,
+    records,
     setRecords,
   } = useReaderContext();
 
@@ -393,16 +394,13 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 </label>
               </section>
 
-              {/* ── Session Analytics ───────────────────────────── */}
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Session Analytics</h3>
-                <SessionStats />
-              </section>
-
               {/* ── Reading History ─────────────────────────────── */}
               <section className={styles.section}>
                 <div className={styles.sectionHeader}>
-                  <h3 className={styles.sectionTitle}>Reading History</h3>
+                  <h3 className={styles.sectionTitle}>
+                    Reading History{records.length > 0 && <span className={styles.sectionCount}> ({records.length})</span>}
+                  </h3>
+                  {records.length > 0 && (
                   <button
                     className={`${styles.sectionActionBtn} ${styles.sectionActionBtnDanger}`}
                     onClick={() => setShowClearHistoryConfirm(true)}
@@ -418,8 +416,13 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                       <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                     </svg>
                   </button>
+                  )}
                 </div>
-                <ReadingHistory onFileSelect={handleHistoryFileSelect} />
+                {records.length === 0 ? (
+                  <p className={styles.emptyHint}>No reading history yet.</p>
+                ) : (
+                  <ReadingHistory onFileSelect={handleHistoryFileSelect} />
+                )}
 
                 {/* Inline confirmation for clearing history */}
                 {showClearHistoryConfirm && (
@@ -443,6 +446,12 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                     </div>
                   </div>
                 )}
+              </section>
+
+              {/* ── Session Analytics ───────────────────────────── */}
+              <section className={styles.section}>
+                <h3 className={styles.sectionTitle}>Session Analytics</h3>
+                <SessionStats />
               </section>
 
               {/* ── About ───────────────────────────────────────── */}

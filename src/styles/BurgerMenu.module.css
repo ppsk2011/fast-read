@@ -138,6 +138,19 @@
   margin-bottom: 0.1rem;
 }
 
+.sectionCount {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-faint, #444);
+}
+
+.emptyHint {
+  font-size: 0.8rem;
+  color: var(--text-faint, #444);
+  font-style: italic;
+}
+
 /* ── Section header row (title + inline action) ─────────────────── */
 
 .sectionHeader {

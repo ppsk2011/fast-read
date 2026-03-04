@@ -1,55 +1,10 @@
 /* ReadingHistory.module.css */
 
-.historyDetails {
-  padding: 0.875rem 1rem;
-  background: var(--bg-panel, #111);
-  border-radius: 14px;
-  width: 100%;
-  border: 1px solid var(--border, #1e1e1e);
-}
-
-.heading {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-muted, #777);
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  user-select: none;
-  padding: 0.1rem 0;
-  letter-spacing: 0.02em;
-}
-
-/* Hide default triangle in all browsers */
-.heading::-webkit-details-marker { display: none; }
-.heading::marker { display: none; }
-
-/* Chevron via CSS */
-.heading::after {
-  content: '›';
-  font-size: 1rem;
-  color: var(--text-faint, #444);
-  margin-left: auto;
-  transition: transform 0.2s;
-  transform: rotate(90deg);
-}
-
-details:not([open]) .heading::after {
-  transform: rotate(0deg);
-}
-
-.heading:hover {
-  color: var(--text, #aaa);
-}
-
 .list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 0.75rem;
 }
 
 .item {

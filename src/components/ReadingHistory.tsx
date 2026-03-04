@@ -56,8 +56,7 @@ export default function ReadingHistory({ onFileSelect }: ReadingHistoryProps) {
   if (records.length === 0) return null;
 
   return (
-    <details className={styles.historyDetails}>
-      <summary className={styles.heading}>📚 Reading History ({records.length})</summary>
+    <>
       <input
         ref={fileInputRef}
         type="file"
@@ -116,6 +115,6 @@ export default function ReadingHistory({ onFileSelect }: ReadingHistoryProps) {
           );
         })}
       </ul>
-    </details>
+    </>
   );
 }
