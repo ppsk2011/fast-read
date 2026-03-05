@@ -15,7 +15,7 @@ export default defineConfig({
       manifest: {
         name: 'ReadSwift — RSVP Speed Reader',
         short_name: 'ReadSwift',
-        description: 'Read PDFs and EPUBs 2× faster with RSVP — one word at a time. No account, no data collection.',
+        description: 'RSVP speed reader: Read PDF, EPUB, DOCX, TXT, MD, HTML, RTF, SRT at 60-1500 WPM. Intelligent chunking, cross-device sync, offline-first. Free, no ads, no tracking.',
         theme_color: '#060606',
         background_color: '#060606',
         display: 'standalone',

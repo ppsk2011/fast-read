@@ -100,7 +100,7 @@ ReadSwift: Speed Reader
 ### Short description (62 chars)
 
 ```
-Read PDFs and EPUBs 2× faster with RSVP. No account, no data.
+PDF, EPUB, DOCX, TXT, MD, HTML, RTF, SRT. Speed reading 60-1500 WPM. No account.
 ```
 
 ---

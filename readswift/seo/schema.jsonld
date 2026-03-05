@@ -9,8 +9,8 @@
       "@id": "https://readswift.techscript.ca/#app",
       "name": "ReadSwift",
       "alternateName": ["ReadSwift: Speed Reader", "ReadSwift RSVP Reader"],
-      "description": "ReadSwift is a free RSVP speed-reading Progressive Web App that displays one word at a time at a fixed focal point. It processes PDF and EPUB files locally on the user's device, requires no account, collects no data, and functions fully offline. Users can read at speeds from 60 to 1000 words per minute. Developed by Techscript Limited.",
-      "abstract": "A browser-based Rapid Serial Visual Presentation (RSVP) speed-reading tool for PDF and EPUB documents. Zero backend. Zero data collection. Works offline.",
+      "description": "ReadSwift is a free RSVP speed-reading Progressive Web App that displays one word at a time at a fixed focal point. It processes PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, and SRT files locally on the user's device, requires no account, collects no data, and functions fully offline. Users can read at speeds from 60 to 1500 words per minute. Developed by Techscript Limited.",
+      "abstract": "A browser-based Rapid Serial Visual Presentation (RSVP) speed-reading tool for PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, and SRT documents. Zero backend. Zero data collection. Works offline.",
       "url": "https://readswift.techscript.ca",
       "sameAs": [
         "https://play.google.com/store/apps/details?id=ca.techscript.readswift",
@@ -44,16 +44,24 @@
       ],
       "featureList": [
         "Rapid Serial Visual Presentation (RSVP) reading method",
-        "PDF (.pdf) file support via Mozilla PDF.js",
-        "EPUB (.epub) file support via epub.js",
-        "Adjustable reading speed: 60 to 1000 words per minute",
+        "8 file format support: PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, SRT",
+        "Adjustable reading speed: 60 to 1500 words per minute",
+        "Multi-word window: 1-5 words simultaneously",
+        "Intelligent phrase chunking for better comprehension",
+        "ORP (Optimal Recognition Point) highlighting",
+        "4 reading profiles: Max Speed, Balanced, Deep Focus, Comprehension",
+        "Advanced reading features: punctuation pause, long word compensation, peripheral fade",
+        "Customizable appearance: 10+ colors, day/night themes, font size 80-180%",
         "Fixed focal point word display",
         "Context preview panel showing surrounding text",
         "Page and chapter navigation",
+        "Word-level step and jump navigation",
         "Automatic reading position saving per document",
-        "Reading history with per-file progress tracking",
+        "Reading history with per-file progress tracking (up to 20 files)",
+        "Session analytics: words read, active time, effective WPM",
+        "Cross-device sync via Google OAuth (optional)",
         "Full offline capability — no internet required after install",
-        "No user account required",
+        "No user account required (auth optional)",
         "No data collection, analytics, or tracking",
         "Local file processing — files are never uploaded",
         "Progressive Web App — installable on any platform",
@@ -95,7 +103,7 @@
       "@id": "https://readswift.techscript.ca/#website",
       "url": "https://readswift.techscript.ca",
       "name": "ReadSwift by Techscript Limited",
-      "description": "ReadSwift — RSVP speed reading for PDF and EPUB files. Free, no account, no data collection.",
+      "description": "ReadSwift — RSVP speed reading for PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, and SRT files. Free, no account, no data collection.",
       "publisher": {
         "@type": "Organization",
         "@id": "https://techscript.ca/#org"
@@ -137,7 +145,7 @@
           "name": "What is ReadSwift?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "ReadSwift is a free speed-reading app that uses Rapid Serial Visual Presentation (RSVP) to display one word at a time at a fixed point on screen. Users load their own PDF or EPUB files and read at speeds from 60 to 1000 words per minute. The app requires no account, collects no data, and processes files locally."
+            "text": "ReadSwift is a free speed-reading app that uses Rapid Serial Visual Presentation (RSVP) to display one word at a time at a fixed point on screen. Users load their own PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT files and read at speeds from 60 to 1500 words per minute. The app requires no account, collects no data, and processes files locally."
           }
         },
         {
@@ -153,7 +161,7 @@
           "name": "How fast can I read with ReadSwift?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "ReadSwift supports speeds from 60 to 1000 words per minute. Most new users start at 250–350 WPM. With regular practice, 400–600 WPM is achievable with maintained comprehension. ReadSwift adjusts to your pace in real time."
+            "text": "ReadSwift supports speeds from 60 to 1500 words per minute. Most new users start at 250–350 WPM. With regular practice, 400–600 WPM is achievable with maintained comprehension. ReadSwift adjusts to your pace in real time."
           }
         },
         {
@@ -169,7 +177,7 @@
           "name": "What file types does ReadSwift support?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "ReadSwift supports PDF (.pdf) and EPUB (.epub) files. Files are loaded directly from your device. No cloud storage integration is required."
+            "text": "ReadSwift supports 8 file formats: PDF, EPUB, DOCX (Microsoft Word), TXT (plain text), Markdown (.md), HTML web pages, RTF (Rich Text Format), and SRT subtitle files. All files are processed locally on your device—no upload required."
           }
         },
         {
