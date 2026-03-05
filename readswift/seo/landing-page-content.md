@@ -19,7 +19,7 @@ One Word at a Time.
 ### Subheadline
 
 ```
-ReadSwift uses the RSVP method to eliminate eye movement — the hidden bottleneck that slows most readers. Load any PDF or EPUB and start reading at up to 1000 words per minute.
+ReadSwift uses the RSVP method to eliminate eye movement — the hidden bottleneck that slows most readers. Load any PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT file and start reading at up to 1500 words per minute.
 ```
 
 ### Hero CTA
@@ -40,7 +40,7 @@ No account. No upload. Works in your browser. Runs offline.
 ## 2. Social Proof Bar (beneath hero)
 
 ```
-Free  ·  No account  ·  No data collected  ·  Works offline  ·  PDF + EPUB support
+Free  ·  No account  ·  No data collected  ·  Works offline  ·  8 file formats supported
 ```
 
 ---
@@ -88,7 +88,7 @@ This technique — Rapid Serial Visual Presentation (RSVP) — is backed by deca
 reading science research. It works because it removes the physical overhead of reading 
 without reducing comprehension.
 
-Load a PDF or EPUB from your device. Set your speed. Press play. That's it.
+Load a file from your device. Set your speed. Press play. That's it.
 ```
 
 ---
@@ -106,14 +106,14 @@ How ReadSwift Works
 **Step 1 — Load your document**
 
 ```
-Tap "Open file" and select any PDF or EPUB from your device. 
+Load a PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT file from your device. 
 ReadSwift extracts the text entirely on your device — nothing is uploaded.
 ```
 
 **Step 2 — Set your speed**
 
 ```
-Choose your reading speed: 60 to 1000 words per minute. 
+Choose your reading speed: 60 to 1500 words per minute. 
 Start at 300 WPM if you're new to RSVP. 
 Increase by 50 WPM per session as your pace improves.
 ```
@@ -146,16 +146,23 @@ Everything You Need. Nothing You Don't.
 ### Feature list
 
 ```
-PDF and EPUB support          — Load any file from your device
-60–1000 WPM speed control     — Fine-tune with a real-time slider
-Context preview               — See the surrounding text while reading
-Chapter and page navigation   — Jump to any position in your document
-Progress auto-save            — Every document remembered
-Reading history               — Track all your files and progress
-Offline capable               — No internet required after install
-No account                    — Open and use immediately
-No data collection            — Nothing leaves your device
-Free                          — No subscription, no ads
+8 file format support       — PDF, EPUB, DOCX, TXT, MD, HTML, RTF, SRT
+60–1500 WPM speed control  — Fine-tune with logarithmic slider
+Multi-word window          — Display 1-5 words simultaneously
+Intelligent phrase chunking — Natural language grouping
+ORP highlighting           — Optimal Recognition Point for faster recognition
+Reading profiles           — 4 presets for different reading modes
+Advanced features          — Punctuation pause, long word delay, peripheral fade
+Context preview            — See surrounding paragraph while reading
+Page & word navigation     — Jump to any position instantly
+Progress auto-save         — Every document remembered
+Reading history            — Track up to 20 files with progress %
+Session analytics          — Words read, active time, effective WPM
+Cross-device sync          — Optional Google sign-in for cloud backup
+Offline capable            — No internet required after install
+No account required        — Use immediately (auth optional)
+No data collection         — All processing on your device
+Free                       — No subscription, no ads
 ```
 
 ---
@@ -171,9 +178,17 @@ Frequently Asked Questions
 **Q: What file formats does ReadSwift support?**
 
 ```
-A: ReadSwift supports PDF (.pdf) and EPUB (.epub) files. 
-   Files must be loaded from your local device — ReadSwift does not connect 
-   to cloud storage services or download from URLs.
+A: ReadSwift supports 8 file formats:
+   • PDF (.pdf)
+   • EPUB (.epub)
+   • DOCX (.docx) — Microsoft Word
+   • TXT (.txt) — Plain text
+   • Markdown (.md)
+   • HTML (.html, .htm) — Web pages
+   • RTF (.rtf) — Rich Text Format
+   • SRT (.srt) — Subtitle files
+   
+   Files must be loaded from your local device (up to 100 MB).
 ```
 
 **Q: Does ReadSwift work offline?**
@@ -217,10 +232,13 @@ A: RSVP stands for Rapid Serial Visual Presentation. Instead of displaying a ful
 **Q: How fast can I actually read with ReadSwift?**
 
 ```
-A: Most new users start at 250–350 WPM. With one week of regular use, 
-   400–500 WPM is achievable for most readers with full comprehension. 
-   Expert-level RSVP users reach 700–900 WPM for familiar subject matter. 
-   ReadSwift supports up to 1000 WPM.
+A: ReadSwift supports speeds from 60 to 1500 words per minute.
+   • Beginners: Start at 200-300 WPM
+   • Intermediate: 400-600 WPM achievable within 1 week
+   • Advanced: 700-1000+ WPM for familiar content
+   • Max Speed profile: 600 WPM preset with minimal pauses
+   
+   The app includes 4 reading profiles and adaptive speed calibration.
 ```
 
 **Q: What Android version is required?**

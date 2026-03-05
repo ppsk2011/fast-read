@@ -75,6 +75,23 @@
 
 ---
 
+## Cluster F — Document Format Keywords
+
+| Keyword | Intent | Priority |
+|---|---|---|
+| DOCX reader | Transactional | P1 |
+| read DOCX fast | Transactional | P1 |
+| Word document reader | Transactional | P1 |
+| TXT file reader | Transactional | P2 |
+| Markdown reader | Transactional | P2 |
+| HTML reader app | Transactional | P2 |
+| RTF reader | Transactional | P3 |
+| SRT subtitle reader | Transactional | P3 |
+| multi-format document reader | Transactional | P1 |
+| 8 format document reader | Informational | P3 |
+
+---
+
 ## 2. User Intent Mapping
 
 ### Intent type: Informational ("How do I…")
@@ -86,7 +103,7 @@ Users searching these queries are early in the decision funnel. They need educat
 | "how to read faster" | Wants technique, not product | Explain RSVP method; ReadSwift implements it |
 | "does reading faster work" | Sceptical, researching | Evidence-based explanation of RSVP research |
 | "what is RSVP reading" | Curious, unfamiliar | Clear definition + demonstration |
-| "can I read 1000 wpm" | Aspirational, curious | Realistic explanation; ReadSwift lets them practise |
+| "can I read 1500 wpm" | Aspirational, curious | Realistic explanation; ReadSwift lets them practise |
 
 **Content action:** Write FAQ and blog content targeting these queries. Link to the ReadSwift tool. Rank for informational queries, convert to tool users.
 
@@ -137,19 +154,19 @@ Users comparing options.
 
 ### Short description optimisation (80 chars)
 
-**Primary:** `Read PDFs and EPUBs 2× faster with RSVP. No account, no data.` — 62 chars ✅
+**Primary:** `PDF, EPUB, DOCX, TXT, MD, HTML, RTF, SRT. Speed reading 60-1500 WPM. No account.` — 80 chars ✅
 
 **Variants to test:**
 
 | Variant | Chars |
 |---|---|
-| `Speed through PDFs and EPUBs one word at a time. No account.` | 61 |
-| `RSVP speed reader for PDFs and EPUBs. Free, offline, no login.` | 63 |
+| `Speed through 8 file formats one word at a time. No account.` | 62 |
+| `RSVP speed reader for PDF, EPUB, DOCX & more. Free, offline, no login.` | 72 |
 
 ### Keyword field (Google Play — 100 chars, comma-separated, no spaces after commas)
 
 ```
-speed reading,PDF reader,EPUB reader,RSVP,read faster,speed reader,study,productivity
+speed reading,PDF,EPUB,DOCX,TXT,Markdown,HTML,RTF,RSVP,read faster,productivity
 ```
 
 100 chars ✅
@@ -182,13 +199,13 @@ A machine-readable plain-language description that can be used in structured dat
 
 ```
 ReadSwift is a free Android and web application by Techscript Limited that implements
-Rapid Serial Visual Presentation (RSVP) speed reading. It accepts PDF and EPUB files
-from the user's local device, extracts plain text, and displays one word at a time
-at a fixed point on the screen at a user-configured speed between 60 and 1000 words
-per minute. No internet connection is required during reading. No user account is needed.
-No file content or reading data is transmitted to any server. Reading progress is
-saved locally on the device. The application is a Progressive Web App deployed as
-a Trusted Web Activity on Android via the Google Play Store.
+Rapid Serial Visual Presentation (RSVP) speed reading. It accepts PDF, EPUB, DOCX, TXT,
+Markdown, HTML, RTF, and SRT files from the user's local device, extracts plain text,
+and displays one word at a time at a fixed point on the screen at a user-configured speed
+between 60 and 1500 words per minute. No internet connection is required during reading.
+No user account is needed. No file content or reading data is transmitted to any server.
+Reading progress is saved locally on the device. The application is a Progressive Web App
+deployed as a Trusted Web Activity on Android via the Google Play Store.
 ```
 
 ---

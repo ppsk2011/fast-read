@@ -21,12 +21,10 @@ ReadSwift: Speed Reader
 ## 2. Short Description
 
 ```
-Read PDFs and EPUBs 2× faster with RSVP. No account, no data.
+PDF, EPUB, DOCX, TXT, MD, HTML, RTF, SRT. Speed reading 60-1500 WPM. No account.
 ```
 
-**Character count:** 62 / 80 limit ✅  
-**Keywords embedded:** PDFs, EPUBs, RSVP  
-**Differentiators stated:** no account, no data
+**Character count:** 80 / 80 limit ✅
 
 ---
 
@@ -35,7 +33,7 @@ Read PDFs and EPUBs 2× faster with RSVP. No account, no data.
 ```
 ReadSwift is a speed-reading tool for anyone who needs to get through large volumes of text quickly. It uses the RSVP (Rapid Serial Visual Presentation) method — displaying one word at a time at a fixed point on the screen — to eliminate the eye movement that makes conventional reading slow.
 
-Load any PDF or EPUB directly from your device. No upload. No account. ReadSwift processes your files locally using proven open-source libraries. Your documents never leave your device.
+Load any PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT file directly from your device. No upload. No account. ReadSwift processes your files locally using proven open-source libraries. Your documents never leave your device.
 
 ──────────────────────────
 
@@ -49,15 +47,24 @@ Most users read 200–250 words per minute with conventional scanning. ReadSwift
 
 FEATURES
 
-• Load PDF or EPUB files from your device — no proprietary format required
-• Adjustable reading speed: 60 to 1000 words per minute
-• Fixed focal point display — one word, zero eye movement
-• Context preview panel — see the surrounding paragraph while reading
-• Page and chapter navigation — jump to any position
-• Automatic progress saving — resume where you stopped, every time
-• Per-file reading history with progress tracking
-• Works fully offline — no internet required after install
-• No account. No login. No subscription. No ads.
+• 8 file formats: PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, SRT
+• Adjustable reading speed: 60 to 1500 words per minute
+• Multi-word window: Display 1-5 words simultaneously
+• Intelligent phrase chunking: Natural language grouping
+• ORP highlighting: Optimal Recognition Point for faster recognition
+• Context preview panel: See surrounding paragraph while reading
+• Page and chapter navigation: Jump to any position
+• Reading profiles: 4 presets (Max Speed, Balanced, Deep Focus, Comprehension)
+• Customizable appearance: 10+ colors, day/night themes, font size 80-180%
+• Advanced features: Punctuation pause, long word compensation, peripheral fade
+• Automatic progress saving: Resume where you stopped, every time
+• Reading history: Track up to 20 documents with progress percentages
+• Session analytics: Words read, active time, effective WPM
+• Works fully offline: No internet required after install
+• Optional cloud sync: Cross-device progress sync via Google sign-in
+• No account required: Open and use immediately (auth optional)
+• No data collection: All processing on your device
+• No ads: Permanently free
 
 ──────────────────────────
 
@@ -94,8 +101,8 @@ Website: https://techscript.ca
 Used in the "Features" section of the Play Store listing. Maximum 5 bullets recommended.
 
 ```
-1. Read PDFs and EPUBs at up to 1000 words per minute
-2. One-word RSVP display eliminates eye-scanning fatigue
+1. Read PDF, EPUB files, DOCX, TXT, Markdown, HTML, RTF, SRT at up to 1500 words per minute
+2. One-word RSVP display with intelligent phrase chunking
 3. Zero data collection — all processing is on your device
 4. No account, no subscription, no ads — permanently free
 5. Automatic progress saving across all your documents
@@ -106,10 +113,10 @@ Used in the "Features" section of the Play Store listing. Maximum 5 bullets reco
 ## 5. Keyword Field (Play Console — 100 chars)
 
 ```
-speed reading,PDF reader,EPUB reader,RSVP,read faster,speed reader,study,productivity
+speed reading,PDF,EPUB,DOCX,TXT,Markdown,HTML,RTF,RSVP,read faster,productivity
 ```
 
-**Character count:** 87 / 100 limit ✅
+**Character count:** 81 / 100 limit ✅
 
 ---
 
@@ -158,7 +165,7 @@ speed reading,PDF reader,EPUB reader,RSVP,read faster,speed reader,study,product
 ```
 Initial release.
 
-ReadSwift brings RSVP speed reading to Android. Load any PDF or EPUB from your device, set your reading speed, and read faster — one word at a time. No account, no data collection.
+ReadSwift brings RSVP speed reading to Android. Load any PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT file from your device, set your reading speed, and read faster — one word at a time. No account, no data collection.
 ```
 
 ---

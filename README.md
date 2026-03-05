@@ -2,7 +2,7 @@
 
 **by [TechScript Limited](https://techscript.ca)**
 
-A production-quality React web application that implements **Rapid Serial Visual Presentation (RSVP)** reading for PDF and EPUB files. All processing runs entirely in the browser — no backend required.
+A production-quality React web application that implements **Rapid Serial Visual Presentation (RSVP)** reading for PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, and SRT files. All processing runs entirely in the browser — no backend required.
 
 ---
 
@@ -26,18 +26,73 @@ Once configured, a **Sign In with Google** button appears in the burger menu. Wi
 
 ## Features
 
-- **Upload** PDF or EPUB files (up to 100 MB)
-- **Display** one word at a time in a fixed focal position
-- **Adjustable speed** via logarithmic slider (60–1000 WPM)
-- **Controls:** Play, Pause, Faster, Slower, Restart
-- **Word navigation:** step or jump to any word by number
-- **Page/chapter navigation:** jump to any page (PDF) or chapter (EPUB)
-- **Context preview:** side-by-side scrollable text panel with the current word highlighted and clickable
-- **Reading history:** automatically records each file you open, saves your progress, and restores your last position when you re-upload the same file
+### File Format Support (8 formats)
+- **PDF** (.pdf) — Full text extraction via PDF.js
+- **EPUB** (.epub) — Chapter-by-chapter parsing via epub.js
+- **DOCX** (.docx) — Microsoft Word document support
+- **TXT** (.txt) — Plain text files
+- **Markdown** (.md) — GitHub-flavored markdown
+- **HTML** (.html, .htm) — Web pages and articles
+- **RTF** (.rtf) — Rich Text Format
+- **SRT** (.srt) — Subtitle files
+
+### Core RSVP Reading
+- **Rapid Serial Visual Presentation:** One word at a time at fixed focal point
+- **Variable Speed:** 60–1500 WPM with logarithmic slider
+- **Multi-Word Window:** Display 1-5 words simultaneously
+- **Dual Orientation:** Horizontal or vertical word layout
+- **Intelligent Chunking:** Phrase-based grouping for better comprehension
+- **ORP Highlighting:** Optimal Recognition Point for faster word recognition
+- **Context Preview:** See surrounding paragraph while reading
+
+### Advanced Reading Features
+- **Punctuation Pause:** Extra delay after periods, commas
+- **Long Word Compensation:** Extended display for words >8 characters
+- **Peripheral Fade:** Dim side words for sharper focus
+- **Customizable Font Size:** 80% – 180% scaling
+- **10+ Highlight Colors:** Preset + custom color picker
+- **Day/Night Themes:** Auto-switching dark mode
+
+### Navigation & Progress
+- **Page/Chapter Navigation:** Jump to any section instantly
+- **Word-Level Controls:** Step forward/backward, jump to specific word
+- **Clickable Progress Bar:** Jump to any position in document
+- **Auto-Save Progress:** Resume exactly where you left off
+- **Reading History:** Track up to 20 documents with progress percentages
+- **Session Analytics:** Words read, active time, effective WPM
+
+### Reading Profiles (Quick Presets)
+- **Max Speed:** 600 WPM, single word, no pauses
+- **Balanced:** 250 WPM, 3-word window, normal pauses (default)
+- **Deep Focus:** 180 WPM, strong peripheral fade
+- **Comprehension:** 150 WPM, intelligent phrase grouping
+
+### Input Methods
+- **File Upload:** Drag & drop or click to select (up to 100 MB)
+- **Paste Text:** Direct text input via paste panel
+- **URL Fetch:** Extract readable content from web articles
+
+### Platform & Deployment
+- **Progressive Web App:** Installable on any device
+- **Android App:** Available via Google Play (Capacitor)
+- **iOS App:** Available via App Store (Capacitor)
+- **Fully Offline:** No internet required after installation
+- **Local Processing:** All parsing runs in-browser
 - **Keyboard shortcuts:** `Space` = Play/Pause, `←/→` = Prev/Next word, `↑/↓` = Faster/Slower
-- **Persists** current word index and WPM to localStorage (resume reading after refresh)
-- **Progressive Web App (PWA):** installable on any device, works offline
-- **Native mobile:** Android & iOS via Capacitor
+
+### Authentication & Sync (Optional)
+- **Google OAuth:** Sign in with Google
+- **Cross-Device Sync:** Resume reading on any device
+- **Cloud Backup:** Reading history & preferences backed up to Supabase
+- **Offline-First:** Works fully without account
+- **Privacy-Respecting:** Data synced only when authenticated
+
+### Privacy & Security
+- **No Data Collection:** Zero analytics, no tracking
+- **Local Processing:** Files never uploaded to server
+- **No Ads:** Completely ad-free
+- **No Account Required:** Use immediately without registration (auth optional)
+- **Open Source:** Full transparency
 
 ---
 

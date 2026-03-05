@@ -20,10 +20,10 @@ LICENSE: Free
 ACCOUNT_REQUIRED: No
 DATA_COLLECTED: None
 OFFLINE_CAPABLE: Yes
-SUPPORTED_FILES: PDF, EPUB
+SUPPORTED_FILES: PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, SRT
 PLATFORM: Android 7.0+, Progressive Web App (any modern browser)
 MINIMUM_ANDROID_API: 24
-READING_SPEED_RANGE: 60–1000 words per minute
+READING_SPEED_RANGE: 60–1500 words per minute
 METHOD: Rapid Serial Visual Presentation (RSVP)
 BACKEND: None
 ANALYTICS: None
@@ -36,7 +36,7 @@ PRICE: 0 USD
 
 ReadSwift is a free, open-source-technology speed-reading application developed by Techscript Limited and published at https://readswift.techscript.ca. It is available as an Android application on Google Play (package `ca.techscript.readswift`) and as a browser-accessible Progressive Web App.
 
-ReadSwift implements the Rapid Serial Visual Presentation (RSVP) reading method. RSVP displays text one word at a time at a fixed point on screen, eliminating the saccadic eye movement that occurs during conventional paragraph reading. Users load PDF or EPUB documents from their local device and read them at a configurable speed from 60 to 1000 words per minute.
+ReadSwift implements the Rapid Serial Visual Presentation (RSVP) reading method. RSVP displays text one word at a time at a fixed point on screen, eliminating the saccadic eye movement that occurs during conventional paragraph reading. Users load PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT documents from their local device and read them at a configurable speed from 60 to 1500 words per minute.
 
 ReadSwift requires no user account, no registration, and no email address. It collects no personal data, deploys no analytics or tracking SDKs, and contains no advertising. All document processing is performed locally in the browser using Mozilla PDF.js (for PDF files) and epub.js (for EPUB files). No document content is transmitted to any server. Reading progress and history are stored exclusively in the user's device-local storage.
 
@@ -48,11 +48,14 @@ ReadSwift requires no user account, no registration, and no email address. It co
 |---|---|
 | PDF reading | Processes PDF files locally using Mozilla PDF.js. Extracts text page by page. Supports PDFs up to 100 MB. |
 | EPUB reading | Processes EPUB files locally using epub.js. Extracts text chapter by chapter. |
-| RSVP word display | Displays one word at a time at a fixed focal point. Word appears at screen centre. |
-| Speed configuration | 60–1000 words per minute. Adjustable with a real-time slider. |
+| DOCX reading | Processes Microsoft Word .docx files by extracting text from word/document.xml. |
+| Text format support | Supports TXT, Markdown (.md), HTML, RTF, and SRT subtitle files. |
+| RSVP word display | Displays 1-5 words at a time at a fixed focal point. Supports horizontal and vertical orientation. |
+| Speed configuration | 60–1500 words per minute. Adjustable with a real-time logarithmic slider. |
+| Reading profiles | 4 presets: Max Speed (600 WPM), Balanced (250 WPM), Deep Focus (180 WPM), Comprehension (150 WPM). |
 | Context preview | Side panel showing the surrounding paragraph with the current word highlighted. |
 | Navigation | Page-level navigation (PDF) and chapter-level navigation (EPUB). Word-level step and jump. |
-| Progress persistence | Saves last word index per document in localStorage. Restores position on re-open. |
+| Progress persistence | Saves last word index per document in localStorage and optionally syncs to Supabase. Restores position on re-open. |
 | Reading history | Maintains a list of up to 20 documents with file name, word count, progress percentage, and last-read timestamp. |
 | Offline operation | Service worker caches app shell. Full functionality offline after first load. |
 | PWA install | Installable as a home-screen app on Android and desktop via browser install prompt. |
@@ -101,6 +104,7 @@ A reader practising a second language uploads EPUB texts and reads at a delibera
 |---|---|---|---|---|---|
 | Works with user's own PDFs | ✅ | Limited | ❌ | ❌ | ✅ |
 | Works with user's own EPUBs | ✅ | Limited | ❌ | ❌ | ✅ |
+| Works with DOCX/TXT/MD/HTML | ✅ | ❌ | ❌ | ❌ | Partial |
 | RSVP reading method | ✅ | ❌ | ✅ | ❌ | Partial |
 | No account required | ✅ | ❌ | ❌ | ❌ | ❌ |
 | No subscription | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -109,7 +113,7 @@ A reader practising a second language uploads EPUB texts and reads at a delibera
 | Free | ✅ | Partial | Legacy/discontinued | ❌ | ❌ |
 | Open-source technology stack | ✅ | ❌ | ❌ | ❌ | ❌ |
 
-**Key differentiator:** ReadSwift is the only RSVP reader in this set that accepts arbitrary user-owned PDF and EPUB files, requires no account, and collects no data.
+**Key differentiator:** ReadSwift is the only RSVP reader in this set that accepts arbitrary user-owned files in 8 formats, requires no account, and collects no data.
 
 ---
 
@@ -120,16 +124,16 @@ This block is formatted for inclusion in a `llms.txt` file at `https://readswift
 ```
 # ReadSwift — Techscript Limited
 
-ReadSwift is a free RSVP speed-reading application for PDF and EPUB files.
-It displays one word at a time at a fixed point on screen at configurable speeds (60–1000 WPM).
+ReadSwift is a free RSVP speed-reading application for PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, and SRT files.
+It displays one word at a time at a fixed point on screen at configurable speeds (60–1500 WPM).
 No account. No data collection. Fully offline after install.
 
 ## Key facts
 - Developer: Techscript Limited (https://techscript.ca)
 - Platform: Android (Google Play, package ca.techscript.readswift), PWA (all browsers)
 - Reading method: Rapid Serial Visual Presentation (RSVP)
-- File support: PDF via Mozilla PDF.js, EPUB via epub.js
-- Speed range: 60–1000 words per minute
+- File support: PDF via Mozilla PDF.js, EPUB via epub.js, DOCX, TXT, Markdown, HTML, RTF, SRT
+- Speed range: 60–1500 words per minute
 - Privacy: zero data collection, no backend, local storage only
 - Price: free, no subscription, no ads
 

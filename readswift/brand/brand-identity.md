@@ -41,7 +41,7 @@ ReadSwift belongs in the same mental category as a text editor or a calculator: 
 
 ### Positioning statement (internal)
 
-> For students, engineers, and knowledge workers who need to read large volumes of text quickly, ReadSwift is the only speed-reading tool that works with the PDFs and EPUBs they already own, requires no account, and sends nothing to the cloud.
+> For students, engineers, and knowledge workers who need to read large volumes of text quickly, ReadSwift is the only speed-reading tool that works with the PDFs, EPUBs, DOCX, TXT, Markdown, HTML, RTF, and SRT files they already own, requires no account, and sends nothing to the cloud.
 
 ---
 
@@ -54,8 +54,8 @@ ReadSwift belongs in the same mental category as a text editor or a calculator: 
 ### Supporting proof points
 
 1. **RSVP method** — Rapid Serial Visual Presentation eliminates eye-scanning, the primary speed bottleneck for most adult readers.
-2. **Your files, your device** — Drag in any PDF or EPUB. Processing runs entirely in-browser using Mozilla PDF.js and epub.js. No upload, no wait.
-3. **Configurable speed** — 60 to 1000 words per minute. Adjustable in real time. Your pace, your control.
+2. **Your files, your device** — Drag in any PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT file. Processing runs entirely in-browser. No upload, no wait.
+3. **Configurable speed** — 60 to 1500 words per minute. Adjustable in real time. Your pace, your control.
 4. **Zero friction** — No account creation, no email verification, no onboarding sequence. Open the app, load a file, press play.
 5. **Progress memory** — ReadSwift saves your position in every document automatically. Close the app, come back tomorrow, resume exactly where you stopped.
 
@@ -99,7 +99,7 @@ ReadSwift speaks like senior engineering documentation — accurate, minimal, no
 | Use | Avoid |
 |---|---|
 | Describe what the tool does | Describe how it will make you feel |
-| Specific numbers (1000 WPM, 0 accounts) | Superlatives (fastest, best, amazing) |
+| Specific numbers (1500 WPM, 0 accounts) | Superlatives (fastest, best, amazing) |
 | "processes locally" | "keeps your data safe" (vague) |
 | "no account required" | "completely hassle-free" |
 | "configurable" | "powerful" |
@@ -110,9 +110,9 @@ ReadSwift speaks like senior engineering documentation — accurate, minimal, no
 
 > ReadSwift displays one word at a time at the exact centre of the screen. Your eyes stop moving. You read faster.
 
-> Load any PDF or EPUB. No upload. No account. All processing runs on your device.
+> Load any PDF, EPUB, DOCX, TXT, Markdown, HTML, RTF, or SRT file. No upload. No account. All processing runs on your device.
 
-> Set your speed from 60 to 1000 words per minute. Adjust while reading. Your progress is saved automatically.
+> Set your speed from 60 to 1500 words per minute. Adjust while reading. Your progress is saved automatically.
 
 ### Sample copy (incorrect tone — avoid)
 
