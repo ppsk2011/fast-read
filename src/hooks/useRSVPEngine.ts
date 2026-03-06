@@ -11,7 +11,7 @@
  *   drift while keeping the main thread responsive.
  * - Current word index is mirrored in a ref inside the engine so the rAF
  *   callback can read/write it without stale-closure issues.
- * - currentWordIndex always points to the CENTER (highlight) word of the window.
+ * - currentWordIndex always points to the leftmost (slot 0) word of the window.
  *   The window advances by ONE word per tick regardless of window size, keeping
  *   WPM accuracy independent of window size.
  * - Punctuation pause: after a word ending with . ? ! the delay is multiplied by
@@ -220,18 +220,21 @@ export function useRSVPEngine() {
    * a rendering concern.
    */
   const wordWindow = useMemo<string[]>(() => {
-    // For odd sizes (1,3,5): ORP is center slot → half = floor(n/2)
-    // For even sizes (2,4): ORP is left-middle slot → half = n/2 - 1
-    // Both cases: half = ceil(n/2) - 1
-    const half = Math.ceil(windowSize / 2) - 1;
-    return Array.from({ length: windowSize }, (_, slot) => {
-      const wordIdx = currentWordIndex - half + slot;
-      if (wordIdx < 0 || wordIdx >= words.length) return '';
-      return words[wordIdx];
-    });
+    if (windowSize === 1) {
+      // Single word — slot 0, unchanged
+      return [words[currentWordIndex] ?? ''];
+    }
+
+    // Multi-word — left-anchored: current word is slot 0, upcoming words fill slots 1+
+    const result: string[] = Array(windowSize).fill('');
+    for (let slot = 0; slot < windowSize; slot++) {
+      const wordIdx = currentWordIndex + slot;
+      result[slot] = (wordIdx >= 0 && wordIdx < words.length) ? words[wordIdx] : '';
+    }
+    return result;
   }, [words, currentWordIndex, windowSize]);
 
-  // The center word is the traditional "current word" for backward compat
+  // currentWord is always words[currentWordIndex] — slot 0 of the left-anchored window
   const currentWord = words[currentWordIndex] ?? '';
 
   return { currentWord, wordWindow, play, pause, reset, faster, slower, prevWord, nextWord };

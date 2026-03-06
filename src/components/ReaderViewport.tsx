@@ -175,15 +175,17 @@ const ReaderViewport = memo(function ReaderViewport({
   focalLine = false,
 }: ReaderViewportProps) {
   /**
-   * Peripheral fade: opacity decreases with distance from the center slot.
-   * Center = 1.0, distance-1 = 0.5, distance-2+ = 0.25.
-   * Only applied when peripheralFade is enabled AND word count > 1.
+   * Peripheral fade: left-anchor — slot 0 (current word) is always full opacity.
+   * Upcoming words (slots 1+) fade progressively.
+   * Only applied when peripheralFade is enabled AND more than one word is shown.
    */
   const slotOpacity = (i: number): number => {
     if (!peripheralFade || wordWindow.length === 1) return 1;
-    const dist = Math.abs(i - highlightIndex);
-    if (dist === 0) return 1;
-    if (dist === 1) return 0.5;
+    // Slot 0 = current word — always full opacity
+    if (i === 0) return 1;
+    // Upcoming words fade progressively
+    if (i === 1) return 0.6;
+    if (i === 2) return 0.4;
     return 0.25;
   };
 

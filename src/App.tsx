@@ -82,8 +82,8 @@ export default function App() {
 
   const { wordWindow, play, pause, reset, faster, slower, prevWord, nextWord } = useRSVPEngine();
 
-  /** Highlight index: center for odd sizes, left-middle for even sizes */
-  const highlightIndex = Math.ceil(windowSize / 2) - 1;
+  /** Highlight index: left-anchor — current word is always slot 0 */
+  const highlightIndex = 0; // Left-anchor: current word is always slot 0
 
   // Apply phrase-based chunking when in intelligent mode
   const { chunkWindow, chunkHighlightIndex } = useChunkEngine(
