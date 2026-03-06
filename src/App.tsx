@@ -59,6 +59,7 @@ export default function App() {
     highlightColor,
     orientation,
     orpEnabled,
+    orpColored,
     peripheralFade,
     theme,
     mainWordFontSize,
@@ -371,6 +372,7 @@ export default function App() {
             highlightColor={highlightColor}
             orientation={orientation}
             orpEnabled={orpEnabled}
+            orpColored={orpColored}
             peripheralFade={peripheralFade}
             isLoading={isLoading}
             loadingProgress={loadingProgress}

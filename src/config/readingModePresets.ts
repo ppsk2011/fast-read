@@ -13,6 +13,7 @@ export const PRESET_MODES: Record<PresetModeId, {
     settings: {
       windowSize: 1,
       orpEnabled: false,
+      orpColored: false,        // pure speed — no visual noise
       focalLine: false,
       peripheralFade: false,
       punctuationPause: false,
@@ -23,11 +24,12 @@ export const PRESET_MODES: Record<PresetModeId, {
   focus: {
     label: 'Focus',
     icon: '🎯',
-    description: 'Lock your eye. One word, one anchor.',
+    description: 'Eye anchor + ORP highlight. One word, zero movement.',
     settings: {
       windowSize: 1,
       orpEnabled: true,
-      focalLine: true,
+      orpColored: true,         // ORP highlight is the focal anchor
+      focalLine: true,          // ALWAYS true for Focus
       peripheralFade: false,
       punctuationPause: true,
       longWordCompensation: true,
@@ -41,6 +43,7 @@ export const PRESET_MODES: Record<PresetModeId, {
     settings: {
       windowSize: 3,            // 3 words — max (v11)
       orpEnabled: false,
+      orpColored: false,        // context flow — uniform word color
       focalLine: true,          // ticks still useful as anchor in multi-word
       peripheralFade: true,     // uniform 0.45 on context words
       punctuationPause: true,

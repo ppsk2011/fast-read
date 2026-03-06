@@ -25,9 +25,10 @@ import { useReaderContext } from '../context/useReaderContext';
 import ReadingHistory from './ReadingHistory';
 import SessionStats from './SessionStats';
 import ReadingModes from './ReadingModes';
-import type { WindowSize, Orientation } from '../context/readerContextDef';
+import type { Orientation } from '../context/readerContextDef';
 import { APP_VERSION } from '../version';
 import { IndexedDBService } from '../sync/IndexedDBService';
+import { ORP_COLORS, getThemeOrpAccent } from '../config/orpColors';
 import { supabase, isSupabaseConfigured } from '../config/supabase';
 import { useAuth } from '../auth/useAuth';
 import { clearAllRecords } from '../utils/recordsUtils';
@@ -36,31 +37,10 @@ import styles from '../styles/BurgerMenu.module.css';
 
 const FEEDBACK_FORM_URL = 'https://forms.gle/dCBSTs4SjvhmA3Zh6';
 
-// Named preset highlight colours — 10 options
-const PRESET_COLORS = [
-  { hex: '#e74c3c', name: 'Red' },
-  { hex: '#e67e22', name: 'Orange' },
-  { hex: '#f1c40f', name: 'Yellow' },
-  { hex: '#2ecc71', name: 'Green' },
-  { hex: '#1abc9c', name: 'Teal' },
-  { hex: '#3498db', name: 'Blue' },
-  { hex: '#5856d6', name: 'Indigo' },
-  { hex: '#9b59b6', name: 'Purple' },
-  { hex: '#e91e8c', name: 'Pink' },
-  { hex: '#ffffff', name: 'White' },
-] as const;
-
-function getColorName(hex: string): string {
-  const found = PRESET_COLORS.find(
-    (c) => c.hex.toLowerCase() === hex.toLowerCase(),
-  );
-  return found ? found.name : 'Custom';
-}
-
 // Default preference values (mirrored from ReaderContext)
 const DEFAULT_WPM = 250;
 const DEFAULT_THEME = 'midnight' as const;
-const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
+const DEFAULT_HIGHLIGHT_COLOR = getThemeOrpAccent(DEFAULT_THEME); // midnight accent
 const DEFAULT_ORIENTATION = 'horizontal' as Orientation;
 const DEFAULT_MAIN_FONT_SIZE = 100;
 
@@ -87,7 +67,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
   const [open, setOpen] = useState(false);
 
   const {
-    windowSize, setWindowSize,
+    setWindowSize,
     orientation, setOrientation,
     highlightColor, setHighlightColor,
     mainWordFontSize, setMainWordFontSize,
@@ -98,6 +78,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     isPlaying,
     setFocalLine,
     setOrpEnabled,
+    orpColored, setOrpColored,
     setPeripheralFade,
     setPunctuationPause,
     setLongWordCompensation,
@@ -107,7 +88,6 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
   } = useReaderContext();
   const { user } = useAuth();
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [colorExpanded, setColorExpanded] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
   // During active reading, advanced settings are collapsed unless user expands them.
@@ -286,20 +266,6 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 </div>
 
                 <label className={styles.row}>
-                  <span className={styles.label}>Words</span>
-                  <select
-                    className={styles.select}
-                    value={windowSize}
-                    onChange={(e) => setWindowSize(parseInt(e.target.value, 10) as WindowSize)}
-                    aria-label="Number of words shown at once"
-                  >
-                    <option value={1}>1 word</option>
-                    <option value={2}>2 words</option>
-                    <option value={3}>3 words</option>
-                  </select>
-                </label>
-
-                <label className={styles.row}>
                   <span className={styles.label}>Orientation</span>
                   <select
                     className={styles.select}
@@ -312,47 +278,38 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   </select>
                 </label>
 
-                {/* Compact colour picker: circle preview + expandable swatches */}
-                <div className={styles.row}>
-                  <span className={styles.label}>Highlight colour</span>
-                  <button
-                    className={styles.colorCircleBtn}
-                    style={{ background: highlightColor }}
-                    onClick={() => setColorExpanded((v) => !v)}
-                    aria-label={`Highlight colour: ${getColorName(highlightColor)}. Click to change.`}
-                    aria-expanded={colorExpanded}
-                    title={`${getColorName(highlightColor)} — click to change`}
+                {/* Highlight key letter toggle */}
+                <label className={styles.row}>
+                  <span className={styles.label}>Highlight key letter</span>
+                  <input
+                    type="checkbox"
+                    checked={orpColored}
+                    onChange={(e) => setOrpColored(e.target.checked)}
+                    aria-label="Color the key letter in each word"
                   />
-                </div>
-                {colorExpanded && (
-                  <div className={styles.colorPalette}>
-                    <div className={styles.colorSwatches}>
-                      {PRESET_COLORS.map((c) => (
-                        <button
-                          key={c.hex}
-                          className={`${styles.colorSwatch}${highlightColor.toLowerCase() === c.hex.toLowerCase() ? ` ${styles.colorSwatchActive}` : ''}`}
-                          style={{ background: c.hex }}
-                          onClick={() => { setHighlightColor(c.hex); setColorExpanded(false); }}
-                          title={c.name}
-                          aria-label={`Highlight colour: ${c.name}`}
-                          aria-pressed={highlightColor.toLowerCase() === c.hex.toLowerCase()}
+                </label>
+
+                {/* ORP key letter color: 4 science-backed options per theme */}
+                <div className={styles.orpColorSection}>
+                  <span className={styles.sectionLabel}>KEY LETTER COLOR</span>
+                  <div className={styles.orpColorRow}>
+                    {ORP_COLORS[theme].map(option => (
+                      <button
+                        key={option.id}
+                        className={`${styles.orpColorBtn} ${highlightColor === option.value ? styles.orpColorBtnActive : ''}`}
+                        onClick={() => setHighlightColor(option.value)}
+                        aria-label={`${option.label}: ${option.reason}`}
+                        title={option.reason}
+                      >
+                        <span
+                          className={styles.orpColorSwatch}
+                          style={{ background: option.value }}
                         />
-                      ))}
-                    </div>
-                    <div className={styles.customColorRow}>
-                      <input
-                        type="color"
-                        className={styles.customColorInput}
-                        value={highlightColor}
-                        onChange={(e) => setHighlightColor(e.target.value)}
-                        aria-label="Custom highlight colour"
-                        title="Custom colour"
-                      />
-                      <span className={styles.customColorLabel}>Custom colour</span>
-                      <span className={styles.customColorHex}>{highlightColor}</span>
-                    </div>
+                        <span className={styles.orpColorLabel}>{option.label}</span>
+                      </button>
+                    ))}
                   </div>
-                )}
+                </div>
 
                 <label className={styles.row}>
                   <span className={styles.label}>

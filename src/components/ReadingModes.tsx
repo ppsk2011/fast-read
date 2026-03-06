@@ -35,6 +35,8 @@ export default function ReadingModes() {
     setWindowSize,
     orpEnabled,
     setOrpEnabled,
+    orpColored,
+    setOrpColored,
     focalLine,
     setFocalLine,
     peripheralFade,
@@ -154,13 +156,26 @@ export default function ReadingModes() {
             <label className={styles.toggleRow}>
               <span className={styles.toggleInfo}>
                 <span className={styles.toggleName}>ORP Highlight</span>
-                <span className={styles.toggleDesc}>Color the key letter in each word</span>
+                <span className={styles.toggleDesc}>Align reading at the key letter in each word</span>
               </span>
               <input
                 type="checkbox"
                 className={styles.checkbox}
                 checked={orpEnabled}
                 onChange={(e) => setOrpEnabled(e.target.checked)}
+              />
+            </label>
+
+            <label className={styles.toggleRow}>
+              <span className={styles.toggleInfo}>
+                <span className={styles.toggleName}>Highlight key letter</span>
+                <span className={styles.toggleDesc}>Color the key letter in each word</span>
+              </span>
+              <input
+                type="checkbox"
+                className={styles.checkbox}
+                checked={orpColored}
+                onChange={(e) => setOrpColored(e.target.checked)}
               />
             </label>
 

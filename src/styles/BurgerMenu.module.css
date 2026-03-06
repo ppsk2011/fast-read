@@ -741,3 +741,60 @@
   color: var(--text-muted);
   font-weight: 600;
 }
+
+/* ── ORP Key Letter Color Picker ─────────────────────────────────── */
+
+.orpColorSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.orpColorRow {
+  display: flex;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.orpColorBtn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-1);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  min-height: 44px;
+}
+
+.orpColorBtn:hover {
+  background: var(--state-hover);
+}
+
+.orpColorBtnActive {
+  border-color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+
+.orpColorSwatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  display: block;
+  flex-shrink: 0;
+}
+
+.orpColorLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+

@@ -6,6 +6,7 @@ export type ModeId = PresetModeId | 'custom';
 export interface ModeSettings {
   windowSize: WindowSize;
   orpEnabled: boolean;
+  orpColored: boolean;
   focalLine: boolean;
   peripheralFade: boolean;
   punctuationPause: boolean;

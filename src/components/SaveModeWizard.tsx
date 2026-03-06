@@ -28,6 +28,7 @@ interface SaveModeWizardProps {
 type WizardSettings = {
   windowSize: 1 | 2 | 3;
   orpEnabled: boolean;
+  orpColored: boolean;
   focalLine: boolean;
   peripheralFade: boolean;
   punctuationPause: boolean;
@@ -35,12 +36,13 @@ type WizardSettings = {
   chunkMode: 'fixed' | 'intelligent';
 };
 
-const TOTAL_STEPS = 9; // 0 (name) + 7 (settings) + 1 (confirm) = indices 0–8
+const TOTAL_STEPS = 10; // 0 (name) + 1 (window) + 2 (orp) + 3 (orp color) + 4 (focal) + 5 (fade) + 6 (punct) + 7 (long word) + 8 (chunk) + 9 (confirm)
 
 export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizardProps) {
   const {
     windowSize: currentWindowSize,
     orpEnabled: currentOrp,
+    orpColored: currentOrpColored,
     focalLine: currentFocalLine,
     peripheralFade: currentPeripheralFade,
     punctuationPause: currentPuncPause,
@@ -62,6 +64,7 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
       ? currentWindowSize
       : 1) as 1 | 2 | 3,
     orpEnabled: currentOrp,
+    orpColored: currentOrpColored,
     focalLine: currentFocalLine,
     peripheralFade: currentPeripheralFade,
     punctuationPause: currentPuncPause,
@@ -75,6 +78,7 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
     const finalSettings: ModeSettings = {
       windowSize: settings.windowSize,
       orpEnabled: settings.orpEnabled,
+      orpColored: settings.orpColored,
       focalLine: settings.focalLine,
       peripheralFade: settings.peripheralFade,
       punctuationPause: settings.punctuationPause,
@@ -183,8 +187,27 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
             </div>
           )}
 
-          {/* ── Step 3: Focal line ───────────────────────────── */}
+          {/* ── Step 3: ORP coloring ────────────────────────── */}
           {step === 3 && (
+            <div className={styles.stepContent}>
+              <p className={styles.question}>Color the key letter?</p>
+              <div className={styles.options}>
+                <button
+                  className={`${styles.optionBtn} ${settings.orpColored ? styles.optionBtnActive : ''}`}
+                  onClick={() => setSettings((s) => ({ ...s, orpColored: true }))}
+                  aria-pressed={settings.orpColored}
+                >Yes</button>
+                <button
+                  className={`${styles.optionBtn} ${!settings.orpColored ? styles.optionBtnActive : ''}`}
+                  onClick={() => setSettings((s) => ({ ...s, orpColored: false }))}
+                  aria-pressed={!settings.orpColored}
+                >No</button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 4: Focal line ───────────────────────────── */}
+          {step === 4 && (
             <div className={styles.stepContent}>
               <p className={styles.question}>Show focal guide tick marks?</p>
               <div className={styles.options}>
@@ -202,8 +225,8 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
             </div>
           )}
 
-          {/* ── Step 4: Peripheral fade ──────────────────────── */}
-          {step === 4 && (
+          {/* ── Step 5: Peripheral fade ──────────────────────── */}
+          {step === 5 && (
             <div className={styles.stepContent}>
               <p className={styles.question}>Dim upcoming words?</p>
               <div className={styles.options}>
@@ -221,8 +244,8 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
             </div>
           )}
 
-          {/* ── Step 5: Punctuation pause ────────────────────── */}
-          {step === 5 && (
+          {/* ── Step 6: Punctuation pause ────────────────────── */}
+          {step === 6 && (
             <div className={styles.stepContent}>
               <p className={styles.question}>Pause briefly at punctuation?</p>
               <div className={styles.options}>
@@ -240,8 +263,8 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
             </div>
           )}
 
-          {/* ── Step 6: Long word compensation ──────────────── */}
-          {step === 6 && (
+          {/* ── Step 7: Long word compensation ──────────────── */}
+          {step === 7 && (
             <div className={styles.stepContent}>
               <p className={styles.question}>Slow down for long words?</p>
               <div className={styles.options}>
@@ -259,8 +282,8 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
             </div>
           )}
 
-          {/* ── Step 7: Chunk mode ───────────────────────────── */}
-          {step === 7 && (
+          {/* ── Step 8: Chunk mode ───────────────────────────── */}
+          {step === 8 && (
             <div className={styles.stepContent}>
               <p className={styles.question}>Group words into natural phrases?</p>
               <div className={styles.options}>
@@ -278,8 +301,8 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
             </div>
           )}
 
-          {/* ── Step 8: Confirm ─────────────────────────────── */}
-          {step === 8 && (
+          {/* ── Step 9: Confirm ─────────────────────────────── */}
+          {step === 9 && (
             <div className={styles.stepContent}>
               <p className={styles.question}>Ready to save?</p>
               <div className={styles.summary}>
@@ -287,6 +310,7 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
                 <ul className={styles.summaryList}>
                   <li>{settings.windowSize} word{settings.windowSize !== 1 ? 's' : ''} at a time</li>
                   <li>Key letter highlight: {settings.orpEnabled ? 'On' : 'Off'}</li>
+                  <li>Color key letter: {settings.orpColored ? 'On' : 'Off'}</li>
                   <li>Focal ticks: {settings.focalLine ? 'On' : 'Off'}</li>
                   <li>Peripheral fade: {settings.peripheralFade ? 'On' : 'Off'}</li>
                   <li>Punctuation pause: {settings.punctuationPause ? 'On' : 'Off'}</li>

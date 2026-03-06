@@ -518,3 +518,32 @@ No magic pixel values for spacing.
 - All text on `--bg` or `--bg-panel` must meet WCAG AA: minimum 4.5:1 contrast ratio
 - Interactive elements at minimum 3:1 contrast ratio
 - The existing token system already meets these ratios — do not introduce colors that break them
+
+## ORP Color Rules
+
+ORP highlight colors are scientifically curated per theme. Only these 4 options are offered
+per theme. The choices are based on:
+- Luminance contrast ≥ 5:1 against theme background (WCAG AA+)
+- Pop-out speed from pre-attentive feature detection research
+- Fatigue research: red (#ff0000) is explicitly excluded — highest fatigue, worst cognitive performance
+- Color-blind safety: cyan option included in all themes as a safe default
+
+Never add red (#ff0000) back as a default or preset option.
+
+## Icon Color Rules
+
+All SVG icons in component files must use `fill: currentColor`.
+Never hardcode `fill="#ffffff"`, `fill="#000000"`, or any hex on SVG elements.
+The parent element's `color` CSS property controls the icon color via `currentColor`.
+This ensures all icons automatically update when theme changes.
+
+## Interactive Element Rules (Updated)
+
+Every interactive element must be in one of exactly 3 visual states:
+1. Default: `background: var(--bg-input)`, `border: var(--border)`, `color: var(--text-muted)`
+2. Hover: `background: var(--state-hover)`, `color: var(--text)`
+3. Active/selected: `border-color: var(--color-accent)`, `color: var(--color-accent)`, `background: var(--color-accent-dim)`
+
+Primary action button (PLAY): background `var(--color-accent)`, color `var(--bg)`.
+
+No element may use a hardcoded color value for interactive states.

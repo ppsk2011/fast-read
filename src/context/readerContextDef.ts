@@ -87,6 +87,7 @@ interface ReaderState {
   theme: Theme;
   /** Whether to use Optimal Recognition Point (ORP) highlighting */
   orpEnabled: boolean;
+  orpColored: boolean;
   /** Whether to add extra pause after punctuation */
   punctuationPause: boolean;
   /** Whether to dim peripheral (non-center) words to sharpen focal contrast */
@@ -133,6 +134,7 @@ interface ReaderActions {
   setOrientation: (orientation: Orientation) => void;
   setTheme: (theme: Theme) => void;
   setOrpEnabled: (enabled: boolean) => void;
+  setOrpColored: (colored: boolean) => void;
   setPunctuationPause: (enabled: boolean) => void;
   setPeripheralFade: (enabled: boolean) => void;
   setLongWordCompensation: (enabled: boolean) => void;

@@ -36,6 +36,8 @@ interface ReaderViewportProps {
   orientation: Orientation;
   /** Whether to render ORP (Optimal Recognition Point) on the center word */
   orpEnabled: boolean;
+  /** Whether to color the ORP character (vs show word in uniform color) */
+  orpColored: boolean;
   /** Whether to dim non-center words proportional to their distance from center */
   peripheralFade: boolean;
   isLoading: boolean;
@@ -105,6 +107,7 @@ const ReaderViewport = memo(function ReaderViewport({
   highlightColor,
   orientation,
   orpEnabled,
+  orpColored,
   peripheralFade,
   isLoading,
   loadingProgress,
@@ -132,7 +135,9 @@ const ReaderViewport = memo(function ReaderViewport({
   const isMultiWord = wordWindow.length > 1;
 
   // ORP coloring: focalLine always wins
-  const shouldColorOrp = orpEnabled || focalLine;
+  // Structural split always happens (pre/ORP/post) — required for tick alignment.
+  // Color is only applied when orpColored is true.
+  const shouldColorOrp = orpColored && (orpEnabled || focalLine);
 
   // Ticks appear in horizontal mode only when a document is loaded
   const showFocalTicks =

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.5]
+### Changed
+- ORP coloring is now a separate toggle from ORP alignment — "Highlight key letter"
+- ORP color picker replaced with 4 researched science-backed options per theme
+- All buttons and icon fills now use var(--color-accent) — theme-synchronized
+- "Words" select removed from burger menu display section (redundant with Custom tab)
+- Focus mode always enables focal line — removable only in Custom mode
+- DESIGN_SYSTEM.md updated: color rules, token audit, icon guidelines
+
 ## [1.0.4]
 ### Added
 - 3 app themes: Midnight (default), Warm, Day

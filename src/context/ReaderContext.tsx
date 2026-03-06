@@ -16,6 +16,7 @@ import { ReaderContext, type FileMetadata, type ReadingRecord, type WindowSize, 
 import { loadRecords } from '../utils/recordsUtils';
 import { PRESET_MODES } from '../config/readingModePresets';
 import type { PresetModeId, ModeSettings } from '../types/readingModes';
+import { getThemeOrpAccent, isOrpColorInTheme } from '../config/orpColors';
 
 const LS_KEY_INDEX = 'fastread_word_index';
 const LS_KEY_WPM = 'fastread_wpm';
@@ -35,11 +36,12 @@ const LS_KEY_FOCAL_LINE = 'fastread_focal_line';
 const LS_KEY_ACTIVE_MODE = 'fastread_active_mode';
 const LS_KEY_CUSTOM_MODES = 'fastread_custom_modes';
 const LS_KEY_ACTIVE_CUSTOM_MODE = 'fastread_active_custom_mode_id';
+const LS_KEY_ORP_COLORED = 'fastread_orp_colored';
 const DEFAULT_WPM = 250;
 const DEFAULT_WINDOW_SIZE: WindowSize = 1;
-const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
 const DEFAULT_ORIENTATION: Orientation = 'horizontal';
 const DEFAULT_THEME: Theme = 'midnight';
+const DEFAULT_HIGHLIGHT_COLOR = getThemeOrpAccent(DEFAULT_THEME); // matches DEFAULT_THEME accent
 const DEFAULT_ORP = true;
 const DEFAULT_PUNCT_PAUSE = true;
 const DEFAULT_PERIPHERAL_FADE = true;
@@ -104,6 +106,10 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem(LS_KEY_ORP);
     if (saved !== null) return saved === 'true';
     return isNewUser ? true : DEFAULT_ORP;
+  });
+  const [orpColored, setOrpColoredState] = useState<boolean>(() => {
+    const saved = localStorage.getItem(LS_KEY_ORP_COLORED);
+    return saved !== 'false'; // default true
   });
   const [punctuationPause, setPunctuationPauseState] = useState<boolean>(() => {
     const saved = localStorage.getItem(LS_KEY_PUNCT_PAUSE);
@@ -287,6 +293,11 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(LS_KEY_ORP, String(enabled));
   }, []);
 
+  const setOrpColored = useCallback((colored: boolean) => {
+    setOrpColoredState(colored);
+    localStorage.setItem(LS_KEY_ORP_COLORED, String(colored));
+  }, []);
+
   const setPunctuationPauseRaw = useCallback((enabled: boolean) => {
     setPunctuationPauseState(enabled);
     localStorage.setItem(LS_KEY_PUNCT_PAUSE, String(enabled));
@@ -385,6 +396,16 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     setThemeState(t);
     localStorage.setItem(LS_KEY_THEME, t);
     document.documentElement.setAttribute('data-theme', t);
+    // Auto-reset ORP color to new theme's accent if the current color
+    // doesn't exist in the new theme's palette
+    setHighlightColorState(current => {
+      if (!isOrpColorInTheme(t, current)) {
+        const accent = getThemeOrpAccent(t);
+        localStorage.removeItem(LS_KEY_HIGHLIGHT_COLOR); // clear override
+        return accent;
+      }
+      return current;
+    });
   }, []);
 
   const setMainWordFontSize = useCallback((size: number) => {
@@ -423,6 +444,8 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     applyingModeRef.current = true;
     setWindowSizeRaw(settings.windowSize);
     setOrpEnabledRaw(settings.orpEnabled);
+    setOrpColoredState(settings.orpColored);
+    localStorage.setItem(LS_KEY_ORP_COLORED, String(settings.orpColored));
     setFocalLineRaw(settings.focalLine);
     setPeripheralFadeRaw(settings.peripheralFade);
     setPunctuationPauseRaw(settings.punctuationPause);
@@ -465,6 +488,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         orientation,
         theme,
         orpEnabled,
+        orpColored,
         punctuationPause,
         peripheralFade,
         longWordCompensation,
@@ -495,6 +519,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         setOrientation,
         setTheme,
         setOrpEnabled,
+        setOrpColored,
         setPunctuationPause,
         setPeripheralFade,
         setLongWordCompensation,
