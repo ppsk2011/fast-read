@@ -419,7 +419,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     setLongWordCompensationRaw(settings.longWordCompensation);
     setChunkModeRaw(settings.chunkMode);
     // Reset the flag after React has batched all state updates
-    setTimeout(() => { applyingModeRef.current = false; }, 0);
+    queueMicrotask(() => { applyingModeRef.current = false; });
   }, [setWindowSizeRaw, setOrpEnabledRaw, setFocalLineRaw, setPeripheralFadeRaw, setPunctuationPauseRaw, setLongWordCompensationRaw, setChunkModeRaw]);
 
   const selectPresetMode = useCallback((modeId: PresetModeId) => {

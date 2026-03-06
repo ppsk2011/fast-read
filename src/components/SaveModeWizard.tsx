@@ -83,7 +83,7 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
     };
 
     const newMode: CustomMode = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name: wizardName.trim() || 'My Mode',
       settings: finalSettings,
       createdAt: new Date().toISOString(),
@@ -94,7 +94,7 @@ export default function SaveModeWizard({ onClose, existingModes }: SaveModeWizar
       nextModes = [...existingModes];
       nextModes[replaceIndex] = newMode;
     } else {
-      nextModes = [...existingModes.slice(0, 2), newMode];
+      nextModes = [...existingModes, newMode];
     }
     setSavedCustomModes(nextModes);
     setActiveMode('custom');
