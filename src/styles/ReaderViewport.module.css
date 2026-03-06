@@ -250,55 +250,61 @@
   transition: width 0.3s ease;
 }
 
-/* ── Focal Line: ORP-anchored center layout ─────────────────────── */
+/* ── Focal Line: ORP-anchored center layout (horizontal orientation only) ─── */
 
 /*
- * When focalLine is ON, the center word is wrapped in .focalWordContainer so that
- * the ORP character is forced to the horizontal center of the viewport.
- * The container is a flex row; left text right-aligns into the left half,
- * right text left-aligns into the right half, putting the ORP char at 50%.
+ * When focalLine is ON + orientation is horizontal, the center word is wrapped
+ * in .focalWordGrid so the ORP character lands at the exact horizontal center.
+ *
+ * Grid layout: 1fr | auto | 1fr
+ *   - Left cell (1fr): right-aligned prefix text — never clips, expands freely
+ *   - Center cell (auto): the single ORP char, pinned at 50% of the container
+ *   - Right cell (1fr): left-aligned suffix text — never clips, expands freely
+ *
+ * No overflow: hidden anywhere — words are always fully visible.
  */
-.focalWordContainer {
-  display: flex;
+.focalWordGrid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: baseline;
-  width: 10ch;
-  overflow: hidden;
+  /* Fill full viewport width so ORP char lands at true 50% */
+  width: 100%;
+  /* Guard against extreme expansion on very long words */
+  max-width: 80ch;
 }
 
-/* Left text — right-aligns so ORP char is pushed to the center of the container */
+/* Left text — right-aligns prefix into the left half */
 .focalWordLeft {
-  flex: 1;
   text-align: right;
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow visible — never hidden, words must never clip */
 }
 
-/* ORP char — sits at the exact center of the flex container */
+/* ORP char — auto-sized center column, always at 50% of container */
 .focalWordOrp {
-  flex: 0 0 auto;
   font-size: 1.08em;
   font-weight: 900;
+  white-space: nowrap;
 }
 
-/* Right text — left-aligns to fill the right half */
+/* Right text — left-aligns suffix into the right half */
 .focalWordRight {
-  flex: 1;
   text-align: left;
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow visible — never hidden */
 }
 
 /* ── Focal Line tick marks ───────────────────────────────────────── */
 
 .focalTickTop {
   position: absolute;
-  /* Sits above the vertical midpoint of the viewport */
-  bottom: calc(50% + 28px);
+  /* 20px from vertical center — closer to word than before */
+  bottom: calc(50% + 20px);
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  /* Short fixed height — never percentage */
-  height: 32px;
+  /* Short 16px ticks — absolute pixels, never percentage */
+  height: 16px;
   border-left: 1.5px solid #666;
   pointer-events: none;
   z-index: 0;
@@ -306,12 +312,11 @@
 
 .focalTickBottom {
   position: absolute;
-  /* Sits below the vertical midpoint of the viewport */
-  top: calc(50% + 28px);
+  top: calc(50% + 20px);
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 32px;
+  height: 16px;
   border-left: 1.5px solid #666;
   pointer-events: none;
   z-index: 0;
@@ -319,5 +324,5 @@
 
 [data-theme='day'] .focalTickTop,
 [data-theme='day'] .focalTickBottom {
-  border-color: #aaa;
+  border-color: #999;
 }

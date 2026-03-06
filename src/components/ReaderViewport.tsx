@@ -100,12 +100,13 @@ function computeOrpFontSize(
 
 
 /**
- * OrpAnchorLayout — used when focalLine is ON.
+ * OrpAnchorLayout — used when focalLine is ON and orientation is horizontal.
  *
- * Forces the ORP character to the horizontal center of a fixed-width container
- * so it aligns with the tick marks at left: 50% of the viewport.
+ * Forces the ORP character to the horizontal center of a grid container that
+ * fills the viewport width, so it aligns with the tick marks at left: 50%.
  *
- * Layout: [left part → fills right] [ORP char at center] [right part fills left]
+ * Grid: [left 1fr] [ORP auto] [right 1fr]
+ * No overflow:hidden anywhere — words are always fully visible.
  */
 function OrpAnchorLayout({
   word,
@@ -116,7 +117,7 @@ function OrpAnchorLayout({
 }) {
   const idx = calcOrpIndex(word);
   return (
-    <div className={styles.focalWordContainer}>
+    <div className={styles.focalWordGrid}>
       <span className={styles.focalWordLeft}>{word.slice(0, idx)}</span>
       <span className={styles.focalWordOrp} style={{ color: highlightColor }}>
         {word[idx]}
@@ -200,9 +201,10 @@ const ReaderViewport = memo(function ReaderViewport({
   };
 
   const userScale = mainWordFontSize / 100;
-  // Color the entire center word only when focalLine is OFF.
-  // When focalLine is ON, only the ORP character (via OrpAnchorLayout) gets highlightColor.
-  const shouldColorCenterWord = !focalLine;
+  // Color the entire center word only when focalLine is OFF or vertical orientation.
+  // When focalLine is ON + horizontal, only the ORP character gets highlightColor.
+  const showFocalLayout = focalLine && orientation === 'horizontal';
+  const shouldColorCenterWord = !showFocalLayout;
 
   return (
     <div
@@ -277,7 +279,7 @@ const ReaderViewport = memo(function ReaderViewport({
                 aria-hidden={word === '' ? true : undefined}
               >
                 {word
-                  ? isCenter && focalLine
+                  ? isCenter && showFocalLayout
                     ? <OrpAnchorLayout word={word} highlightColor={highlightColor} />
                     : isCenter && orpEnabled
                       ? <WordWithOrp word={word} baseColor={highlightColor} focusMarkerEnabled={focusMarkerEnabled} />
@@ -331,7 +333,7 @@ const ReaderViewport = memo(function ReaderViewport({
                   }}
                 >
                   {word
-                    ? focalLine
+                    ? showFocalLayout
                       ? <OrpAnchorLayout word={word} highlightColor={highlightColor} />
                       : orpEnabled
                         ? <WordWithOrp word={word} baseColor={highlightColor} focusMarkerEnabled={focusMarkerEnabled} />
@@ -360,7 +362,7 @@ const ReaderViewport = memo(function ReaderViewport({
           </div>
         </div>
       )}
-      {focalLine && (
+      {showFocalLayout && (
         <>
           <div className={styles.focalTickTop} aria-hidden="true" />
           <div className={styles.focalTickBottom} aria-hidden="true" />

@@ -95,8 +95,8 @@ export default function ReadingModes() {
 
           {/* Saved mode chips */}
           {savedCustomModes.length > 0 && (
-            <div className={styles.savedChips}>
-              <span className={styles.savedLabel}>Saved</span>
+            <div className={styles.savedSection}>
+              <span className={styles.savedLabel}>Saved modes</span>
               {savedCustomModes.map((mode) => (
                 <div key={mode.id} className={styles.chipRow}>
                   <button
@@ -121,10 +121,10 @@ export default function ReadingModes() {
           {/* Save / full-slots message */}
           {savedCustomModes.length < 3 ? (
             <button className={styles.saveBtn} onClick={() => setWizardOpen(true)}>
-              ＋ Save current settings
+              ＋ Save current settings as a mode
             </button>
           ) : (
-            <p className={styles.savedFull}>3/3 slots used — delete one to save a new mode</p>
+            <p className={styles.slotsFull}>3/3 slots used — delete one to save a new mode</p>
           )}
 
           <hr className={styles.customPanelDivider} />
@@ -152,7 +152,7 @@ export default function ReadingModes() {
             <label className={styles.toggleRow}>
               <span className={styles.toggleInfo}>
                 <span className={styles.toggleName}>ORP Highlight</span>
-                <span className={styles.toggleDesc}>Color the key letter</span>
+                <span className={styles.toggleDesc}>Color the key letter in each word</span>
               </span>
               <input
                 type="checkbox"
@@ -165,7 +165,7 @@ export default function ReadingModes() {
             <label className={styles.toggleRow}>
               <span className={styles.toggleInfo}>
                 <span className={styles.toggleName}>Focal Line</span>
-                <span className={styles.toggleDesc}>Guide tick marks + letter anchor</span>
+                <span className={styles.toggleDesc}>Tick marks + letter anchor (horizontal only)</span>
               </span>
               <input
                 type="checkbox"
@@ -204,7 +204,7 @@ export default function ReadingModes() {
             <label className={styles.toggleRow}>
               <span className={styles.toggleInfo}>
                 <span className={styles.toggleName}>Long Word Slow-down</span>
-                <span className={styles.toggleDesc}>Extra time for long words</span>
+                <span className={styles.toggleDesc}>Extra display time for long words</span>
               </span>
               <input
                 type="checkbox"
@@ -217,7 +217,7 @@ export default function ReadingModes() {
             <label className={styles.toggleRow}>
               <span className={styles.toggleInfo}>
                 <span className={styles.toggleName}>Phrase Grouping</span>
-                <span className={styles.toggleDesc}>Natural phrase chunks</span>
+                <span className={styles.toggleDesc}>Group words into natural phrases</span>
               </span>
               <input
                 type="checkbox"

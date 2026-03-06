@@ -39,7 +39,7 @@ export const PRESET_MODES: Record<PresetModeId, {
     icon: '📖',
     description: 'Natural reading with context and rhythm.',
     settings: {
-      windowSize: 3,
+      windowSize: 1,
       orpEnabled: false,
       focalLine: false,
       peripheralFade: true,
