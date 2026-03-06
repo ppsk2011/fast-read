@@ -250,32 +250,65 @@
   transition: width 0.3s ease;
 }
 
-/* Focal Line: two short vertical guides, one above and one below the word */
-.focalLineTop {
+/* ── Focal Line: ORP-anchored center layout ─────────────────────── */
+
+/*
+ * When focalLine is ON, the center word is wrapped in .orpAnchor so that
+ * the ORP character is forced to the horizontal center of the viewport.
+ * This makes the tick marks (at left: 50%) align correctly with the ORP char.
+ */
+.orpAnchor {
+  display: flex;
+  align-items: baseline;
+  width: 10ch;
+}
+
+/* Left text — pushes ORP char rightward to the center column */
+.orpAnchorLeft {
+  flex: 1;
+  text-align: right;
+}
+
+/* ORP char — sits exactly at the flex center of the container */
+.orpAnchorChar {
+  flex: 0 0 auto;
+  font-size: 1.08em;
+  font-weight: 900;
+}
+
+/* Right text — fills right column without affecting ORP position */
+.orpAnchorRight {
+  flex: 1;
+  text-align: left;
+}
+
+/* ── Focal Line tick marks ───────────────────────────────────────── */
+
+.focalTickTop {
   position: absolute;
-  top: 8%;
+  top: calc(50% - 80px);
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 22%;
+  height: 35px;
   border-left: 1.5px solid #555;
   pointer-events: none;
   z-index: 0;
 }
 
-.focalLineBottom {
+.focalTickBottom {
   position: absolute;
-  bottom: 8%;
+  top: calc(50% + 45px);
   left: 50%;
   transform: translateX(-50%);
   width: 0;
-  height: 22%;
+  height: 35px;
   border-left: 1.5px solid #555;
   pointer-events: none;
   z-index: 0;
 }
 
-[data-theme='day'] .focalLineTop,
-[data-theme='day'] .focalLineBottom {
+[data-theme='day'] .focalTickTop,
+[data-theme='day'] .focalTickBottom {
   border-color: #aaa;
 }

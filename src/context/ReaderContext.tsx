@@ -9,10 +9,13 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
-import { ReaderContext, type FileMetadata, type ReadingRecord, type WindowSize, type Orientation, type Theme, type ChunkMode, type SessionStats, type StructuralMarker } from './readerContextDef';
+import { ReaderContext, type FileMetadata, type ReadingRecord, type WindowSize, type Orientation, type Theme, type ChunkMode, type SessionStats, type StructuralMarker, type ModeId, type CustomMode } from './readerContextDef';
 import { loadRecords } from '../utils/recordsUtils';
+import { PRESET_MODES } from '../config/readingModePresets';
+import type { PresetModeId, ModeSettings } from '../types/readingModes';
 
 const LS_KEY_INDEX = 'fastread_word_index';
 const LS_KEY_WPM = 'fastread_wpm';
@@ -29,6 +32,9 @@ const LS_KEY_CHUNK_MODE = 'fastread_chunk_mode';
 const LS_KEY_SESSION_STATS = 'fastread_session_stats';
 const LS_KEY_FOCUS_MARKER = 'fastread_focus_marker';
 const LS_KEY_FOCAL_LINE = 'fastread_focal_line';
+const LS_KEY_ACTIVE_MODE = 'fastread_active_mode';
+const LS_KEY_CUSTOM_MODES = 'fastread_custom_modes';
+const LS_KEY_ACTIVE_CUSTOM_MODE = 'fastread_active_custom_mode_id';
 const DEFAULT_WPM = 250;
 const DEFAULT_WINDOW_SIZE: WindowSize = 3;
 const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
@@ -131,6 +137,20 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     return saved === null ? DEFAULT_FOCAL_LINE : saved === 'true';
   });
 
+  const [activeMode, setActiveModeState] = useState<ModeId>(() => {
+    return (localStorage.getItem(LS_KEY_ACTIVE_MODE) as ModeId) ?? 'read';
+  });
+  const [savedCustomModes, setSavedCustomModesState] = useState<CustomMode[]>(() => {
+    try { return JSON.parse(localStorage.getItem(LS_KEY_CUSTOM_MODES) ?? '[]') as CustomMode[]; }
+    catch { return []; }
+  });
+  const [activeCustomModeId, setActiveCustomModeIdState] = useState<string | null>(() => {
+    return localStorage.getItem(LS_KEY_ACTIVE_CUSTOM_MODE);
+  });
+
+  /** True while applyMode is executing — suppresses auto-switch to Custom */
+  const applyingModeRef = useRef(false);
+
   // Derive 1-indexed current page via binary search over pageBreaks
   const currentPage = useMemo(() => {
     if (pageBreaks.length === 0) return 1;
@@ -155,6 +175,27 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem(LS_KEY_WPM, String(wpm));
   }, [wpm]);
+
+  // Persist active mode
+  useEffect(() => {
+    localStorage.setItem(LS_KEY_ACTIVE_MODE, activeMode);
+  }, [activeMode]);
+
+  // Persist custom modes
+  useEffect(() => {
+    localStorage.setItem(LS_KEY_CUSTOM_MODES, JSON.stringify(savedCustomModes));
+    // FUTURE: sync to Supabase — stub only, do not implement yet
+    // syncCustomModesToSupabase(savedCustomModes);
+  }, [savedCustomModes]);
+
+  // Persist active custom mode ID
+  useEffect(() => {
+    if (activeCustomModeId) {
+      localStorage.setItem(LS_KEY_ACTIVE_CUSTOM_MODE, activeCustomModeId);
+    } else {
+      localStorage.removeItem(LS_KEY_ACTIVE_CUSTOM_MODE);
+    }
+  }, [activeCustomModeId]);
 
   const setWords = useCallback((newWords: string[]) => {
     setWordsState(newWords);
@@ -213,10 +254,113 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     setRecordsState(newRecords);
   }, []);
 
-  const setWindowSize = useCallback((size: WindowSize) => {
+  const setActiveMode = useCallback((mode: ModeId) => {
+    setActiveModeState(mode);
+  }, []);
+
+  const setSavedCustomModes = useCallback((modes: CustomMode[]) => {
+    setSavedCustomModesState(modes);
+  }, []);
+
+  const setActiveCustomModeId = useCallback((id: string | null) => {
+    setActiveCustomModeIdState(id);
+  }, []);
+
+  // ─── Raw internal setters (persist to localStorage) ────────────────────────
+
+  const setWindowSizeRaw = useCallback((size: WindowSize) => {
     setWindowSizeState(size);
     localStorage.setItem(LS_KEY_WINDOW_SIZE, String(size));
   }, []);
+
+  const setOrpEnabledRaw = useCallback((enabled: boolean) => {
+    setOrpEnabledState(enabled);
+    localStorage.setItem(LS_KEY_ORP, String(enabled));
+  }, []);
+
+  const setPunctuationPauseRaw = useCallback((enabled: boolean) => {
+    setPunctuationPauseState(enabled);
+    localStorage.setItem(LS_KEY_PUNCT_PAUSE, String(enabled));
+  }, []);
+
+  const setPeripheralFadeRaw = useCallback((enabled: boolean) => {
+    setPeripheralFadeState(enabled);
+    localStorage.setItem(LS_KEY_PERIPHERAL_FADE, String(enabled));
+  }, []);
+
+  const setLongWordCompensationRaw = useCallback((enabled: boolean) => {
+    setLongWordCompensationState(enabled);
+    localStorage.setItem(LS_KEY_LONG_WORD_COMP, String(enabled));
+  }, []);
+
+  const setChunkModeRaw = useCallback((mode: ChunkMode) => {
+    setChunkModeState(mode);
+    localStorage.setItem(LS_KEY_CHUNK_MODE, mode);
+  }, []);
+
+  const setFocalLineRaw = useCallback((v: boolean) => {
+    setFocalLineState(v);
+    localStorage.setItem(LS_KEY_FOCAL_LINE, String(v));
+  }, []);
+
+  // ─── Mode-aware wrapped setters ─────────────────────────────────────────────
+  // Any direct call (not inside applyMode) switches activeMode → 'custom'
+
+  const setWindowSize = useCallback((size: WindowSize) => {
+    setWindowSizeRaw(size);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setWindowSizeRaw]);
+
+  const setOrpEnabled = useCallback((enabled: boolean) => {
+    setOrpEnabledRaw(enabled);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setOrpEnabledRaw]);
+
+  const setPunctuationPause = useCallback((enabled: boolean) => {
+    setPunctuationPauseRaw(enabled);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setPunctuationPauseRaw]);
+
+  const setPeripheralFade = useCallback((enabled: boolean) => {
+    setPeripheralFadeRaw(enabled);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setPeripheralFadeRaw]);
+
+  const setLongWordCompensation = useCallback((enabled: boolean) => {
+    setLongWordCompensationRaw(enabled);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setLongWordCompensationRaw]);
+
+  const setChunkMode = useCallback((mode: ChunkMode) => {
+    setChunkModeRaw(mode);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setChunkModeRaw]);
+
+  const setFocalLine = useCallback((v: boolean) => {
+    setFocalLineRaw(v);
+    if (!applyingModeRef.current) {
+      setActiveModeState('custom');
+      setActiveCustomModeIdState(null);
+    }
+  }, [setFocalLineRaw]);
 
   const setHighlightColor = useCallback((color: string) => {
     setHighlightColorState(color);
@@ -233,35 +377,10 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(LS_KEY_THEME, t);
   }, []);
 
-  const setOrpEnabled = useCallback((enabled: boolean) => {
-    setOrpEnabledState(enabled);
-    localStorage.setItem(LS_KEY_ORP, String(enabled));
-  }, []);
-
-  const setPunctuationPause = useCallback((enabled: boolean) => {
-    setPunctuationPauseState(enabled);
-    localStorage.setItem(LS_KEY_PUNCT_PAUSE, String(enabled));
-  }, []);
-
-  const setPeripheralFade = useCallback((enabled: boolean) => {
-    setPeripheralFadeState(enabled);
-    localStorage.setItem(LS_KEY_PERIPHERAL_FADE, String(enabled));
-  }, []);
-
-  const setLongWordCompensation = useCallback((enabled: boolean) => {
-    setLongWordCompensationState(enabled);
-    localStorage.setItem(LS_KEY_LONG_WORD_COMP, String(enabled));
-  }, []);
-
   const setMainWordFontSize = useCallback((size: number) => {
     const clamped = Math.min(200, Math.max(60, size));
     setMainWordFontSizeState(clamped);
     localStorage.setItem(LS_KEY_MAIN_FONT_SIZE, String(clamped));
-  }, []);
-
-  const setChunkMode = useCallback((mode: ChunkMode) => {
-    setChunkModeState(mode);
-    localStorage.setItem(LS_KEY_CHUNK_MODE, mode);
   }, []);
 
   const updateSessionStats = useCallback((delta: Partial<SessionStats>) => {
@@ -289,10 +408,31 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(LS_KEY_FOCUS_MARKER, String(enabled));
   }, []);
 
-  const setFocalLine = useCallback((v: boolean) => {
-    setFocalLineState(v);
-    localStorage.setItem(LS_KEY_FOCAL_LINE, String(v));
-  }, []);
+  // ─── applyMode: atomically apply a full bundle of mode settings ─────────────
+  const applyMode = useCallback((settings: ModeSettings) => {
+    applyingModeRef.current = true;
+    setWindowSizeRaw(settings.windowSize);
+    setOrpEnabledRaw(settings.orpEnabled);
+    setFocalLineRaw(settings.focalLine);
+    setPeripheralFadeRaw(settings.peripheralFade);
+    setPunctuationPauseRaw(settings.punctuationPause);
+    setLongWordCompensationRaw(settings.longWordCompensation);
+    setChunkModeRaw(settings.chunkMode);
+    // Reset the flag after React has batched all state updates
+    setTimeout(() => { applyingModeRef.current = false; }, 0);
+  }, [setWindowSizeRaw, setOrpEnabledRaw, setFocalLineRaw, setPeripheralFadeRaw, setPunctuationPauseRaw, setLongWordCompensationRaw, setChunkModeRaw]);
+
+  const selectPresetMode = useCallback((modeId: PresetModeId) => {
+    applyMode(PRESET_MODES[modeId].settings);
+    setActiveModeState(modeId);
+    setActiveCustomModeIdState(null);
+  }, [applyMode]);
+
+  const selectCustomMode = useCallback((mode: CustomMode) => {
+    applyMode(mode.settings);
+    setActiveModeState('custom');
+    setActiveCustomModeIdState(mode.id);
+  }, [applyMode]);
 
   return (
     <ReaderContext.Provider
@@ -323,6 +463,9 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         sessionStats,
         focusMarkerEnabled,
         focalLine,
+        activeMode,
+        savedCustomModes,
+        activeCustomModeId,
         setWords,
         setCurrentWordIndex,
         setIsPlaying,
@@ -351,6 +494,12 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         resetSessionStats,
         setFocusMarkerEnabled,
         setFocalLine,
+        setActiveMode,
+        setSavedCustomModes,
+        setActiveCustomModeId,
+        applyMode,
+        selectPresetMode,
+        selectCustomMode,
       }}
     >
       {children}

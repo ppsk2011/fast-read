@@ -24,7 +24,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReaderContext } from '../context/useReaderContext';
 import ReadingHistory from './ReadingHistory';
 import SessionStats from './SessionStats';
-import type { WindowSize, Orientation, ChunkMode } from '../context/readerContextDef';
+import ReadingModes from './ReadingModes';
+import type { WindowSize, Orientation } from '../context/readerContextDef';
 import { APP_VERSION } from '../version';
 import { IndexedDBService } from '../sync/IndexedDBService';
 import { supabase, isSupabaseConfigured } from '../config/supabase';
@@ -32,22 +33,8 @@ import { useAuth } from '../auth/useAuth';
 import { clearAllRecords } from '../utils/recordsUtils';
 import toast from 'react-hot-toast';
 import styles from '../styles/BurgerMenu.module.css';
-import {
-  READING_PROFILES,
-  DEFAULT_PROFILE_ID,
-  LS_KEY_PROFILE,
-  type ReadingProfile,
-} from '../config/profiles';
 
 const FEEDBACK_FORM_URL = 'https://forms.gle/dCBSTs4SjvhmA3Zh6';
-
-/** Apply the "Balanced" profile on first launch if no profile was previously saved */
-function initDefaultProfile(): string {
-  if (!localStorage.getItem(LS_KEY_PROFILE)) {
-    localStorage.setItem(LS_KEY_PROFILE, DEFAULT_PROFILE_ID);
-  }
-  return localStorage.getItem(LS_KEY_PROFILE) ?? DEFAULT_PROFILE_ID;
-}
 
 // Named preset highlight colours — 10 options
 const PRESET_COLORS = [
@@ -73,15 +60,9 @@ function getColorName(hex: string): string {
 // Default preference values (mirrored from ReaderContext)
 const DEFAULT_WPM = 250;
 const DEFAULT_THEME = 'night' as const;
-const DEFAULT_WINDOW_SIZE = 3 as WindowSize;
 const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
 const DEFAULT_ORIENTATION = 'horizontal' as Orientation;
-const DEFAULT_ORP = false;
-const DEFAULT_PUNCT_PAUSE = true;
-const DEFAULT_PERIPHERAL_FADE = true;
-const DEFAULT_LONG_WORD_COMP = true;
 const DEFAULT_MAIN_FONT_SIZE = 100;
-const DEFAULT_CHUNK_MODE = 'fixed' as ChunkMode;
 
 interface BurgerMenuProps {
   onFileSelect: (file: File) => void;
@@ -94,26 +75,17 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     windowSize, setWindowSize,
     orientation, setOrientation,
     highlightColor, setHighlightColor,
-    peripheralFade, setPeripheralFade,
-    orpEnabled, setOrpEnabled,
-    punctuationPause, setPunctuationPause,
-    longWordCompensation, setLongWordCompensation,
     mainWordFontSize, setMainWordFontSize,
-    chunkMode, setChunkMode,
     setTheme,
     setWpm,
     records,
     setRecords,
     isPlaying,
-    focalLine, setFocalLine,
+    selectPresetMode,
   } = useReaderContext();
-
   const { user } = useAuth();
   const [historyOpen, setHistoryOpen] = useState(false);
   const [colorExpanded, setColorExpanded] = useState(false);
-
-  // Active profile ID (persisted to localStorage)
-  const [activeProfileId, setActiveProfileId] = useState<string>(() => initDefaultProfile());
 
   // During active reading, advanced settings are collapsed unless user expands them.
   // Resets every time the menu is opened while playing (so re-opening the menu during
@@ -156,56 +128,25 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     [close, onFileSelect],
   );
 
-  // Apply a reading profile — updates all relevant settings at once
-  const applyProfile = useCallback(
-    (profile: ReadingProfile) => {
-      setWindowSize(profile.windowSize);
-      setOrientation(profile.orientation);
-      setHighlightColor(profile.highlightColor);
-      setChunkMode(profile.chunkMode);
-      setPeripheralFade(profile.peripheralFade);
-      setPunctuationPause(profile.punctuationPause);
-      setLongWordCompensation(profile.longWordCompensation);
-      setMainWordFontSize(profile.mainWordFontSize);
-      setWpm(profile.wpm);
-      setActiveProfileId(profile.id);
-      localStorage.setItem(LS_KEY_PROFILE, profile.id);
-      toast.success(`${profile.name} profile applied`);
-    },
-    [
-      setWindowSize, setOrientation, setHighlightColor, setChunkMode,
-      setPeripheralFade, setPunctuationPause, setLongWordCompensation,
-      setMainWordFontSize, setWpm,
-    ],
-  );
-
   // Reset all user preferences to their defaults
   const handleResetDefaults = useCallback(() => {
     setTheme(DEFAULT_THEME);
-    setWindowSize(DEFAULT_WINDOW_SIZE);
     setHighlightColor(DEFAULT_HIGHLIGHT_COLOR);
     setOrientation(DEFAULT_ORIENTATION);
-    setOrpEnabled(DEFAULT_ORP);
-    setPunctuationPause(DEFAULT_PUNCT_PAUSE);
-    setPeripheralFade(DEFAULT_PERIPHERAL_FADE);
-    setLongWordCompensation(DEFAULT_LONG_WORD_COMP);
     setMainWordFontSize(DEFAULT_MAIN_FONT_SIZE);
-    setChunkMode(DEFAULT_CHUNK_MODE);
     setWpm(DEFAULT_WPM);
-    setActiveProfileId(DEFAULT_PROFILE_ID);
-    localStorage.setItem(LS_KEY_PROFILE, DEFAULT_PROFILE_ID);
+    // Apply "Read" preset for all reading-feature settings
+    selectPresetMode('read');
     // Clear IndexedDB preferences
     IndexedDBService.savePreferences({
       theme: DEFAULT_THEME,
       fontSize: DEFAULT_MAIN_FONT_SIZE,
-      wordWindow: DEFAULT_WINDOW_SIZE,
+      wordWindow: 3,
       highlightColor: DEFAULT_HIGHLIGHT_COLOR,
       updatedAt: new Date(),
     }).catch(() => { /* ignore */ });
     toast.success('Settings reset to defaults');
-  }, [setTheme, setWindowSize, setHighlightColor, setOrientation, setOrpEnabled,
-      setPunctuationPause, setPeripheralFade, setLongWordCompensation,
-      setMainWordFontSize, setChunkMode, setWpm]);
+  }, [setTheme, setHighlightColor, setOrientation, setMainWordFontSize, setWpm, selectPresetMode]);
 
   // Clear all reading history
   const handleClearHistory = useCallback(async () => {
@@ -269,23 +210,10 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
 
             <div className={styles.drawerBody}>
 
-              {/* ── Reading Profiles ───────────────────────────────── */}
+              {/* ── Reading Modes ──────────────────────────────────── */}
               <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Reading Profile</h3>
-                <div className={styles.profileGrid}>
-                  {READING_PROFILES.map((profile) => (
-                    <button
-                      key={profile.id}
-                      className={`${styles.profileBtn}${activeProfileId === profile.id ? ` ${styles.profileBtnActive}` : ''}`}
-                      onClick={() => applyProfile(profile)}
-                      title={profile.description}
-                      aria-pressed={activeProfileId === profile.id}
-                    >
-                      <span className={styles.profileName}>{profile.name}</span>
-                      <span className={styles.profileWpm}>{profile.wpm} WPM</span>
-                    </button>
-                  ))}
-                </div>
+                <h3 className={styles.sectionTitle}>Reading Mode</h3>
+                <ReadingModes />
               </section>
 
               {/* ── Minimal-UI notice during active reading ─────────── */}
@@ -414,96 +342,6 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 </label>
               </section>
 
-              {/* ── Reading features ───────────────────────────── */}
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Reading Features</h3>
-
-                <label className={styles.row}>
-                  <span className={styles.label}>
-                    Peripheral fade
-                    <span className={styles.hint}> (dim side words)</span>
-                  </span>
-                  <input
-                    type="checkbox"
-                    className={styles.checkbox}
-                    checked={peripheralFade}
-                    onChange={(e) => setPeripheralFade(e.target.checked)}
-                    aria-label="Dim peripheral words for sharper focus"
-                  />
-                </label>
-
-                <label className={styles.row}>
-                  <span className={styles.label}>
-                    ORP highlight
-                    <span className={styles.hint}> (focal letter)</span>
-                  </span>
-                  <input
-                    type="checkbox"
-                    className={styles.checkbox}
-                    checked={orpEnabled}
-                    onChange={(e) => setOrpEnabled(e.target.checked)}
-                    aria-label="Enable Optimal Recognition Point highlighting"
-                  />
-                </label>
-
-                <label className={styles.row}>
-                  <span className={styles.label}>
-                    Punctuation pause
-                    <span className={styles.hint}> (. ? ! , ;)</span>
-                  </span>
-                  <input
-                    type="checkbox"
-                    className={styles.checkbox}
-                    checked={punctuationPause}
-                    onChange={(e) => setPunctuationPause(e.target.checked)}
-                    aria-label="Pause longer after punctuation"
-                  />
-                </label>
-
-                <label className={styles.row}>
-                  <span className={styles.label}>
-                    Long-word delay
-                    <span className={styles.hint}> ({'>'}8 chars)</span>
-                  </span>
-                  <input
-                    type="checkbox"
-                    className={styles.checkbox}
-                    checked={longWordCompensation}
-                    onChange={(e) => setLongWordCompensation(e.target.checked)}
-                    aria-label="Extra display time for long words"
-                  />
-                </label>
-
-                <label className={styles.row}>
-                  <span className={styles.label}>
-                    Chunk mode
-                    <span className={styles.hint}> (phrase grouping)</span>
-                  </span>
-                  <select
-                    className={styles.select}
-                    value={chunkMode}
-                    onChange={(e) => setChunkMode(e.target.value as ChunkMode)}
-                    aria-label="Word chunking mode"
-                  >
-                    <option value="fixed">Fixed window</option>
-                    <option value="intelligent">Intelligent phrases</option>
-                  </select>
-                </label>
-
-                <label className={styles.row}>
-                  <span className={styles.label}>
-                    Focal Line
-                    <span className={styles.hint}> (two guide lines + letter anchor)</span>
-                  </span>
-                  <input
-                    type="checkbox"
-                    className={styles.checkbox}
-                    checked={focalLine}
-                    onChange={(e) => setFocalLine(e.target.checked)}
-                    aria-label="Vertical guide line and letter highlight to anchor your eye"
-                  />
-                </label>
-              </section>
               </>) /* end (!isPlaying || showAdvancedDuringReading) */}
 
               {/* ── Reading History ─────────────────────────────── */}

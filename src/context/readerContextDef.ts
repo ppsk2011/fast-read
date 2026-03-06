@@ -7,6 +7,8 @@
  */
 
 import { createContext } from 'react';
+import type { ModeId, CustomMode, ModeSettings, PresetModeId } from '../types/readingModes';
+export type { ModeId, CustomMode, ModeSettings, PresetModeId };
 
 export interface FileMetadata {
   name: string;
@@ -101,6 +103,12 @@ interface ReaderState {
   focusMarkerEnabled: boolean;
   /** Whether to show the vertical focal guide line + ORP letter highlight */
   focalLine: boolean;
+  /** Currently active reading mode (preset or custom) */
+  activeMode: ModeId;
+  /** User-saved custom reading modes (max 3) */
+  savedCustomModes: CustomMode[];
+  /** ID of the currently active custom mode, or null if unsaved custom */
+  activeCustomModeId: string | null;
 }
 
 interface ReaderActions {
@@ -136,6 +144,15 @@ interface ReaderActions {
   resetSessionStats: () => void;
   setFocusMarkerEnabled: (enabled: boolean) => void;
   setFocalLine: (v: boolean) => void;
+  setActiveMode: (mode: ModeId) => void;
+  setSavedCustomModes: (modes: CustomMode[]) => void;
+  setActiveCustomModeId: (id: string | null) => void;
+  /** Apply a bundle of mode settings atomically without triggering auto-switch */
+  applyMode: (settings: ModeSettings) => void;
+  /** Apply a preset mode (applies settings + sets activeMode) */
+  selectPresetMode: (modeId: PresetModeId) => void;
+  /** Apply a saved custom mode */
+  selectCustomMode: (mode: CustomMode) => void;
 }
 
 export type ReaderContextValue = ReaderState & ReaderActions;
