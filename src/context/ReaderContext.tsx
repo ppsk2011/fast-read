@@ -57,6 +57,9 @@ const EMPTY_SESSION_STATS: SessionStats = {
 };
 
 export function ReaderProvider({ children }: { children: React.ReactNode }) {
+  // New user = no onboarding flag yet -- apply research-backed defaults
+  const isNewUser = !localStorage.getItem('fastread_onboarding_complete');
+
   const [words, setWordsState] = useState<string[]>([]);
   const [currentWordIndex, setCurrentWordIndexState] = useState<number>(() => {
     const saved = localStorage.getItem(LS_KEY_INDEX);
@@ -83,22 +86,20 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     return localStorage.getItem(LS_KEY_HIGHLIGHT_COLOR) ?? DEFAULT_HIGHLIGHT_COLOR;
   });
   const [orientation, setOrientationState] = useState<Orientation>(() => {
+    if (isNewUser) return 'horizontal';
     const saved = localStorage.getItem(LS_KEY_ORIENTATION);
     if (saved === 'vertical' || saved === 'horizontal') return saved as Orientation;
-    // No saved preference yet — derive from screen width once and persist it
-    // immediately so all subsequent visits (on any device/screen size) retain
-    // this initial choice rather than recomputing the adaptive default.
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    const initial: Orientation = isMobile ? 'vertical' : DEFAULT_ORIENTATION;
-    try { localStorage.setItem(LS_KEY_ORIENTATION, initial); } catch { /* storage unavailable */ }
-    return initial;
+    // No saved preference — always fall back to horizontal (never screen-width-derived)
+    return DEFAULT_ORIENTATION;
   });
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem(LS_KEY_THEME);
     return (saved === 'day' ? 'day' : DEFAULT_THEME) as Theme;
   });
   const [orpEnabled, setOrpEnabledState] = useState<boolean>(() => {
-    return localStorage.getItem(LS_KEY_ORP) === 'true' ? true : DEFAULT_ORP;
+    const saved = localStorage.getItem(LS_KEY_ORP);
+    if (saved !== null) return saved === 'true';
+    return isNewUser ? true : DEFAULT_ORP;
   });
   const [punctuationPause, setPunctuationPauseState] = useState<boolean>(() => {
     const saved = localStorage.getItem(LS_KEY_PUNCT_PAUSE);
@@ -106,7 +107,8 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   });
   const [peripheralFade, setPeripheralFadeState] = useState<boolean>(() => {
     const saved = localStorage.getItem(LS_KEY_PERIPHERAL_FADE);
-    return saved === null ? DEFAULT_PERIPHERAL_FADE : saved === 'true';
+    if (saved !== null) return saved === 'true';
+    return isNewUser ? false : DEFAULT_PERIPHERAL_FADE;
   });
   const [longWordCompensation, setLongWordCompensationState] = useState<boolean>(() => {
     const saved = localStorage.getItem(LS_KEY_LONG_WORD_COMP);
@@ -134,11 +136,14 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   });
   const [focalLine, setFocalLineState] = useState<boolean>(() => {
     const saved = localStorage.getItem(LS_KEY_FOCAL_LINE);
-    return saved === null ? DEFAULT_FOCAL_LINE : saved === 'true';
+    if (saved !== null) return saved === 'true';
+    return isNewUser ? true : DEFAULT_FOCAL_LINE;
   });
 
   const [activeMode, setActiveModeState] = useState<ModeId>(() => {
-    return (localStorage.getItem(LS_KEY_ACTIVE_MODE) as ModeId) ?? 'read';
+    const saved = localStorage.getItem(LS_KEY_ACTIVE_MODE) as ModeId | null;
+    if (saved) return saved;
+    return isNewUser ? 'focus' : 'read';
   });
   const [savedCustomModes, setSavedCustomModesState] = useState<CustomMode[]>(() => {
     try { return JSON.parse(localStorage.getItem(LS_KEY_CUSTOM_MODES) ?? '[]') as CustomMode[]; }

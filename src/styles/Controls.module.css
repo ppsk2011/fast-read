@@ -33,6 +33,7 @@
   align-items: center;
   gap: 0.5rem;
   min-height: 1.5rem;
+  position: relative;
 }
 
 .wordCounter {
@@ -384,4 +385,92 @@
     font-size: 0.68rem;
     min-width: 3.4rem;
   }
+}
+
+/* ── Page nav pill ──────────────────────────────────────────── */
+.pageNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.pageSkipBtn {
+  width: 28px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pageSkipBtn:disabled {
+  opacity: var(--state-disabled);
+  cursor: not-allowed;
+}
+
+.pageSkipBtn:hover:not(:disabled) {
+  background: var(--state-hover);
+  color: var(--text);
+}
+
+.pagePill {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pagePill:hover {
+  background: var(--state-hover);
+  color: var(--text);
+}
+
+.pageJumpPopover {
+  position: absolute;
+  bottom: calc(100% + var(--space-2));
+  right: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.pageJumpInput {
+  width: 80px;
+  padding: var(--space-2);
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--font-size-md);
+  text-align: center;
+}
+
+.pageJumpHint {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-align: center;
 }

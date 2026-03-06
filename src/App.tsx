@@ -22,7 +22,6 @@ import { useAdaptiveSpeed } from './hooks/useAdaptiveSpeed';
 import ReaderViewport from './components/ReaderViewport';
 import Controls from './components/Controls';
 import InputPanel from './components/InputPanel';
-import PageNavigator from './components/PageNavigator';
 import ContextPreview from './components/ContextPreview';
 import BurgerMenu from './components/BurgerMenu';
 import ThemeToggle from './components/ThemeToggle';
@@ -396,13 +395,6 @@ export default function App() {
         </div>
         {!isFocused && <ContextPreview />}
       </main>
-
-      {/* ── 3. Navigation layer ─────────────────────────────────── */}
-      {!isFocused && (
-        <section className="navLayer" aria-label="Navigation">
-          <PageNavigator />
-        </section>
-      )}
 
       {/* ── Paste / URL panel (above bottom bar, collapsible) ───── */}
       {showPaste && !isFocused && (

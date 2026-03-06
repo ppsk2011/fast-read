@@ -184,9 +184,9 @@ const ReaderViewport = memo(function ReaderViewport({
     // Slot 0 = current word — always full opacity
     if (i === 0) return 1;
     // Upcoming words fade progressively
-    if (i === 1) return 0.6;
-    if (i === 2) return 0.4;
-    return 0.25;
+    if (i === 1) return 0.55;
+    if (i === 2) return 0.35;
+    return 0.2;
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -203,9 +203,12 @@ const ReaderViewport = memo(function ReaderViewport({
   };
 
   const userScale = mainWordFontSize / 100;
+  // Focal line and ORP only make sense in single-word mode (wordWindow.length === 1).
+  // In multi-word mode the eye has context and no fixed anchor is needed.
+  const isSingleWord = wordWindow.length === 1;
   // Color the entire center word only when focalLine is OFF or vertical orientation.
-  // When focalLine is ON + horizontal, only the ORP character gets highlightColor.
-  const showFocalLayout = focalLine && orientation === 'horizontal';
+  // When focalLine is ON + horizontal (single-word), only the ORP character gets highlightColor.
+  const showFocalLayout = isSingleWord && focalLine && orientation === 'horizontal';
   const shouldColorCenterWord = !showFocalLayout;
 
   return (
@@ -283,7 +286,7 @@ const ReaderViewport = memo(function ReaderViewport({
                 {word
                   ? isCenter && showFocalLayout
                     ? <OrpAnchorLayout word={word} highlightColor={highlightColor} />
-                    : isCenter && orpEnabled
+                    : isCenter && isSingleWord && orpEnabled
                       ? <WordWithOrp word={word} baseColor={highlightColor} focusMarkerEnabled={focusMarkerEnabled} />
                       : word
                   : EMPTY_SLOT_PLACEHOLDER}
@@ -337,7 +340,7 @@ const ReaderViewport = memo(function ReaderViewport({
                   {word
                     ? showFocalLayout
                       ? <OrpAnchorLayout word={word} highlightColor={highlightColor} />
-                      : orpEnabled
+                      : isSingleWord && orpEnabled
                         ? <WordWithOrp word={word} baseColor={highlightColor} focusMarkerEnabled={focusMarkerEnabled} />
                         : word
                     : EMPTY_SLOT_PLACEHOLDER}

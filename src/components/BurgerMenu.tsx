@@ -64,6 +64,15 @@ const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
 const DEFAULT_ORIENTATION = 'horizontal' as Orientation;
 const DEFAULT_MAIN_FONT_SIZE = 100;
 
+// localStorage keys cleared when user resets to defaults
+const RESETTABLE_KEYS = [
+  'fastread_window_size', 'fastread_wpm', 'fastread_orientation',
+  'fastread_focal_line', 'fastread_orp', 'fastread_peripheral_fade',
+  'fastread_punct_pause', 'fastread_long_word_comp', 'fastread_chunk_mode',
+  'fastread_main_font_size', 'fastread_highlight_color', 'fastread_active_mode',
+  'fastread_active_custom_mode_id', 'fastread_theme',
+] as const;
+
 interface BurgerMenuProps {
   onFileSelect: (file: File) => void;
 }
@@ -81,11 +90,19 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     records,
     setRecords,
     isPlaying,
-    selectPresetMode,
+    setFocalLine,
+    setOrpEnabled,
+    setPeripheralFade,
+    setPunctuationPause,
+    setLongWordCompensation,
+    setChunkMode,
+    setActiveMode,
+    setActiveCustomModeId,
   } = useReaderContext();
   const { user } = useAuth();
   const [historyOpen, setHistoryOpen] = useState(false);
   const [colorExpanded, setColorExpanded] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   // During active reading, advanced settings are collapsed unless user expands them.
   // Resets every time the menu is opened while playing (so re-opening the menu during
@@ -128,25 +145,37 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     [close, onFileSelect],
   );
 
-  // Reset all user preferences to their defaults
+  // Reset all user preferences to new-user defaults
   const handleResetDefaults = useCallback(() => {
+    RESETTABLE_KEYS.forEach(key => { try { localStorage.removeItem(key); } catch { /* ignore */ } });
     setTheme(DEFAULT_THEME);
     setHighlightColor(DEFAULT_HIGHLIGHT_COLOR);
     setOrientation(DEFAULT_ORIENTATION);
     setMainWordFontSize(DEFAULT_MAIN_FONT_SIZE);
     setWpm(DEFAULT_WPM);
-    // Apply "Read" preset for all reading-feature settings
-    selectPresetMode('read');
+    setWindowSize(1);
+    setFocalLine(true);
+    setOrpEnabled(true);
+    setPeripheralFade(false);
+    setPunctuationPause(true);
+    setLongWordCompensation(true);
+    setChunkMode('fixed');
+    setActiveMode('focus');
+    setActiveCustomModeId(null);
     // Clear IndexedDB preferences
     IndexedDBService.savePreferences({
       theme: DEFAULT_THEME,
       fontSize: DEFAULT_MAIN_FONT_SIZE,
-      wordWindow: 3,
+      wordWindow: 1,
       highlightColor: DEFAULT_HIGHLIGHT_COLOR,
       updatedAt: new Date(),
     }).catch(() => { /* ignore */ });
+    setConfirmReset(false);
     toast.success('Settings reset to defaults');
-  }, [setTheme, setHighlightColor, setOrientation, setMainWordFontSize, setWpm, selectPresetMode]);
+  }, [setTheme, setHighlightColor, setOrientation, setMainWordFontSize, setWpm,
+    setWindowSize, setFocalLine, setOrpEnabled, setPeripheralFade,
+    setPunctuationPause, setLongWordCompensation, setChunkMode,
+    setActiveMode, setActiveCustomModeId]);
 
   // Clear all reading history
   const handleClearHistory = useCallback(async () => {
@@ -395,6 +424,36 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
               <section className={styles.section}>
                 <h3 className={styles.sectionTitle}>Session Analytics</h3>
                 <SessionStats />
+              </section>
+
+              {/* ── Reset to Defaults ───────────────────────────────── */}
+              <section className={styles.section}>
+                {confirmReset ? (
+                  <div className={styles.confirmReset}>
+                    <span className={styles.confirmResetText}>Reset all settings to defaults?</span>
+                    <div className={styles.confirmResetActions}>
+                      <button
+                        className={styles.confirmResetYes}
+                        onClick={handleResetDefaults}
+                      >
+                        Yes, reset
+                      </button>
+                      <button
+                        className={styles.confirmResetNo}
+                        onClick={() => setConfirmReset(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    className={styles.resetBtn}
+                    onClick={() => setConfirmReset(true)}
+                  >
+                    Reset to Defaults
+                  </button>
+                )}
               </section>
 
               {/* ── About ───────────────────────────────────────── */}

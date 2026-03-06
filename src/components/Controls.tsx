@@ -65,7 +65,8 @@ export default function Controls({
   pasteOpen,
   focused,
 }: ControlsProps) {
-  const { isPlaying, wpm, setWpm, words, isLoading, currentWordIndex, goToWord } =
+  const { isPlaying, wpm, setWpm, words, isLoading, currentWordIndex, goToWord,
+    totalPages, currentPage, goToPage } =
     useReaderContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -74,9 +75,24 @@ export default function Controls({
   const [wordInput, setWordInput] = useState('');
   const wordInputRef = useRef<HTMLInputElement>(null);
 
+  /* ── Page-jump popover ──────────────────────────────────────── */
+  const [showPageJump, setShowPageJump] = useState(false);
+  const pageJumpRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (isEditingWord) wordInputRef.current?.select();
   }, [isEditingWord]);
+
+  useEffect(() => {
+    if (!showPageJump) return;
+    const handler = (e: MouseEvent) => {
+      if (pageJumpRef.current && !pageJumpRef.current.contains(e.target as Node)) {
+        setShowPageJump(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showPageJump]);
 
   const startWordEdit = useCallback(() => {
     setWordInput(String(currentWordIndex + 1));
@@ -185,6 +201,57 @@ export default function Controls({
               />
             </div>
             <span className={styles.progressPct}>{progress}%</span>
+
+            {/* Page nav pill: −  p.X/Y  + (only when multi-page document loaded) */}
+            {totalPages > 1 && (
+              <div className={styles.pageNav} ref={pageJumpRef}>
+                <button
+                  className={styles.pageSkipBtn}
+                  onClick={() => goToPage(Math.max(1, currentPage - 1))}
+                  aria-label="Previous page"
+                  disabled={currentPage <= 1}
+                >−</button>
+
+                <button
+                  className={styles.pagePill}
+                  onClick={() => setShowPageJump(prev => !prev)}
+                  aria-label={`Page ${currentPage} of ${totalPages}`}
+                >
+                  p.{currentPage}/{totalPages}
+                </button>
+
+                <button
+                  className={styles.pageSkipBtn}
+                  onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
+                  aria-label="Next page"
+                  disabled={currentPage >= totalPages}
+                >+</button>
+
+                {showPageJump && (
+                  <div className={styles.pageJumpPopover}>
+                    <input
+                      type="number"
+                      min={1}
+                      max={totalPages}
+                      defaultValue={currentPage}
+                      className={styles.pageJumpInput}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          const val = Number((e.target as HTMLInputElement).value);
+                          if (val >= 1 && val <= totalPages) {
+                            goToPage(val);
+                            setShowPageJump(false);
+                          }
+                        }
+                        if (e.key === 'Escape') setShowPageJump(false);
+                      }}
+                      autoFocus
+                    />
+                    <span className={styles.pageJumpHint}>Enter page number + Enter to jump</span>
+                  </div>
+                )}
+              </div>
+            )}
           </>
         ) : null}
       </div>
