@@ -413,7 +413,11 @@ export default function App() {
       {/* ── Paste / URL panel (above bottom bar, collapsible) ───── */}
       {showPaste && !isFocused && (
         <div className="pasteArea">
-          <InputPanel onTextReady={handleTextReady} />
+          <InputPanel
+            onTextReady={handleTextReady}
+            onClose={() => setShowPaste(false)}
+            wpm={wpm}
+          />
         </div>
       )}
 
