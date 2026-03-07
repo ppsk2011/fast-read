@@ -1,282 +1,217 @@
 /**
- * OnboardingOverlay
- *
- * Full-screen first-launch overlay introducing new users to ReadSwift.
- * Shown once, gated by localStorage key `fastread_onboarding_complete`.
- *
- * 4 sequential steps:
- *   1. Value Proposition — what is RSVP and why it works
- *   2. Live Demo         — self-contained mini RSVP player (no ReaderContext)
- *   3. Input Methods     — how to load content
- *   4. Reading Profiles  — speed modes available
- *
- * Self-contained: zero dependencies on ReaderContext, useRSVPEngine, or any
- * app-level state. Removing this file and its import from App.tsx leaves the
- * app in exactly its current state.
+ * OnboardingOverlay v2 — demo replicates real ReaderViewport visuals.
+ * 250 WPM, ORP split, focal ticks, theme tokens throughout.
  */
-
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from '../styles/OnboardingOverlay.module.css';
 
-// ── Demo content ──────────────────────────────────────────────────────────────
+const DEMO_WORDS =
+  'Your eyes stay perfectly still. Each word appears exactly where you are looking. ' +
+  'No scanning. No movement. Just words arriving at full speed. This is how ReadSwift works.'
+  .split(/\s+/).filter(Boolean);
 
-const DEMO_TEXT =
-  'Speed reading works by presenting one word at a time at a fixed point on the screen. ' +
-  'Your eyes stay still. Your brain does the rest. ' +
-  'Most readers improve by thirty to fifty percent within one week of regular practice.';
-
-const DEMO_WORDS = DEMO_TEXT.split(/\s+/).filter(Boolean);
-const DEMO_WPM = 300;
+const DEMO_WPM = 250;
 const DEMO_INTERVAL_MS = Math.round(60_000 / DEMO_WPM);
 
-// ── Reading profiles data ─────────────────────────────────────────────────────
-
-const PROFILES: { dot: string; label: string; wpm: number; desc: string; recommended?: boolean }[] = [
-  { dot: '#e74c3c', label: 'Max Speed',   wpm: 700, desc: 'Triage documents at a glance' },
-  { dot: '#e67e22', label: 'Sprint',      wpm: 500, desc: 'Push your speed limits' },
-  { dot: '#27ae60', label: 'Balanced',    wpm: 300, desc: 'Your everyday reading mode', recommended: true },
-  { dot: '#2980b9', label: 'Deep Focus',  wpm: 180, desc: 'Textbooks & reports' },
-  { dot: '#8e44ad', label: 'Zen',         wpm: 100, desc: 'Poetry & reflective reading' },
-];
-
-// ── Component ─────────────────────────────────────────────────────────────────
-
-interface OnboardingOverlayProps {
-  onComplete: () => void;
+/**
+ * Returns the Optimal Recognition Point (ORP) character index for a word.
+ * ORP is the character position where the eye naturally fixates for fastest
+ * word recognition. Formula: one position before each 5-character boundary.
+ */
+function calcOrpIndex(word: string): number {
+  if (!word) return 0;
+  return Math.max(0, Math.ceil(word.length / 5) - 1);
 }
 
-export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
-  const [step, setStep] = useState(0); // 0–3
-  const [visible, setVisible] = useState(false); // drives enter animation
+const MODES = [
+  { label: 'Speed',  emoji: '⚡', wpm: '400–600', desc: 'One word, no focal line. Pure velocity.',          accent: '#f59e0b' },
+  { label: 'Focus',  emoji: '🎯', wpm: '250–350', desc: 'ORP + focal line. Precision reading.',            accent: 'var(--color-accent)', recommended: true },
+  { label: 'Read',   emoji: '📖', wpm: '150–250', desc: '3 words at once with context fading.',            accent: '#34d399' },
+];
 
-  // Demo state — managed by event handlers, not effects
-  const [demoIndex, setDemoIndex] = useState(-1); // -1 = not yet started
+interface OnboardingOverlayProps { onComplete: () => void; }
+
+export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
+  const [step, setStep]       = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [demoIndex, setDemoIndex] = useState(-1);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Trigger CSS enter animation on mount
   useEffect(() => {
     const raf = requestAnimationFrame(() => setVisible(true));
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // ── Demo playback helpers ──────────────────────────────────────────────────
-
-  /** Clear any running interval. Pure cleanup — does not set any state. */
-  const clearDemoInterval = useCallback(() => {
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+  const clearDemo = useCallback(() => {
+    if (intervalRef.current !== null) { clearInterval(intervalRef.current); intervalRef.current = null; }
   }, []);
 
-  /**
-   * Start (or restart) the demo.
-   * Called only from event handlers, never from effect bodies.
-   */
   const launchDemo = useCallback(() => {
-    clearDemoInterval();
+    clearDemo();
     setDemoIndex(0);
     intervalRef.current = setInterval(() => {
-      setDemoIndex((prev) => {
+      setDemoIndex(prev => {
         const next = prev + 1;
-        if (next >= DEMO_WORDS.length) {
-          clearInterval(intervalRef.current!);
-          intervalRef.current = null;
-          return prev; // stay on the last word
-        }
+        if (next >= DEMO_WORDS.length) { clearInterval(intervalRef.current!); intervalRef.current = null; return prev; }
         return next;
       });
     }, DEMO_INTERVAL_MS);
-  }, [clearDemoInterval]);
+  }, [clearDemo]);
 
-  // Stop the interval on unmount (safety net)
-  useEffect(() => () => clearDemoInterval(), [clearDemoInterval]);
-
-  const replayDemo = useCallback(() => {
-    launchDemo();
-  }, [launchDemo]);
-
-  // ── Navigation ────────────────────────────────────────────────────────────
+  useEffect(() => () => clearDemo(), [clearDemo]);
 
   const advance = useCallback(() => {
     if (step < 3) {
-      const nextStep = step + 1;
-      setStep(nextStep);
-      if (nextStep === 1) {
-        launchDemo(); // start demo when entering step 1 (event handler — not effect)
-      } else {
-        clearDemoInterval(); // stop demo when leaving step 1
-      }
+      const next = step + 1;
+      setStep(next);
+      if (next === 1) launchDemo();
+      else clearDemo();
     } else {
       onComplete();
     }
-  }, [step, onComplete, launchDemo, clearDemoInterval]);
+  }, [step, onComplete, launchDemo, clearDemo]);
 
-  const skip = useCallback(() => {
-    onComplete();
-  }, [onComplete]);
-
-  // ── Keyboard navigation ───────────────────────────────────────────────────
+  const skip = useCallback(() => onComplete(), [onComplete]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') advance();
-      if (e.key === 'Escape') skip();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    const h = (e: KeyboardEvent) => { if (e.key === 'Enter') advance(); if (e.key === 'Escape') skip(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
   }, [advance, skip]);
 
-  // ── Derived display values ────────────────────────────────────────────────
-
-  const demoWord = demoIndex >= 0 && demoIndex < DEMO_WORDS.length
-    ? DEMO_WORDS[demoIndex]
-    : '';
-
+  const rawWord  = demoIndex >= 0 && demoIndex < DEMO_WORDS.length ? DEMO_WORDS[demoIndex] : '';
+  const orpIdx   = calcOrpIndex(rawWord);
+  const preORP   = rawWord.slice(0, orpIdx);
+  const orpChar  = rawWord[orpIdx] ?? '';
+  const postORP  = rawWord.slice(orpIdx + 1);
   const demoFinished = demoIndex === DEMO_WORDS.length - 1;
 
-  // ── Render ────────────────────────────────────────────────────────────────
-
   return (
-    <div
-      className={`${styles.overlay} ${visible ? styles.overlayVisible : ''}`}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Welcome to ReadSwift"
-    >
+    <div className={`${styles.overlay} ${visible ? styles.overlayVisible : ''}`}
+         role="dialog" aria-modal="true" aria-label="Welcome to ReadSwift">
       <div className={styles.panel}>
 
-        {/* ── Step indicator ── */}
         <div className={styles.dots} aria-label={`Step ${step + 1} of 4`}>
-          {[0, 1, 2, 3].map((i) => (
-            <span
-              key={i}
-              className={`${styles.dot} ${i === step ? styles.dotActive : ''}`}
-              aria-hidden="true"
-            />
+          {[0,1,2,3].map(i => (
+            <span key={i} className={`${styles.dot} ${i === step ? styles.dotActive : ''}`} aria-hidden="true" />
           ))}
         </div>
 
-        {/* ── Step content ── */}
         <div className={styles.stepContent} key={step}>
 
-          {/* ── Step 0: Value Proposition ── */}
+          {/* Step 0 — Value prop */}
           {step === 0 && (
             <div className={styles.step}>
-              <h1 className={styles.heading}>Read 2× faster. Same comprehension.</h1>
+              <div className={styles.heroIcon} aria-hidden="true">⚡</div>
+              <h1 className={styles.heading}>Read 2× faster.<br />Same comprehension.</h1>
               <p className={styles.body}>
-                ReadSwift uses RSVP — Rapid Serial Visual Presentation — to eliminate eye movement,
-                the&nbsp;#1 bottleneck in reading speed.
+                ReadSwift uses RSVP — Rapid Serial Visual Presentation — to eliminate
+                the eye movement that slows every reader down.
               </p>
-              <p className={styles.subtext}>
-                Most people read 200–250 words per minute. ReadSwift users reach 400–600&nbsp;WPM
-                in their first week.
-              </p>
+              <div className={styles.statRow}>
+                <div className={styles.stat}>
+                  <span className={styles.statNum}>250</span>
+                  <span className={styles.statLabel}>avg WPM without training</span>
+                </div>
+                <span className={styles.statArrow} aria-hidden="true">→</span>
+                <div className={styles.stat}>
+                  <span className={styles.statNum} style={{ color: 'var(--color-accent)' }}>500+</span>
+                  <span className={styles.statLabel}>WPM within one week</span>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* ── Step 1: Live Demo ── */}
+          {/* Step 1 — Live demo */}
           {step === 1 && (
             <div className={styles.step}>
               <h1 className={styles.heading}>See it in action</h1>
-              <div className={styles.demoContainer} aria-live="polite" aria-atomic="true">
+
+              <div className={styles.demoViewport} aria-live="polite" aria-atomic="true">
+                {demoIndex >= 0 && (
+                  <>
+                    <div className={styles.demoTickTop}    aria-hidden="true" />
+                    <div className={styles.demoTickBottom} aria-hidden="true" />
+                  </>
+                )}
                 {demoIndex === -1 ? (
-                  <span className={styles.demoPlaceholder}>Get ready\u2026</span>
+                  <span className={styles.demoPlaceholder}>Get ready…</span>
                 ) : (
-                  <span className={styles.demoWord}>{demoWord}</span>
+                  <div className={styles.demoWordRow}>
+                    <span className={styles.demoPreOrp}>{preORP}</span>
+                    <span className={styles.demoOrpChar}>{orpChar}</span>
+                    <span className={styles.demoPostOrp}>{postORP}</span>
+                  </div>
                 )}
               </div>
+
               <p className={styles.demoCaption}>
                 {demoFinished
-                  ? 'That\u2019s RSVP. Your eyes stayed still the whole time.'
-                  : `${DEMO_WPM} WPM \u2014 words appear one at a time`}
+                  ? 'Your eyes stayed still the entire time. That is RSVP.'
+                  : `${DEMO_WPM} WPM — words appear at a fixed point`}
               </p>
+              <div className={styles.wpmChip} aria-hidden="true">
+                <span className={styles.wpmDot} />{DEMO_WPM} WPM
+              </div>
             </div>
           )}
 
-          {/* ── Step 2: Input Methods ── */}
+          {/* Step 2 — Load content */}
           {step === 2 && (
             <div className={styles.step}>
-              <h1 className={styles.heading}>Load any document</h1>
-              <ul className={styles.inputList}>
-                <li className={styles.inputItem}>
-                  <span className={styles.inputIcon}>📂</span>
-                  <div>
-                    <strong>Upload a file</strong>
-                    <span className={styles.inputFormats}> — PDF, EPUB, DOCX, TXT, MD, HTML, RTF, SRT</span>
-                  </div>
-                </li>
-                <li className={styles.inputItem}>
-                  <span className={styles.inputIcon}>📋</span>
-                  <div>
-                    <strong>Paste text</strong>
-                    <span className={styles.inputFormats}> — Copy from anywhere, paste directly</span>
-                  </div>
-                </li>
-                <li className={styles.inputItem}>
-                  <span className={styles.inputIcon}>🔗</span>
-                  <div>
-                    <strong>Enter a URL</strong>
-                    <span className={styles.inputFormats}> — Fetch any web article</span>
-                  </div>
-                </li>
-              </ul>
-              <p className={styles.privacy}>
-                🔒 All processing happens on your device. Nothing is uploaded. No account needed.
-              </p>
-            </div>
-          )}
-
-          {/* ── Step 3: Reading Profiles ── */}
-          {step === 3 && (
-            <div className={styles.step}>
-              <h1 className={styles.heading}>Pick your reading style</h1>
-              <div className={styles.profileList}>
-                {PROFILES.map((p) => (
-                  <div
-                    key={p.label}
-                    className={`${styles.profileCard} ${p.recommended ? styles.profileCardRecommended : ''}`}
-                    style={{ borderLeftColor: p.dot }}
-                  >
-                    <span className={styles.profileDot} style={{ background: p.dot }} />
-                    <div className={styles.profileInfo}>
-                      <span className={styles.profileLabel}>
-                        {p.label}
-                        {p.recommended && <span className={styles.profileBadge}>Recommended</span>}
-                      </span>
-                      <span className={styles.profileWpm}>{p.wpm} WPM</span>
-                      <span className={styles.profileDesc}>{p.desc}</span>
+              <h1 className={styles.heading}>Load anything</h1>
+              <div className={styles.inputCards}>
+                {[
+                  { icon: '📂', title: 'Upload a file',  desc: 'PDF · EPUB · DOCX · TXT · MD · HTML · SRT' },
+                  { icon: '📋', title: 'Paste text',     desc: 'Copy from anywhere — clipboard auto-detected' },
+                  { icon: '🔗', title: 'Paste a URL',    desc: 'Fetches and extracts any web article' },
+                ].map(card => (
+                  <div key={card.title} className={styles.inputCard}>
+                    <span className={styles.inputCardIcon} aria-hidden="true">{card.icon}</span>
+                    <div>
+                      <strong>{card.title}</strong>
+                      <span className={styles.inputFormats}>{card.desc}</span>
                     </div>
                   </div>
                 ))}
               </div>
-              <p className={styles.profileNote}>You can switch modes anytime from the ☰ menu.</p>
+              <p className={styles.privacyNote}>🔒 All processing is local. No account needed.</p>
+            </div>
+          )}
+
+          {/* Step 3 — Modes */}
+          {step === 3 && (
+            <div className={styles.step}>
+              <h1 className={styles.heading}>Choose your mode</h1>
+              <div className={styles.modeCards}>
+                {MODES.map(mode => (
+                  <div key={mode.label}
+                       className={`${styles.modeCard} ${mode.recommended ? styles.modeCardRec : ''}`}
+                       style={{ borderLeftColor: mode.accent }}>
+                    <span className={styles.modeEmoji} aria-hidden="true">{mode.emoji}</span>
+                    <div className={styles.modeInfo}>
+                      <span className={styles.modeLabel}>
+                        {mode.label}
+                        {mode.recommended && <span className={styles.modeBadge}>Start here</span>}
+                      </span>
+                      <span className={styles.modeWpm} style={{ color: mode.accent }}>{mode.wpm} WPM</span>
+                      <span className={styles.modeDesc}>{mode.desc}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className={styles.modeNote}>Switch modes anytime from the ☰ menu.</p>
             </div>
           )}
 
         </div>
 
-        {/* ── Action buttons ── */}
         <div className={styles.actions}>
-          {step === 1 && (
-            <button className={styles.btnSecondary} onClick={replayDemo}>
-              Replay
-            </button>
-          )}
-
-          {step < 3 ? (
-            <button className={styles.btnPrimary} onClick={advance}>
-              Next →
-            </button>
-          ) : (
-            <button className={styles.btnPrimary} onClick={advance}>
-              Start Reading →
-            </button>
-          )}
-
-          <button className={styles.btnSkip} onClick={skip}>
-            Skip
+          {step === 1 && <button className={styles.btnSecondary} onClick={launchDemo}>Replay</button>}
+          <button className={styles.btnPrimary} onClick={advance}>
+            {step < 3 ? 'Next →' : 'Start Reading →'}
           </button>
+          <button className={styles.btnSkip} onClick={skip}>Skip</button>
         </div>
 
       </div>
