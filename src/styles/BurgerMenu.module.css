@@ -30,6 +30,7 @@
   background: var(--text-muted, #888);
   border-radius: 2px;
   transition: background 0.15s;
+  flex-shrink: 0;
 }
 
 .burgerBtn:hover .bar {
@@ -531,7 +532,7 @@
 
 .profileBtnActive {
   border-color: var(--color-accent, #22d3ee);
-  background: color-mix(in srgb, var(--color-accent, #22d3ee) 10%, var(--bg-input, #1a1a1a));
+  background: var(--color-accent-10);
 }
 
 .profileName {
@@ -558,8 +559,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: color-mix(in srgb, var(--color-accent, #22d3ee) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-accent, #22d3ee) 30%, transparent);
+  background: var(--color-accent-8);
+  border: 1px solid var(--color-accent-30);
   border-radius: 8px;
   margin-bottom: 0.5rem;
 }
@@ -736,7 +737,7 @@
 .themeSwatch[data-swatch="midnight"] { background: #5b8dee; }
 .themeSwatch[data-swatch="warm"]     { background: #e8a830; }
 .themeSwatch[data-swatch="day"]      { background: #2a7a6e; }
-.themeSwatch[data-swatch="amoled"]   { background: #000000; border-color: #00d4ff; }
+.themeSwatch[data-swatch="obsidian"] { background: #000000; border-color: #00d4ff; }
 
 .themeLabel {
   font-size: var(--font-size-xs);

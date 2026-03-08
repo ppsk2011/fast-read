@@ -36,7 +36,7 @@
 .tabActive {
   border-color: var(--color-accent);
   color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  background: var(--color-accent-10);
 }
 
 .tabEmoji {
@@ -117,7 +117,7 @@
 .chipActive {
   border-color: var(--color-accent);
   color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  background: var(--color-accent-10);
 }
 
 .chipDelete {

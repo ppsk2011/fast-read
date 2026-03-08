@@ -100,7 +100,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
   });
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem(LS_KEY_THEME) as Theme | null;
-    const valid: Theme[] = ['midnight', 'warm', 'day', 'amoled'];
+    const valid: Theme[] = ['midnight', 'warm', 'day', 'obsidian'];
     const resolved = (saved && valid.includes(saved)) ? saved : DEFAULT_THEME;
     // Apply theme immediately so the DOM reflects the saved preference before first paint
     document.documentElement.setAttribute('data-theme', resolved);

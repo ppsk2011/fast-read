@@ -1,9 +1,6 @@
 /**
- * WhatsNewModal
- *
- * Shown once per app version. Displayed before onboarding on version bumps.
- * Dismissed with the primary CTA button — caller then decides whether to
- * show onboarding next.
+ * WhatsNewModal — shown once per app version.
+ * Appears before onboarding on version bumps.
  */
 
 import { APP_VERSION } from '../version';
@@ -16,26 +13,11 @@ interface WhatsNewEntry {
 }
 
 const WHATS_NEW: WhatsNewEntry[] = [
-  {
-    icon: '⬛',
-    title: 'AMOLED Pure Black Theme',
-    body: 'True #000000 backgrounds that turn pixels off on OLED screens — maximum contrast, minimum battery drain.',
-  },
-  {
-    icon: '↺',
-    title: 'Reset Button Fixed',
-    body: 'The reset icon now uses the universally recognised counter-clockwise refresh arrow, matching every major browser and OS.',
-  },
-  {
-    icon: '☰',
-    title: 'iOS Menu Bars Fixed',
-    body: 'The three-bar hamburger icon now renders correctly on all iOS Safari versions.',
-  },
-  {
-    icon: '▣',
-    title: 'Consistent Panel Corners',
-    body: 'The reading viewport, page context panel, and playback bar now share the same rounded corners for a cohesive look.',
-  },
+  { icon: '⬛', title: 'Obsidian Theme',         body: 'True black surfaces for OLED screens — pixels off, battery saved, maximum contrast.' },
+  { icon: '↺',  title: 'Reset Icon Fixed',        body: 'The reset button now shows the universally recognised counter-clockwise refresh arrow.' },
+  { icon: '☰',  title: 'iOS Menu Fixed',          body: 'The three-bar hamburger icon now renders correctly on all iOS Safari versions.' },
+  { icon: '⚡',  title: 'Sprint & Flow Modes',     body: 'Speed mode is now Sprint. Read mode is now Flow. IDs and settings are unchanged.' },
+  { icon: '▣',  title: 'Consistent Panel Corners', body: 'The viewport, page context panel, and playback bar now share the same border radius.' },
 ];
 
 interface WhatsNewModalProps {
@@ -44,11 +26,11 @@ interface WhatsNewModalProps {
 
 export default function WhatsNewModal({ onDismiss }: WhatsNewModalProps) {
   return (
-    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="What's new">
+    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="What's new in ReadSwift">
       <div className={styles.card}>
 
         <div className={styles.header}>
-          <span className={styles.versionBadge}>{APP_VERSION}</span>
+          <span className={styles.badge}>{APP_VERSION}</span>
           <h2 className={styles.title}>What's New</h2>
           <p className={styles.subtitle}>ReadSwift just got better</p>
         </div>
@@ -56,8 +38,8 @@ export default function WhatsNewModal({ onDismiss }: WhatsNewModalProps) {
         <ul className={styles.list} role="list">
           {WHATS_NEW.map((entry) => (
             <li key={entry.title} className={styles.item}>
-              <span className={styles.itemIcon} aria-hidden="true">{entry.icon}</span>
-              <div className={styles.itemText}>
+              <span className={styles.icon} aria-hidden="true">{entry.icon}</span>
+              <div className={styles.text}>
                 <span className={styles.itemTitle}>{entry.title}</span>
                 <span className={styles.itemBody}>{entry.body}</span>
               </div>
@@ -65,7 +47,7 @@ export default function WhatsNewModal({ onDismiss }: WhatsNewModalProps) {
           ))}
         </ul>
 
-        <button className={styles.dismissBtn} onClick={onDismiss} autoFocus>
+        <button type="button" className={styles.cta} onClick={onDismiss} autoFocus>
           Got it — let's read
         </button>
 

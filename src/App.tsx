@@ -121,14 +121,16 @@ export default function App() {
   const [showPaste, setShowPaste] = useState(false);
   const [sessionCompleted, setSessionCompleted] = useState(false);
 
-  // What's New: show when the stored seen-version differs from APP_VERSION
-  const [showWhatsNew, setShowWhatsNew] = useState<boolean>(() => {
-    return localStorage.getItem('fastread_seen_version') !== APP_VERSION;
-  });
-
-  // Onboarding: show if never completed, OR if a version bump just triggered it
-  // (set to true by handleWhatsNewDismiss when onboarding has never been seen)
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  // What's New: shown when stored version ≠ current version
+  const [showWhatsNew, setShowWhatsNew] = useState<boolean>(
+    () => localStorage.getItem('fastread_seen_version') !== APP_VERSION,
+  );
+  // Onboarding: not shown immediately — triggered by handleWhatsNewDismiss
+  // if user has never completed it, or shown directly if no version bump
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(
+    () => !localStorage.getItem('fastread_seen_version')
+         && !localStorage.getItem('fastread_onboarding_complete'),
+  );
 
   /** Apply theme as a data attribute on <html> so CSS variables cascade */
   useEffect(() => {

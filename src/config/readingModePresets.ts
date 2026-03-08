@@ -7,7 +7,7 @@ export const PRESET_MODES: Record<PresetModeId, {
   settings: ModeSettings;
 }> = {
   speed: {
-    label: 'Speed',
+    label: 'Sprint',
     icon: '⚡',
     description: 'Pure velocity. No pauses, no distractions.',
     settings: {
@@ -37,8 +37,8 @@ export const PRESET_MODES: Record<PresetModeId, {
     },
   },
   read: {
-    label: 'Read',
-    icon: '📖',
+    label: 'Flow',
+    icon: '🌊',
     description: 'Natural reading with context and rhythm.',
     settings: {
       windowSize: 3,            // 3 words — max (v11)

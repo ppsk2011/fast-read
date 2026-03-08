@@ -32,9 +32,9 @@ function calcOrpIndex(word: string): number {
 }
 
 const MODES = [
-  { id: 'speed' as PresetModeId, label: 'Speed',  emoji: '⚡', wpm: '400–600', desc: 'One word, no focal line. Pure velocity.',   setupDesc: 'Fast, no anchor',    accent: '#f59e0b' },
-  { id: 'focus' as PresetModeId, label: 'Focus',  emoji: '🎯', wpm: '250–350', desc: 'ORP + focal line. Precision reading.',       setupDesc: 'ORP + focal line',   accent: 'var(--color-accent)', recommended: true },
-  { id: 'read'  as PresetModeId, label: 'Read',   emoji: '📖', wpm: '150–250', desc: '3 words at once with context fading.',      setupDesc: '3 words, context',   accent: '#34d399' },
+  { id: 'speed' as PresetModeId, label: 'Sprint', emoji: '⚡', wpm: '400–600', desc: 'One word, no pauses. Pure velocity.',         setupDesc: 'Fast, no anchor',    accent: '#f59e0b' },
+  { id: 'focus' as PresetModeId, label: 'Focus',  emoji: '🎯', wpm: '250–350', desc: 'ORP anchor + focal line. Precision reading.', setupDesc: 'ORP + focal line',   accent: 'var(--color-accent)', recommended: true },
+  { id: 'read'  as PresetModeId, label: 'Flow',   emoji: '🌊', wpm: '150–250', desc: '3 words with natural rhythm and context.',    setupDesc: '3 words, context',   accent: '#34d399' },
 ];
 
 interface OnboardingOverlayProps {
@@ -230,12 +230,13 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 <p className={styles.setupLabel}>Theme</p>
                 <div className={styles.themeRow}>
                   {([
-                    { id: 'midnight', label: 'Midnight', bg: '#0f0f12', accent: '#5b8dee' },
-                    { id: 'warm',     label: 'Warm',     bg: '#120f0a', accent: '#e8a830' },
-                    { id: 'day',      label: 'Day',      bg: '#f5f0e8', accent: '#2a7a6e' },
-                    { id: 'amoled',   label: 'AMOLED',   bg: '#000000', accent: '#00d4ff' },
+                    { id: 'midnight',  label: 'Midnight',  bg: '#0f0f12', accent: '#5b8dee' },
+                    { id: 'warm',      label: 'Warm',      bg: '#120f0a', accent: '#e8a830' },
+                    { id: 'day',       label: 'Day',       bg: '#f5f0e8', accent: '#2a7a6e' },
+                    { id: 'obsidian',  label: 'Obsidian',  bg: '#000000', accent: '#00d4ff' },
                   ] as const).map(t => (
                     <button
+                      type="button"
                       key={t.id}
                       className={`${styles.themeBtn} ${pickedTheme === t.id ? styles.themeBtnActive : ''}`}
                       onClick={() => setPickedTheme(t.id)}
@@ -258,6 +259,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                 <div className={styles.modeRow}>
                   {MODES.map(m => (
                     <button
+                      type="button"
                       key={m.id}
                       className={`${styles.modeBtn} ${pickedMode === m.id ? styles.modeBtnActive : ''}`}
                       onClick={() => setPickedMode(m.id)}
@@ -277,11 +279,11 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         </div>
 
         <div className={styles.actions}>
-          {step === 1 && <button className={styles.btnSecondary} onClick={launchDemo}>Replay</button>}
-          <button className={styles.btnPrimary} onClick={advance}>
+          {step === 1 && <button type="button" className={styles.btnSecondary} onClick={launchDemo}>Replay</button>}
+          <button type="button" className={styles.btnPrimary} onClick={advance}>
             {step < 4 ? 'Next →' : 'Start Reading →'}
           </button>
-          <button className={styles.btnSkip} onClick={skip}>Skip</button>
+          <button type="button" className={styles.btnSkip} onClick={skip}>Skip</button>
         </div>
 
       </div>

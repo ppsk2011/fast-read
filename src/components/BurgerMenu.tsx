@@ -44,11 +44,11 @@ const DEFAULT_HIGHLIGHT_COLOR = getThemeOrpAccent(DEFAULT_THEME); // midnight ac
 const DEFAULT_ORIENTATION = 'horizontal' as Orientation;
 const DEFAULT_MAIN_FONT_SIZE = 100;
 
-const THEME_LABELS: Record<'midnight' | 'warm' | 'day' | 'amoled', string> = {
+const THEME_LABELS: Record<'midnight' | 'warm' | 'day' | 'obsidian', string> = {
   midnight: 'Midnight',
   warm: 'Warm',
   day: 'Day',
-  amoled: 'AMOLED',
+  obsidian: 'Obsidian',
 };
 
 // localStorage keys cleared when user resets to defaults
@@ -188,6 +188,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
     <>
       {/* Hamburger button */}
       <button
+        type="button"
         className={styles.burgerBtn}
         onClick={handleOpen}
         aria-label="Open settings menu"
@@ -216,6 +217,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
             <div className={styles.drawerHeader}>
               <span className={styles.drawerTitle}>ReadSwift</span>
               <button
+                type="button"
                 className={styles.closeBtn}
                 onClick={close}
                 aria-label="Close settings menu"
@@ -238,6 +240,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   <span className={styles.readingActiveDot} aria-hidden="true" />
                   <span className={styles.readingActiveLabel}>Reading in progress</span>
                   <button
+                    type="button"
                     className={styles.showSettingsBtn}
                     onClick={() => setShowAdvancedDuringReading(true)}
                   >
@@ -253,6 +256,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 <div className={styles.sectionHeader}>
                   <h3 className={styles.sectionTitle}>Display</h3>
                   <button
+                    type="button"
                     className={styles.sectionActionBtn}
                     onClick={handleResetDefaults}
                     title="Reset to Default Settings"
@@ -336,7 +340,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 <div className={styles.themeSection}>
                   <span className={styles.sectionLabel}>THEME</span>
                   <div className={styles.themeRow}>
-                    {(['midnight', 'warm', 'day', 'amoled'] as const).map(t => (
+                    {(['midnight', 'warm', 'day', 'obsidian'] as const).map(t => (
                       <button
                         key={t}
                         className={`${styles.themeBtn} ${theme === t ? styles.themeBtnActive : ''}`}
@@ -359,6 +363,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
               <section className={styles.section}>
                 <div className={styles.sectionHeader}>
                   <button
+                    type="button"
                     className={styles.accordionToggle}
                     onClick={() => setHistoryOpen((v) => !v)}
                     aria-expanded={historyOpen}
@@ -375,6 +380,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   </button>
                   {records.length > 0 && (
                   <button
+                    type="button"
                     className={`${styles.sectionActionBtn} ${styles.sectionActionBtnDanger}`}
                     onClick={handleClearHistory}
                     title="Clear Reading History"
@@ -415,12 +421,14 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                     <span className={styles.confirmResetText}>Reset all settings to defaults?</span>
                     <div className={styles.confirmResetActions}>
                       <button
+                        type="button"
                         className={styles.confirmResetYes}
                         onClick={handleResetDefaults}
                       >
                         Yes, reset
                       </button>
                       <button
+                        type="button"
                         className={styles.confirmResetNo}
                         onClick={() => setConfirmReset(false)}
                       >
@@ -430,6 +438,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   </div>
                 ) : (
                   <button
+                    type="button"
                     className={styles.resetBtn}
                     onClick={() => setConfirmReset(true)}
                   >

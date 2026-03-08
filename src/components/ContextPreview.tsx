@@ -82,6 +82,7 @@ export default function ContextPreview() {
 
       {/* ── Header toggle ── */}
       <button
+        type="button"
         className={styles.heading}
         onClick={handleToggle}
         aria-expanded={isExpanded}

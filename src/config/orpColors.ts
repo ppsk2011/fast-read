@@ -96,12 +96,12 @@ export const ORP_COLORS: Record<Theme, OrpColorOption[]> = {
       reason: 'Gentle — same family as body text, minimal disruption',
     },
   ],
-  amoled: [
+  obsidian: [
     {
       id: 'cyan',
       label: 'Cyan',
       value: '#00d4ff',
-      reason: 'Default — maximum pop-out on pure black; color-blind safe; sub-pixel optimal for AMOLED',
+      reason: 'Default — maximum pop-out on pure black; color-blind safe; lowest fatigue on OLED',
     },
     {
       id: 'amber',
@@ -111,15 +111,15 @@ export const ORP_COLORS: Record<Theme, OrpColorOption[]> = {
     },
     {
       id: 'green',
-      label: 'Green',
+      label: 'Mint',
       value: '#39ff6e',
-      reason: 'Electric green — fastest pre-attentive pop-out on OLED black backgrounds',
+      reason: 'Fastest pre-attentive pop-out on true black OLED backgrounds',
     },
     {
       id: 'subtle',
       label: 'Soft White',
       value: '#e8e8e8',
-      reason: 'Minimal visual disruption; comfortable for long sessions on AMOLED',
+      reason: 'Minimal disruption; comfortable for extended OLED sessions',
     },
   ],
 };

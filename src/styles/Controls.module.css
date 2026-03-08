@@ -155,11 +155,11 @@
 }
 
 .playBtn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-accent) 82%, white);
+  background: var(--color-accent-bright);
 }
 
 .playBtn:active:not(:disabled) {
-  background: color-mix(in srgb, var(--color-accent) 70%, black);
+  background: var(--color-accent-deep);
 }
 
 .playBtn:disabled {
