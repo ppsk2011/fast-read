@@ -342,6 +342,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                   <div className={styles.themeRow}>
                     {(['midnight', 'warm', 'day', 'obsidian'] as const).map(t => (
                       <button
+                        type="button"
                         key={t}
                         className={`${styles.themeBtn} ${theme === t ? styles.themeBtnActive : ''}`}
                         onClick={() => setTheme(t)}
