@@ -44,10 +44,11 @@ const DEFAULT_HIGHLIGHT_COLOR = getThemeOrpAccent(DEFAULT_THEME); // midnight ac
 const DEFAULT_ORIENTATION = 'horizontal' as Orientation;
 const DEFAULT_MAIN_FONT_SIZE = 100;
 
-const THEME_LABELS: Record<'midnight' | 'warm' | 'day', string> = {
+const THEME_LABELS: Record<'midnight' | 'warm' | 'day' | 'amoled', string> = {
   midnight: 'Midnight',
   warm: 'Warm',
   day: 'Day',
+  amoled: 'AMOLED',
 };
 
 // localStorage keys cleared when user resets to defaults
@@ -335,7 +336,7 @@ export default function BurgerMenu({ onFileSelect }: BurgerMenuProps) {
                 <div className={styles.themeSection}>
                   <span className={styles.sectionLabel}>THEME</span>
                   <div className={styles.themeRow}>
-                    {(['midnight', 'warm', 'day'] as const).map(t => (
+                    {(['midnight', 'warm', 'day', 'amoled'] as const).map(t => (
                       <button
                         key={t}
                         className={`${styles.themeBtn} ${theme === t ? styles.themeBtnActive : ''}`}

@@ -11,16 +11,18 @@ import { useReaderContext } from '../context/useReaderContext';
 import type { Theme } from '../context/readerContextDef';
 import styles from '../styles/ThemeToggle.module.css';
 
-const THEME_CYCLE: Theme[] = ['midnight', 'warm', 'day'];
+const THEME_CYCLE: Theme[] = ['midnight', 'warm', 'day', 'amoled'];
 const THEME_ICONS: Record<Theme, string> = {
   midnight: '🌙',
   warm: '🕯',
   day: '☀',
+  amoled: '⬛',
 };
 const THEME_LABELS: Record<Theme, string> = {
   midnight: 'Switch to Warm theme',
   warm: 'Switch to Day theme',
-  day: 'Switch to Midnight theme',
+  day: 'Switch to AMOLED theme',
+  amoled: 'Switch to Midnight theme',
 };
 
 export default function ThemeToggle() {

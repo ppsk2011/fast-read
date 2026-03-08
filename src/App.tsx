@@ -14,6 +14,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { APP_VERSION } from './version';
+import WhatsNewModal from './components/WhatsNewModal';
 import OnboardingOverlay from './components/OnboardingOverlay';
 import { useReaderContext } from './context/useReaderContext';
 import { useRSVPEngine } from './hooks/useRSVPEngine';
@@ -118,9 +120,15 @@ export default function App() {
   const [isFocused, setIsFocused] = useState(false);
   const [showPaste, setShowPaste] = useState(false);
   const [sessionCompleted, setSessionCompleted] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(
-    () => !localStorage.getItem('fastread_onboarding_complete'),
-  );
+
+  // What's New: show when the stored seen-version differs from APP_VERSION
+  const [showWhatsNew, setShowWhatsNew] = useState<boolean>(() => {
+    return localStorage.getItem('fastread_seen_version') !== APP_VERSION;
+  });
+
+  // Onboarding: show if never completed, OR if a version bump just triggered it
+  // (set to true by handleWhatsNewDismiss when onboarding has never been seen)
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
   /** Apply theme as a data attribute on <html> so CSS variables cascade */
   useEffect(() => {
@@ -343,9 +351,21 @@ export default function App() {
     [setTheme, applyMode, setActiveMode],
   );
 
+  const handleWhatsNewDismiss = useCallback(() => {
+    localStorage.setItem('fastread_seen_version', APP_VERSION);
+    setShowWhatsNew(false);
+    // After dismissing What's New, show onboarding if it has never been completed
+    if (!localStorage.getItem('fastread_onboarding_complete')) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
   return (
     <AuthProvider>
-    {showOnboarding && (
+    {showWhatsNew && (
+      <WhatsNewModal onDismiss={handleWhatsNewDismiss} />
+    )}
+    {!showWhatsNew && showOnboarding && (
       <OnboardingOverlay onComplete={completeOnboarding} />
     )}
     <div className={`appShell${isFocused ? ' appShellFocused' : ''}`}>

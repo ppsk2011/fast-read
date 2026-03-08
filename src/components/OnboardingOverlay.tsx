@@ -233,6 +233,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     { id: 'midnight', label: 'Midnight', bg: '#0f0f12', accent: '#5b8dee' },
                     { id: 'warm',     label: 'Warm',     bg: '#120f0a', accent: '#e8a830' },
                     { id: 'day',      label: 'Day',      bg: '#f5f0e8', accent: '#2a7a6e' },
+                    { id: 'amoled',   label: 'AMOLED',   bg: '#000000', accent: '#00d4ff' },
                   ] as const).map(t => (
                     <button
                       key={t.id}

@@ -96,6 +96,32 @@ export const ORP_COLORS: Record<Theme, OrpColorOption[]> = {
       reason: 'Gentle — same family as body text, minimal disruption',
     },
   ],
+  amoled: [
+    {
+      id: 'cyan',
+      label: 'Cyan',
+      value: '#00d4ff',
+      reason: 'Default — maximum pop-out on pure black; color-blind safe; sub-pixel optimal for AMOLED',
+    },
+    {
+      id: 'amber',
+      label: 'Amber',
+      value: '#ffb830',
+      reason: 'Research-validated lowest fatigue; vivid on pure black without blue-channel bleed',
+    },
+    {
+      id: 'green',
+      label: 'Green',
+      value: '#39ff6e',
+      reason: 'Electric green — fastest pre-attentive pop-out on OLED black backgrounds',
+    },
+    {
+      id: 'subtle',
+      label: 'Soft White',
+      value: '#e8e8e8',
+      reason: 'Minimal visual disruption; comfortable for long sessions on AMOLED',
+    },
+  ],
 };
 
 /** Returns the accent color for the given theme (first/default option). */

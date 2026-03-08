@@ -187,6 +187,47 @@
   --state-disabled: 0.38;
 }
 
+/* ── AMOLED theme — pure black, electric cyan accent ─────────────── */
+[data-theme="amoled"] {
+  color-scheme: dark;
+
+  --color-primary:       #003a5c;
+  --color-primary-hover: #004a78;
+  --color-accent:        #00d4ff;
+  --color-accent-dim:    rgba(0,212,255,0.12);
+
+  /* Pure black surfaces — pixels fully off on AMOLED */
+  --bg:           #000000;
+  --bg-panel:     #0a0a0a;
+  --bg-input:     #111111;
+  --border:       #1a1a1a;
+  --border-input: #222222;
+
+  /* Text */
+  --text:           #f0f0f0;
+  --text-muted:     #888888;
+  --text-faint:     #444444;
+  --text-secondary: #888888;
+
+  --accent: #00d4ff;
+
+  --kbd-bg:     #111111;
+  --kbd-border: #222222;
+  --kbd-text:   #888888;
+
+  /* Viewport — true black for maximum OLED contrast */
+  --vp-bg:          #000000;
+  --vp-border:      #111111;
+  --vp-text:        #e8e8e8;
+  --vp-placeholder: #444444;
+  --slot-width:     10ch;
+
+  --state-hover:    rgba(255,255,255,0.07);
+  --state-active:   rgba(255,255,255,0.12);
+  --state-focus:    rgba(0,212,255,0.35);
+  --state-disabled: 0.38;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
