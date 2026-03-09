@@ -13,11 +13,11 @@ interface WhatsNewEntry {
 }
 
 const WHATS_NEW: WhatsNewEntry[] = [
-  { icon: '⬛', title: 'Obsidian Theme',         body: 'True black surfaces for OLED screens — pixels off, battery saved, maximum contrast.' },
-  { icon: '↺',  title: 'Reset Icon Fixed',        body: 'The reset button now shows the universally recognised counter-clockwise refresh arrow.' },
-  { icon: '☰',  title: 'iOS Menu Fixed',          body: 'The three-bar hamburger icon now renders correctly on all iOS Safari versions.' },
-  { icon: '⚡',  title: 'Sprint & Flow Modes',     body: 'Speed mode is now Sprint. Read mode is now Flow. IDs and settings are unchanged.' },
-  { icon: '▣',  title: 'Consistent Panel Corners', body: 'The viewport, page context panel, and playback bar now share the same border radius.' },
+  { icon: '🏃', title: 'PaceRead',               body: 'ReadSwift is now PaceRead. Same app, sharper identity. Read Faster. Understand Better.' },
+  { icon: '📍', title: 'Context Below Controls', body: 'The context preview now lives below the playback bar — cleaner reading, easier reference.' },
+  { icon: '▸',  title: 'Reading Cursor',         body: 'A small cursor icon marks your exact word in context, mirrored in the top bar.' },
+  { icon: '📊', title: 'Session History',        body: 'Full session history with per-session stats and one-tap resume replaces the old file list.' },
+  { icon: '⚡', title: 'Custom Mode Updates',    body: 'Edit any custom mode and tap "Update" to save. Name input now sits at the top of Fine-tune.' },
 ];
 
 interface WhatsNewModalProps {
@@ -26,13 +26,13 @@ interface WhatsNewModalProps {
 
 export default function WhatsNewModal({ onDismiss }: WhatsNewModalProps) {
   return (
-    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="What's new in ReadSwift">
+    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="What's new in PaceRead">
       <div className={styles.card}>
 
         <div className={styles.header}>
           <span className={styles.badge}>{APP_VERSION}</span>
           <h2 className={styles.title}>What's New</h2>
-          <p className={styles.subtitle}>ReadSwift just got better</p>
+          <p className={styles.subtitle}>PaceRead just got better</p>
         </div>
 
         <ul className={styles.list} role="list">
