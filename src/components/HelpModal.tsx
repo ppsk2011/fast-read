@@ -1,8 +1,11 @@
 /**
- * HelpModal — iOS Settings-style reference list.
- * Single scroll, 4 sections, every item always visible.
- * No tabs, no accordions, no expand/collapse.
+ * HelpModal — iOS Settings-style reference list with two tabs.
+ * Tab 1 "How to use": feature reference (Getting Started, Playback & Navigation,
+ *   Display & Modes, Tips & Shortcuts)
+ * Tab 2 "Training guide": Speed Training Guide coaching content.
+ * Default tab on open: "How to use".
  */
+import { useRef, useState } from 'react';
 import styles from '../styles/HelpModal.module.css';
 
 interface HelpModalProps { onClose: () => void; }
@@ -69,7 +72,24 @@ const SECTIONS: HelpSection[] = [
   },
 ];
 
+// "How to use" tab: all sections except Speed Training Guide
+const HOW_TO_USE_SECTIONS = SECTIONS.filter(s => s.heading !== 'Speed Training Guide');
+// "Training guide" tab: Speed Training Guide only
+const TRAINING_SECTIONS = SECTIONS.filter(s => s.heading === 'Speed Training Guide');
+
+type TabId = 'how-to-use' | 'training';
+
 export default function HelpModal({ onClose }: HelpModalProps) {
+  const [activeTab, setActiveTab] = useState<TabId>('how-to-use');
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleTabChange = (tab: TabId) => {
+    setActiveTab(tab);
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  };
+
+  const visibleSections = activeTab === 'how-to-use' ? HOW_TO_USE_SECTIONS : TRAINING_SECTIONS;
+
   return (
     <div className={styles.backdrop} onClick={onClose}>
       <div
@@ -84,8 +104,30 @@ export default function HelpModal({ onClose }: HelpModalProps) {
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close help">✕</button>
         </div>
 
-        <div className={styles.scroll}>
-          {SECTIONS.map((section) => (
+        {/* Sticky tab bar */}
+        <div className={styles.tabBar} role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'how-to-use'}
+            className={`${styles.tab} ${activeTab === 'how-to-use' ? styles.tabActive : ''}`}
+            onClick={() => handleTabChange('how-to-use')}
+          >
+            How to use
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'training'}
+            className={`${styles.tab} ${activeTab === 'training' ? styles.tabActive : ''}`}
+            onClick={() => handleTabChange('training')}
+          >
+            Training guide
+          </button>
+        </div>
+
+        <div className={styles.scroll} ref={scrollRef}>
+          {visibleSections.map((section) => (
             <div key={section.heading} className={styles.section}>
               <p className={styles.sectionHeading}>{section.heading}</p>
               {section.items.map((item) => (

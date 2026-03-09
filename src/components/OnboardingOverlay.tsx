@@ -1,13 +1,12 @@
 /**
- * OnboardingOverlay v3 — demo replicates real ReaderViewport visuals.
- * 250 WPM, ORP split, focal ticks, theme tokens throughout.
+ * OnboardingOverlay v4 — demo is step 0 and auto-plays on mount.
+ * 4 steps total. 250 WPM, ORP split, focal ticks, theme tokens throughout.
  *
  * Step flow (0-indexed):
- *   0 — Value prop
- *   1 — Live RSVP demo
- *   2 — How to succeed (tips)
- *   3 — Load anything
- *   4 — Quick setup (theme + mode picker)
+ *   0 — Live RSVP demo (auto-plays immediately on open)
+ *   1 — Your first session (tips)
+ *   2 — Load anything
+ *   3 — Quick setup (theme + mode picker)
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from '../styles/OnboardingOverlay.module.css';
@@ -58,7 +57,7 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
   const { setTheme, selectPresetMode } = useReaderContext();
   const [step, setStep]       = useState(0);
   const [visible, setVisible] = useState(false);
-  const [demoIndex, setDemoIndex] = useState(-1);
+  const [demoIndex, setDemoIndex] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [pickedTheme, setPickedTheme] = useState<Theme>(initialTheme ?? DEFAULT_ONBOARDING_THEME);
   const [pickedMode,  setPickedMode]  = useState<PresetModeId>(initialModeId ?? DEFAULT_ONBOARDING_MODE);
@@ -84,26 +83,30 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
     }, DEMO_INTERVAL_MS);
   }, [clearDemo]);
 
+  // Auto-play demo immediately on open — step 0 IS the demo.
+  // launchDemo is a stable useCallback (deps: clearDemo, which has no deps).
+  useEffect(() => {
+    launchDemo();
+  }, [launchDemo]);
+
   useEffect(() => () => clearDemo(), [clearDemo]);
 
   const advance = useCallback(() => {
-    if (step < 4) {
+    if (step < 3) {
       const next = step + 1;
       setStep(next);
-      if (next === 1) launchDemo();
-      else clearDemo();
+      if (step === 0) clearDemo(); // leaving the demo step
     } else {
       onComplete({ theme: pickedTheme, modeId: pickedMode });
     }
-  }, [step, onComplete, launchDemo, clearDemo, pickedTheme, pickedMode]);
+  }, [step, onComplete, clearDemo, pickedTheme, pickedMode]);
 
   const goBack = useCallback(() => {
     if (step <= 0) return;
     const prev = step - 1;
     setStep(prev);
-    if (prev === 1) launchDemo();    // arriving at demo step from either direction
-    else clearDemo();                 // leaving demo step (step===1) or any other nav
-  }, [step, launchDemo, clearDemo]);
+    if (prev === 0) launchDemo(); // arriving back at the demo step
+  }, [step, launchDemo]);
 
   const skip = useCallback(
     () => onComplete({ theme: DEFAULT_ONBOARDING_THEME, modeId: DEFAULT_ONBOARDING_MODE }),
@@ -128,58 +131,27 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
          role="dialog" aria-modal="true" aria-label="Welcome to PaceRead">
       <div className={styles.panel}>
 
-        <div className={styles.dots} aria-label={`Step ${step + 1} of 5`}>
-          {[0,1,2,3,4].map(i => (
+        <div className={styles.dots} aria-label={`Step ${step + 1} of 4`}>
+          {[0,1,2,3].map(i => (
             <span key={i} className={`${styles.dot} ${i === step ? styles.dotActive : ''}`} aria-hidden="true" />
           ))}
         </div>
 
         <div className={styles.stepContent} key={step}>
 
-          {/* Step 0 — Value prop */}
+          {/* Step 0 — Live demo (auto-plays on mount) */}
           {step === 0 && (
             <div className={styles.step}>
-              <div className={styles.heroIcon} aria-hidden="true">⚡</div>
-              <h1 className={styles.heading}>Read 2× faster.<br />Same comprehension.</h1>
-              <p className={styles.body}>
-                PaceRead uses RSVP — Rapid Serial Visual Presentation — to eliminate
-                the eye movement that slows every reader down.
-              </p>
-              <div className={styles.statRow}>
-                <div className={styles.stat}>
-                  <span className={styles.statNum}>250</span>
-                  <span className={styles.statLabel}>avg WPM without training</span>
-                </div>
-                <span className={styles.statArrow} aria-hidden="true">→</span>
-                <div className={styles.stat}>
-                   <span className={styles.statNum} style={{ color: 'var(--color-accent)' }}>400+</span>
-                  <span className={styles.statLabel}>WPM with regular practice</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 1 — Live demo */}
-          {step === 1 && (
-            <div className={styles.step}>
-              <h1 className={styles.heading}>See it in action</h1>
+              <h1 className={styles.heading}>Your eyes stay still.<br />Words come to you.</h1>
 
               <div className={styles.demoViewport} aria-live="polite" aria-atomic="true">
-                {demoIndex >= 0 && (
-                  <>
-                    <div className={styles.demoTickTop}    aria-hidden="true" />
-                    <div className={styles.demoTickBottom} aria-hidden="true" />
-                  </>
-                )}
-                {demoIndex === -1 ? (
-                  <span className={styles.demoPlaceholder}>Get ready…</span>
-                ) : (
-                  <div className={styles.demoWordRow}>
-                    <span className={styles.demoPreOrp}>{preORP}</span>
-                    <span className={styles.demoOrpChar}>{orpChar}</span>
-                    <span className={styles.demoPostOrp}>{postORP}</span>
-                  </div>
-                )}
+                <div className={styles.demoTickTop}    aria-hidden="true" />
+                <div className={styles.demoTickBottom} aria-hidden="true" />
+                <div className={styles.demoWordRow}>
+                  <span className={styles.demoPreOrp}>{preORP}</span>
+                  <span className={styles.demoOrpChar}>{orpChar}</span>
+                  <span className={styles.demoPostOrp}>{postORP}</span>
+                </div>
               </div>
 
               <p className={styles.demoCaption}>
@@ -193,8 +165,8 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
             </div>
           )}
 
-          {/* Step 2 — How to succeed */}
-          {step === 2 && (
+          {/* Step 1 — How to succeed */}
+          {step === 1 && (
             <div className={styles.step}>
               <h1 className={styles.heading}>Your first session</h1>
               <div className={styles.inputCards}>
@@ -215,8 +187,8 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
             </div>
           )}
 
-          {/* Step 3 — Load content */}
-          {step === 3 && (
+          {/* Step 2 — Load content */}
+          {step === 2 && (
             <div className={styles.step}>
               <h1 className={styles.heading}>Load anything</h1>
               <div className={styles.inputCards}>
@@ -238,8 +210,8 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
             </div>
           )}
 
-          {/* Step 4 — Setup: theme + mode */}
-          {step === 4 && (
+          {/* Step 3 — Setup: theme + mode */}
+          {step === 3 && (
             <div className={styles.step}>
               <h1 className={styles.heading}>Quick setup</h1>
               <p className={styles.body}>Pick a theme and reading mode. You can change both anytime.</p>
@@ -308,9 +280,9 @@ export default function OnboardingOverlay({ onComplete, initialTheme, initialMod
           {step > 0 && (
             <button type="button" className={styles.btnBack} onClick={goBack}>← Back</button>
           )}
-          {step === 1 && <button type="button" className={styles.btnSecondary} onClick={launchDemo}>Replay</button>}
+          {step === 0 && <button type="button" className={styles.btnSecondary} onClick={launchDemo}>Replay</button>}
           <button type="button" className={styles.btnPrimary} onClick={advance}>
-            {step < 4 ? 'Next →' : 'Start Reading →'}
+            {step < 3 ? 'Next →' : 'Start Reading →'}
           </button>
           <button type="button" className={styles.btnSkip} onClick={skip}>Skip</button>
         </div>
