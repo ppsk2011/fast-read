@@ -247,3 +247,40 @@
   white-space: nowrap;
 }
 
+.modeBtnWpm {
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── First-session tip strip ─────────────────────────────── */
+.tipStrip {
+  margin-top: var(--space-3, 12px);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius-md, 8px);
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+[data-theme='day'] .tipStrip {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.08);
+}
+.tipRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 8px);
+}
+.tipIcon {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+.tipText {
+  font-size: 0.67rem;
+  color: var(--text-faint);
+  line-height: 1.45;
+}
+

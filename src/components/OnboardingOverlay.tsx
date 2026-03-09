@@ -75,7 +75,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
   useEffect(() => () => clearDemo(), [clearDemo]);
 
   const advance = useCallback(() => {
-    if (step < 4) {
+    if (step < 3) {
       const next = step + 1;
       setStep(next);
       if (next === 1) launchDemo();
@@ -108,8 +108,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
          role="dialog" aria-modal="true" aria-label="Welcome to PaceRead">
       <div className={styles.panel}>
 
-        <div className={styles.dots} aria-label={`Step ${step + 1} of 5`}>
-          {[0,1,2,3,4].map(i => (
+        <div className={styles.dots} aria-label={`Step ${step + 1} of 4`}>
+          {[0,1,2,3].map(i => (
             <span key={i} className={`${styles.dot} ${i === step ? styles.dotActive : ''}`} aria-hidden="true" />
           ))}
         </div>
@@ -196,33 +196,8 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
             </div>
           )}
 
-          {/* Step 3 — Modes */}
+          {/* Step 3 — Setup: theme + mode */}
           {step === 3 && (
-            <div className={styles.step}>
-              <h1 className={styles.heading}>Choose your mode</h1>
-              <div className={styles.modeCards}>
-                {MODES.map(mode => (
-                  <div key={mode.label}
-                       className={`${styles.modeCard} ${mode.recommended ? styles.modeCardRec : ''}`}
-                       style={{ borderLeftColor: mode.accent }}>
-                    <span className={styles.modeEmoji} aria-hidden="true">{mode.emoji}</span>
-                    <div className={styles.modeInfo}>
-                      <span className={styles.modeLabel}>
-                        {mode.label}
-                        {mode.recommended && <span className={styles.modeBadge}>Start here</span>}
-                      </span>
-                      <span className={styles.modeWpm} style={{ color: mode.accent }}>{mode.wpm} WPM</span>
-                      <span className={styles.modeDesc}>{mode.desc}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className={styles.modeNote}>Switch modes anytime from the ☰ menu.</p>
-            </div>
-          )}
-
-          {/* Step 4 — Setup: theme + mode */}
-          {step === 4 && (
             <div className={styles.step}>
               <h1 className={styles.heading}>Quick setup</h1>
               <p className={styles.body}>Pick a theme and reading mode. You can change both anytime.</p>
@@ -275,10 +250,23 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
                     >
                       <span className={styles.modeBtnEmoji} aria-hidden="true">{m.emoji}</span>
                       <span className={styles.modeBtnLabel}>{m.label}</span>
+                      <span className={styles.modeBtnWpm} style={{ color: m.accent }}>{m.wpm}</span>
                       <span className={styles.modeBtnDesc}>{m.setupDesc}</span>
                       {m.recommended && <span className={styles.modeBtnBadge}>Recommended</span>}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* First-session tips */}
+              <div className={styles.tipStrip}>
+                <div className={styles.tipRow}>
+                  <span className={styles.tipIcon} aria-hidden="true">👁</span>
+                  <span className={styles.tipText}>Keep your eyes locked on the focal point (the tick marks). Do not follow the words — they come to you.</span>
+                </div>
+                <div className={styles.tipRow}>
+                  <span className={styles.tipIcon} aria-hidden="true">🐢</span>
+                  <span className={styles.tipText}>Start at 200–250 WPM. The first session will feel slower than normal reading — that is expected and temporary. Increase by 25 per session.</span>
                 </div>
               </div>
             </div>
@@ -289,7 +277,7 @@ export default function OnboardingOverlay({ onComplete }: OnboardingOverlayProps
         <div className={styles.actions}>
           {step === 1 && <button type="button" className={styles.btnSecondary} onClick={launchDemo}>Replay</button>}
           <button type="button" className={styles.btnPrimary} onClick={advance}>
-            {step < 4 ? 'Next →' : 'Start Reading →'}
+            {step < 3 ? 'Next →' : 'Start Reading →'}
           </button>
           <button type="button" className={styles.btnSkip} onClick={skip}>Skip</button>
         </div>
