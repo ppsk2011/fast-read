@@ -1,7 +1,7 @@
 # PaceRead — Website Landing Page Content
 
 **Company:** Techscript Limited  
-**URL target:** `https://paceread.techscript.ca` (primary; also applicable to `readswift.app` if that domain is acquired)  
+**URL target:** `https://paceread.techscript.ca` (primary; also applicable to `paceread.app` if that domain is acquired)  
 **Document version:** 1.0  
 **Status:** Production-ready copy
 

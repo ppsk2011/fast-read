@@ -158,7 +158,7 @@ Derived from the production application UI:
 - "Read" — the literal action. Unambiguous.
 - "Swift" — speed and precision. Connotes both velocity and reliability (Swift programming language reference builds technical credibility with the target audience).
 - Compound noun — memorable, two syllables, no special characters.
-- Domain-friendly: `readswift.com`, `readswift.app` likely available.
+- Domain-friendly: `paceread.com`, `paceread.app` likely available.
 - App Store / Play Store search: "PaceRead" is not a common word — brand recognition transfers to search instantly.
 
 ---
