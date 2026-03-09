@@ -480,9 +480,12 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
 
   const selectCustomMode = useCallback((mode: CustomMode) => {
     applyMode(mode.settings);
+    if (mode.wpm !== undefined) {
+      setWpm(mode.wpm);
+    }
     setActiveModeState('custom');
     setActiveCustomModeIdState(mode.id);
-  }, [applyMode]);
+  }, [applyMode, setWpm]);
 
   return (
     <ReaderContext.Provider
