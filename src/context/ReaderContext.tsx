@@ -455,7 +455,9 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     setSessionStatsState(prev => {
       if (prev.wordsRead === 0) return prev;
       const entry: StoredSession = {
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
         bookName: fileMetadata?.name ?? 'Pasted text',
         startedAt: prev.startTime > 0 ? new Date(prev.startTime).toISOString() : new Date().toISOString(),
         durationMs: prev.activeTimeMs,
@@ -525,6 +527,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     if (savedModeWpm) {
       const parsed = parseInt(savedModeWpm, 10);
       if (!isNaN(parsed) && parsed >= 60 && parsed <= 1500) {
+        // User previously adjusted this mode's WPM — restore it and exit early.
         setWpmState(parsed);
         localStorage.setItem(LS_KEY_WPM, String(parsed));
         return;

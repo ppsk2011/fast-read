@@ -124,13 +124,13 @@ export default function ContextPreview({ onExpandChange }: ContextPreviewProps) 
           {totalPages > 1 && (
             <div className={styles.nav}>
               <button type="button" className={styles.navBtn}
-                      onClick={goPrev} disabled={viewPage <= 1} aria-label="Previous page">‹</button>
+                      onClick={goPrev} disabled={viewPage <= 1} aria-label="Previous page" title="Previous page">‹</button>
               {isDetached && (
                 <button type="button" className={styles.snapBtn}
                         onClick={snapToCurrent}>↩ current</button>
               )}
               <button type="button" className={styles.navBtn}
-                      onClick={goNext} disabled={viewPage >= totalPages} aria-label="Next page">›</button>
+                      onClick={goNext} disabled={viewPage >= totalPages} aria-label="Next page" title="Next page">›</button>
             </div>
           )}
         </div>

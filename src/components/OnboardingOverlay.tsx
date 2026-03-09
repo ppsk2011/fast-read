@@ -35,7 +35,7 @@ function calcOrpIndex(word: string): number {
 const MODES = [
   { id: 'speed' as PresetModeId, label: 'Sprint', emoji: '⚡', wpm: '400–500 WPM', desc: 'One word, no pauses. Pure velocity.',         setupDesc: 'Fast, no anchor',    accent: '#f59e0b' },
   { id: 'focus' as PresetModeId, label: 'Focus',  emoji: '🎯', wpm: '200–300 WPM', desc: 'ORP anchor + focal line. Precision reading.', setupDesc: 'ORP + focal line',   accent: 'var(--color-accent)', recommended: true },
-  { id: 'read'  as PresetModeId, label: 'Flow',   emoji: '🌊', wpm: '150–200 WPM', desc: '3 words with natural rhythm and context.',    setupDesc: '5 words, context',   accent: '#34d399' },
+  { id: 'read'  as PresetModeId, label: 'Flow',   emoji: '🌊', wpm: '150–200 WPM', desc: 'Up to 5 words with natural rhythm and context.',    setupDesc: '5 words, context',   accent: '#34d399' },
 ];
 
 interface OnboardingOverlayProps {

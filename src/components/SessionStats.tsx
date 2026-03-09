@@ -19,8 +19,13 @@ function fmtTime(ms: number) {
 }
 
 function fmtDate(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return 'Unknown date';
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return 'Unknown date';
+  }
 }
 
 const SessionStats = memo(function SessionStats() {
