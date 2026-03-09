@@ -48,6 +48,9 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Install ImageMagick
+        run: sudo apt-get install -y imagemagick
+
       - name: Deploy custom Android icons
         run: |
           # Create mipmap directories
