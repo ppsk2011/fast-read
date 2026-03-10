@@ -41,6 +41,7 @@ import { AuthProvider } from './auth/AuthContext';
 import SignInPrompt from './auth/SignInPrompt';
 import UserAvatar from './components/UserAvatar';
 import SyncStatusIndicator from './components/SyncStatusIndicator';
+import ResetConfirmModal from './components/ResetConfirmModal';
 import { Toaster } from 'react-hot-toast';
 import { PRESET_MODES } from './config/readingModePresets';
 import type { Theme } from './context/readerContextDef';
@@ -73,6 +74,7 @@ export default function App() {
     focalLine,
     currentPage,
     totalPages,
+    structureMap,
     setWords,
     setCurrentWordIndex,
     setFileMetadata,
@@ -122,6 +124,7 @@ export default function App() {
   const [showHelp, setShowHelp] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [showPaste, setShowPaste] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [sessionCompleted, setSessionCompleted] = useState(false);
   const [, setContextExpanded] = useState(false);
   const [pulseHelp, setPulseHelp] = useState(false);
@@ -337,6 +340,7 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (showResetConfirm) { setShowResetConfirm(false); return; }
         setShowHelp(false);
         setIsFocused(false);
         setShowPaste(false);
@@ -371,7 +375,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying, play, pause, faster, slower, prevWord, nextWord]);
+  }, [isPlaying, play, pause, faster, slower, prevWord, nextWord, showResetConfirm, setShowResetConfirm]);
 
   /** Auto-load the most recently cached file on first mount */
   useEffect(() => {
@@ -490,6 +494,7 @@ export default function App() {
             totalPages={totalPages}
             goToPage={goToPage}
             goToWord={goToWord}
+            structureMap={structureMap}
             onPlayPause={() => isPlaying ? pause() : play()}
             onFaster={() => { manualWpmRef.current = true; faster(); }}
             onSlower={() => { manualWpmRef.current = true; slower(); }}
@@ -547,7 +552,7 @@ export default function App() {
           onFileSelect={handleFileSelect}
           onPlay={play}
           onPause={pause}
-          onReset={reset}
+          onResetRequest={() => setShowResetConfirm(true)}
           onFaster={() => { manualWpmRef.current = true; faster(); }}
           onSlower={() => { manualWpmRef.current = true; slower(); }}
           onPrevWord={prevWord}
@@ -572,6 +577,13 @@ export default function App() {
         onDismiss={() => setSessionCompleted(false)}
       />
       <Toaster position="bottom-center" />
+
+      {showResetConfirm && (
+        <ResetConfirmModal
+          onConfirm={() => { reset(); setShowResetConfirm(false); }}
+          onCancel={() => setShowResetConfirm(false)}
+        />
+      )}
 
       {/* ── Footer ──────────────────────────────────────────────── */}
       {!isFocused && <AppFooter />}
