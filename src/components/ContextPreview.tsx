@@ -190,6 +190,7 @@ export default function ContextPreview({ onExpandChange }: ContextPreviewProps) 
           }}
           aria-label={autoScroll ? 'Auto-scroll on, click to disable' : 'Auto-scroll off, click to enable'}
           title={autoScroll ? 'Auto-scroll on' : 'Auto-scroll off'}
+          data-dot={autoScroll ? '●' : '○'}
         >
           {autoScroll ? 'Auto ●' : 'Auto ○'}
         </button>

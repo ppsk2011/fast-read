@@ -1,25 +1,23 @@
 /**
  * Controls
  *
- * Two-row playback panel:
- *   Row 1 – Action buttons: Upload · Paste · Back · Play/Pause · Next · Reload
+ * Three-row playback panel:
+ *   Row 1 – Action buttons: Upload · Paste · Back · Play/Pause · Next
  *   Row 2 – WPM pill stepper: [−] 300 WPM [+]
+ *   Row 3 – Reset to beginning (low-key text button, opens modal)
  *
  * All interactive elements meet the 44 px minimum touch-target size.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useReaderContext } from '../context/useReaderContext';
 import styles from '../styles/Controls.module.css';
-
-/** Auto-cancel timeout for the reset confirmation state (ms) */
-const RESET_CONFIRMATION_TIMEOUT_MS = 3000;
 
 interface ControlsProps {
   onFileSelect: (file: File) => void;
   onPlay: () => void;
   onPause: () => void;
-  onReset: () => void;
+  onResetRequest: () => void;
   onFaster: () => void;
   onSlower: () => void;
   onPrevWord: () => void;
@@ -36,7 +34,7 @@ export default function Controls({
   onFileSelect,
   onPlay,
   onPause,
-  onReset,
+  onResetRequest,
   onFaster,
   onSlower,
   onPrevWord,
@@ -48,15 +46,6 @@ export default function Controls({
   const { isPlaying, wpm, setWpm, words, isLoading, currentWordIndex } =
     useReaderContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  /* ── Reset confirmation ──────────────────────────────────────── */
-  const [confirmingReset, setConfirmingReset] = useState(false);
-
-  useEffect(() => {
-    if (!confirmingReset) return;
-    const t = setTimeout(() => setConfirmingReset(false), RESET_CONFIRMATION_TIMEOUT_MS);
-    return () => clearTimeout(t);
-  }, [confirmingReset]);
 
   /* ── WPM inline edit ─────────────────────────────────────────── */
   const [wpmEditing, setWpmEditing] = useState(false);
@@ -185,41 +174,6 @@ export default function Controls({
           <span className={styles.controlBtnLabel}>Next</span>
         </button>
 
-        {confirmingReset ? (
-          <div className={styles.resetConfirmRow}>
-            <button
-              type="button"
-              className={styles.resetCancelBtn}
-              onClick={() => setConfirmingReset(false)}
-            >
-              <span className={styles.resetBtnLabel}>Cancel</span>
-            </button>
-            <button
-              type="button"
-              className={styles.resetConfirmBtn}
-              onClick={() => { onReset(); setConfirmingReset(false); }}
-              disabled={!hasWords}
-            >
-              <span className={styles.resetBtnLabel}>✓ Reset</span>
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className={styles.resetBtn}
-            onClick={() => setConfirmingReset(true)}
-            disabled={!hasWords}
-            title="Reset to beginning"
-            aria-label="Reset to beginning"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"
-                 strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-              <polyline points="3 3 3 8 8 8"/>
-            </svg>
-            <span className={styles.resetBtnLabel}>Reset</span>
-          </button>
-        )}
       </div>
 
       {/* ── WPM pill stepper ── */}
@@ -287,8 +241,26 @@ export default function Controls({
         </button>
       </div>
 
+      {/* ── Row 3: Reset ── */}
+      <div className={styles.resetRow}>
+        <button
+          type="button"
+          className={styles.resetRowBtn}
+          onClick={onResetRequest}
+          disabled={!hasWords}
+          title="Reset to beginning"
+          aria-label="Reset to beginning"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"
+               strokeLinecap="round" strokeLinejoin="round" width="13" height="13" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <polyline points="3 3 3 8 8 8"/>
+          </svg>
+          Reset to beginning
+        </button>
+      </div>
+
       </div>
     </div>
   );
 }
-

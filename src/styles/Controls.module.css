@@ -192,63 +192,11 @@
 }
 
 /* ── RESET — muted / secondary ── */
-.resetBtn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-sm, 8px);
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-faint);
-
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  flex-shrink: 0;
-}
-
-.resetBtn:hover:not(:disabled) {
-  background: var(--state-hover);
-  color: var(--text-muted);
-  border-color: var(--border);
-}
-
-.resetBtn:active:not(:disabled) {
-  background: var(--state-active);
-}
-
-.resetBtn:disabled {
-  opacity: var(--state-disabled, 0.35);
-  cursor: not-allowed;
-}
-
-.resetBtn svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  flex-shrink: 0;
-}
-
-.resetBtnLabel {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  color: inherit;
-  pointer-events: none;
-  user-select: none;
-}
 
 /* ─── Mobile tweaks ──────────────────────────────────────────────── */
 
 @media (min-width: 321px) and (max-width: 400px) {
-  .controlBtn,
-  .resetBtn {
+  .controlBtn {
     width: 46px;
     height: 52px;
   }
@@ -260,8 +208,7 @@
 }
 
 @media (max-width: 320px) {
-  .controlBtn,
-  .resetBtn {
+  .controlBtn {
     width: 44px;
     height: 44px;
   }
@@ -272,8 +219,7 @@
   }
 
   .controlBtnLabel,
-  .playBtnLabel,
-  .resetBtnLabel {
+  .playBtnLabel {
     display: none;
   }
 }
@@ -283,14 +229,12 @@
     padding: 0;
   }
 
-  .controlBtn,
-  .resetBtn {
+  .controlBtn {
     width: 40px;
     height: 40px;
   }
 
-  .controlBtn svg,
-  .resetBtn svg {
+  .controlBtn svg {
     width: 15px;
     height: 15px;
   }
@@ -306,8 +250,7 @@
   }
 
   .controlBtnLabel,
-  .playBtnLabel,
-  .resetBtnLabel {
+  .playBtnLabel {
     display: none;
   }
 }
@@ -394,70 +337,40 @@
 .wpmPillInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 @media (max-height: 480px) and (orientation: landscape) {
-  .wpmPill { height: 32px; }
-  .wpmPillBtn { width: 32px; }
+  .wpmPill { height: 32px; min-height: 32px; }
+  .wpmPillBtn { width: 32px; min-height: 32px; }
   .wpmPillValue { min-width: 78px; font-size: 0.8rem; }
 }
 
-/* ── Reset confirmation inline row ────────────────────────────── */
+/* ── Row 3: Reset to beginning ────────────────────────────────── */
 
-.resetConfirmRow {
+.resetRow {
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  gap: 3px;
-  width: 52px; /* same footprint as the single reset button */
-  height: 52px;
-  flex-shrink: 0;
-}
-
-.resetCancelBtn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: var(--radius-sm, 8px);
-  border: 1px solid var(--border);
-  background: var(--bg-input);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
+  padding-top: 2px;
 }
 
-.resetCancelBtn:hover {
-  background: var(--state-hover);
-  color: var(--text);
-}
-
-.resetConfirmBtn {
-  flex: 1;
+.resetRowBtn {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: var(--radius-sm, 8px);
-  border: 1px solid var(--color-danger, #e05252);
+  gap: 6px;
   background: transparent;
-  color: var(--color-danger, #e05252);
+  border: none;
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   cursor: pointer;
-  transition: background 0.12s, color 0.12s;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
 }
-
-.resetConfirmBtn:hover:not(:disabled) {
-  background: rgba(224, 82, 82, 0.15);
+.resetRowBtn:hover:not(:disabled) {
+  color: var(--color-danger, #e05252);
+  background: rgba(224, 82, 82, 0.08);
 }
-
-.resetConfirmBtn:disabled {
-  opacity: var(--state-disabled, 0.35);
+.resetRowBtn:disabled {
+  opacity: 0.3;
   cursor: not-allowed;
 }
 

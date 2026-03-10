@@ -187,3 +187,16 @@
   opacity: 1;
   background: var(--color-accent-10, rgba(91,141,238,0.12));
 }
+
+@media (max-width: 400px) {
+  .autoScrollBtn {
+    padding: 1px 5px;
+    font-size: 0;
+    letter-spacing: 0;
+  }
+  .autoScrollBtn::after {
+    content: attr(data-dot);
+    font-size: 0.6rem;
+    letter-spacing: normal;
+  }
+}
