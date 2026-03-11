@@ -467,7 +467,7 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
         ),
       };
       setSessionHistoryState(hist => {
-        const updated = [entry, ...hist].slice(0, 20);
+        const updated = [entry, ...hist.filter(h => h.bookName !== entry.bookName)].slice(0, 20);
         try { localStorage.setItem(LS_KEY_SESSION_HISTORY, JSON.stringify(updated)); } catch { /* ignore */ }
         return updated;
       });
@@ -492,9 +492,11 @@ export function ReaderProvider({ children }: { children: React.ReactNode }) {
     const handleBeforeUnload = () => { saveCurrentSession(); };
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('pagehide', handleBeforeUnload);
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('pagehide', handleBeforeUnload);
     };
   }, [saveCurrentSession]);
 

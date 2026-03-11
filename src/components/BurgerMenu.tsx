@@ -57,9 +57,10 @@ interface BurgerMenuProps {
   onFileSelect: (file: File) => void;
   onReplayIntro?: () => void;
   pulseBurger?: boolean;
+  onResumeFromCache: (name: string) => void;
 }
 
-export default function BurgerMenu({ onFileSelect, onReplayIntro, pulseBurger }: BurgerMenuProps) {
+export default function BurgerMenu({ onFileSelect, onReplayIntro, pulseBurger, onResumeFromCache }: BurgerMenuProps) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -250,7 +251,7 @@ export default function BurgerMenu({ onFileSelect, onReplayIntro, pulseBurger }:
               {/* ── Session Analytics (unified: current session + history + resume) ── */}
               <section className={styles.section}>
                 <h3 className={styles.sectionTitle}>Session Analytics</h3>
-                <SessionStats onFileSelect={handleHistoryFileSelect} />
+                <SessionStats onFileSelect={handleHistoryFileSelect} onResumeFromCache={onResumeFromCache} />
               </section>
 
               {/* ── Reset to Defaults ───────────────────────────────── */}

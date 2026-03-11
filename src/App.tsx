@@ -15,7 +15,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { APP_VERSION } from './version';
-import { IndexedDBService } from './sync/IndexedDBService';
+import { IndexedDBService, FILE_CACHE_SIZE_LIMIT_BYTES } from './sync/IndexedDBService';
 import WhatsNewModal from './components/WhatsNewModal';
 import OnboardingOverlay from './components/OnboardingOverlay';
 import { useReaderContext } from './context/useReaderContext';
@@ -32,7 +32,7 @@ import AppFooter from './components/AppFooter';
 import HelpModal from './components/HelpModal';
 import { parsePDF } from './parsers/pdfParser';
 import { parseEPUB } from './parsers/epubParser';
-import { parseFile } from './parsers/textParser';
+import { parseFile, parseRawText } from './parsers/textParser';
 import { normalizeText, tokenize } from './utils/textUtils';
 import { normalizePages } from './utils/contentNormalizer';
 import { saveRecord } from './utils/recordsUtils';
@@ -191,7 +191,7 @@ export default function App() {
   }, [isPlaying]);
 
   const finaliseWords = useCallback(
-    (allWords: string[], sourceName: string, breaks: number[] = [], rawLines?: string[]) => {
+    (allWords: string[], sourceName: string, breaks: number[] = [], rawLines?: string[], sourceType: 'file' | 'text' = 'file') => {
       if (allWords.length === 0) {
         alert('No readable text found.');
         return;
@@ -219,6 +219,7 @@ export default function App() {
         lastWordIndex: restoredIndex,
         lastReadAt: new Date().toISOString(),
         wpm,
+        sourceType,
       });
       setRecords(updated);
     },
@@ -303,14 +304,24 @@ export default function App() {
           if (rawLines) allRawLines.push(...rawLines);
           setLoadingProgress(100);
         }
-        finaliseWords(allWords, file.name, breaks, allRawLines.length > 0 ? allRawLines : undefined);
-        // Cache the file buffer for auto-resume on next app boot (GROUP 1B/D)
+        finaliseWords(allWords, file.name, breaks, allRawLines.length > 0 ? allRawLines : undefined, 'file');
+        // Block 1 — save (size-guarded)
+        if (file.size <= FILE_CACHE_SIZE_LIMIT_BYTES) {
+          try {
+            const buffer = await file.arrayBuffer();
+            await IndexedDBService.saveFileCache(file.name, buffer, file.type);
+          } catch {
+            // Caching is best-effort; ignore errors
+          }
+        }
+        // Block 2 — prune + eviction toast (always runs, sibling of block 1)
         try {
-          const buffer = await file.arrayBuffer();
-          await IndexedDBService.clearFileCache();
-          await IndexedDBService.saveFileCache(file.name, buffer, file.type);
+          const pruned = await IndexedDBService.pruneFileCacheToLimit();
+          if (pruned) {
+            toast('Auto-resume updated — oldest cached session removed', { duration: 4000 });
+          }
         } catch {
-          // Caching is best-effort; ignore errors
+          // Prune is best-effort; ignore errors
         }
       } catch (err) {
         console.error('Error parsing file:', err);
@@ -330,10 +341,15 @@ export default function App() {
   const handleTextReady = useCallback(
     (words: string[], sourceName: string, rawLines?: string[]) => {
       setFileMetadata({ name: sourceName, size: 0, type: 'text' });
-      finaliseWords(words, sourceName, [], rawLines);
+      finaliseWords(words, sourceName, [], rawLines, 'text');
       setShowPaste(false); // collapse paste panel after loading
+      if (rawLines && rawLines.length > 0) {
+        IndexedDBService.saveTextCache(sourceName, rawLines.join('\n')).catch(() => {});
+        // Fire-and-forget: prune savedTexts entries not in current records
+        IndexedDBService.pruneTextCacheToNames(records.map(r => r.name)).catch(() => {});
+      }
     },
-    [setFileMetadata, finaliseWords],
+    [setFileMetadata, finaliseWords, records],
   );
 
   /** Auto-pause when the user switches away from the tab */
@@ -403,16 +419,47 @@ export default function App() {
     (async () => {
       try {
         if (!records[0]) return;
-        const cached = await IndexedDBService.getFileCache(records[0].name);
-        if (!cached) return;
-        const file = new File([cached.buffer], cached.name, { type: cached.type });
-        await handleFileSelect(file);
+        const name = records[0].name;
+        const cached = await IndexedDBService.getFileCache(name);
+        if (cached) {
+          const file = new File([cached.buffer], cached.name, { type: cached.type });
+          await handleFileSelect(file);
+          return;
+        }
+        // Fallback to text cache
+        const textCached = await IndexedDBService.getTextCache(name);
+        if (!textCached) return;
+        const { words: parsed, rawLines } = parseRawText(textCached.rawText, 'resume');
+        setFileMetadata({ name, size: 0, type: 'text' });
+        finaliseWords(parsed, name, [], rawLines, 'text');
       } catch {
         // Cache miss or read error — not fatal, ignore silently
       }
     })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /** Resume from IDB cache (file or text) without a file picker */
+  const handleResumeFromCache = useCallback(async (name: string) => {
+    saveCurrentSession();
+    try {
+      const cached = await IndexedDBService.getFileCache(name);
+      if (cached) {
+        const file = new File([cached.buffer], cached.name, { type: cached.type });
+        await handleFileSelect(file);
+        return;
+      }
+      const textCached = await IndexedDBService.getTextCache(name);
+      if (textCached) {
+        const { words: parsed, rawLines } = parseRawText(textCached.rawText, 'resume');
+        setFileMetadata({ name, size: 0, type: 'text' });
+        finaliseWords(parsed, name, [], rawLines, 'text');
+        return;
+      }
+    } catch {
+      // Swallow silently — UI should not break
+    }
+  }, [saveCurrentSession, handleFileSelect, setFileMetadata, finaliseWords]);
 
   const toggleFocus = useCallback(() => {
     setIsFocused((f) => {
@@ -479,7 +526,7 @@ export default function App() {
       {/* ── 1. Top bar ──────────────────────────────────────────── */}
       <header className="topBar">
         <div className="topBarLeft">
-          <BurgerMenu onFileSelect={handleFileSelect} onReplayIntro={resetOnboarding} pulseBurger={pulseBurger} />
+          <BurgerMenu onFileSelect={handleFileSelect} onReplayIntro={resetOnboarding} pulseBurger={pulseBurger} onResumeFromCache={handleResumeFromCache} />
         </div>
         <div className="topBarBrand">
           <img
