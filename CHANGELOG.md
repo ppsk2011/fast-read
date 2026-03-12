@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1]
+### Fixed
+- **Eye focus button unclickable** — the base `.overlayBar` rule carries
+  `pointer-events: none` (so the transparent overlay doesn't swallow word-area
+  taps). Child clusters (`.pageNavOverlay`, `.wordNavOverlay`) individually
+  restore `pointer-events: all`, but the `.eyeBtn` rule was missing the same
+  restoration. Added `pointer-events: all` to the base `.eyeBtn` rule in
+  `ReaderViewport.module.css` so the eye button is always clickable regardless
+  of eye-focus state.
+
 ## [1.4.0]
 ### Fixed
 - **WPM resets to 238 on refresh** — the adaptive speed system (`finalizeSession`)

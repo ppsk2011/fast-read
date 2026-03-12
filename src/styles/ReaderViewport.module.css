@@ -583,6 +583,7 @@
   justify-content: center;
   border-radius: 4px;
   flex-shrink: 0;
+  pointer-events: all;
 }
 
 .eyeBtn:hover {
