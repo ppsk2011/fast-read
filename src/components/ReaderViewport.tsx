@@ -85,6 +85,10 @@ interface ReaderViewportProps {
   isEyeFocus?: boolean;
   /** Called when the user clicks the eye focus button */
   onEyeToggle?: () => void;
+  /** When true, context words render at the same font size as the main word */
+  contextWordSameSize?: boolean;
+  /** Opacity of context words when peripheralFade is true (0.20–1.00) */
+  contextWordOpacity?: number;
 }
 
 /**
@@ -119,16 +123,23 @@ function computeMainWordFontSize(
 
 function getSlotOpacity(
   slotIndex: number,
-  windowSize: number,
   peripheralFade: boolean,
+  contextWordOpacity: number,
 ): number {
-  if (windowSize === 1) return 1;
-  if (slotIndex === 0) return 1;            // main word always full opacity
-  // ALL context slots receive the same uniform value (no progressive gradient).
-  // fade ON:  0.45 — clearly subordinate to the main word
-  // fade OFF: 0.65 — slightly dim to maintain size-based hierarchy
-  // windowSize is capped at 3 in v11; both slots 1 and 2 receive the same value.
-  return peripheralFade ? 0.45 : 0.65;
+  if (slotIndex === 0) return 1;
+  return peripheralFade ? contextWordOpacity : 1.0;
+}
+
+/**
+ * Return the inline fontSize for a context word based on the contextWordSameSize
+ * setting and whether a user-scaled font size is active.
+ */
+function getContextWordFontSize(
+  contextWordSameSize: boolean,
+  scaledFont: string | undefined,
+): string | undefined {
+  if (!contextWordSameSize) return undefined;
+  return scaledFont ?? 'clamp(1.1rem, 8vw, 3.2rem)';
 }
 
 /** Pixels from left edge to exclude from swipe detection (iOS back-navigation zone) */
@@ -169,6 +180,8 @@ const ReaderViewport = memo(function ReaderViewport({
   onSlower,
   isEyeFocus = false,
   onEyeToggle,
+  contextWordSameSize = true,
+  contextWordOpacity = 0.65,
 }: ReaderViewportProps) {
   const { isPlaying, wpm, fileMetadata } = useReaderContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -438,7 +451,7 @@ const ReaderViewport = memo(function ReaderViewport({
           </div>
         </div>
       ) : !hasWords ? (
-        <div className={styles.placeholder}>
+        <div className={styles.emptyState}>
           <input
             ref={fileInputRef}
             type="file"
@@ -448,26 +461,43 @@ const ReaderViewport = memo(function ReaderViewport({
             aria-hidden="true"
             tabIndex={-1}
           />
-          <p className={styles.helpHeading}>Ready to speed-read?</p>
-          <p className={styles.helpBody}>
+          <p className={styles.emptyHeading}>Ready to read</p>
+          <p className={styles.emptySubhead}>Load something to get started</p>
+          <div className={styles.emptyActions}>
             <button
-              className={styles.helpLink}
+              className={styles.emptyActionBtn}
               onClick={handleUploadClick}
-              aria-label="Upload a file to start reading"
+              aria-label="Upload a file"
             >
-              Upload a file
+              <span className={styles.emptyActionIcon} aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+                     strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </span>
+              <span className={styles.emptyActionLabel}>Upload file</span>
+              <span className={styles.emptyActionSub}>PDF · EPUB · DOCX · TXT · MD</span>
             </button>
-            {' '}(PDF, EPUB, TXT, MD, HTML, RTF, SRT, DOCX){' '}
-            or{' '}
             <button
-              className={styles.helpLink}
+              className={styles.emptyActionBtn}
               onClick={() => onShowPaste?.()}
-              aria-label="Paste text to start reading"
+              aria-label="Paste text"
             >
-              paste text
+              <span className={styles.emptyActionIcon} aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+                     strokeLinejoin="round" aria-hidden="true">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                </svg>
+              </span>
+              <span className={styles.emptyActionLabel}>Paste text</span>
+              <span className={styles.emptyActionSub}>Article · URL · any text</span>
             </button>
-            {' '}to get started.
-          </p>
+          </div>
         </div>
       ) : orientation === 'vertical' ? (
         /*
@@ -485,7 +515,7 @@ const ReaderViewport = memo(function ReaderViewport({
         >
           {wordWindow.map((word, i) => {
             const isCenter   = i === highlightIndex;
-            const isPeripheral = !isCenter && getSlotOpacity(i, wordWindow.length, peripheralFade) < 1;
+            const isPeripheral = !isCenter && getSlotOpacity(i, peripheralFade, contextWordOpacity) < 1;
             return (
               <span
                 key={i}
@@ -494,6 +524,7 @@ const ReaderViewport = memo(function ReaderViewport({
                   ...(isCenter && !focalLine ? { color: highlightColor } : undefined),
                   ...(isPeripheral ? { color: 'var(--vp-text-peripheral)', opacity: 1 } : undefined),
                   ...(isCenter && scaledFont ? { fontSize: scaledFont } : undefined),
+                  ...(!isCenter ? { fontSize: getContextWordFontSize(contextWordSameSize, scaledFont) } : undefined),
                 }}
                 aria-hidden={!word ? true : undefined}
               >
@@ -571,10 +602,11 @@ const ReaderViewport = memo(function ReaderViewport({
                       : styles.contextWord
                   }
                   style={{
-                    color: getSlotOpacity(actualSlot, wordWindow.length, peripheralFade) < 1
+                    color: getSlotOpacity(actualSlot, peripheralFade, contextWordOpacity) < 1
                       ? 'var(--vp-text-peripheral)'
                       : undefined,
                     opacity: 1,
+                    fontSize: getContextWordFontSize(contextWordSameSize, scaledFont),
                   }}
                 >
                   {word}
